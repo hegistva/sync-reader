@@ -64,19 +64,17 @@ def analyze(title, chapter, lang):
     with open(ch_file, 'r') as chf:
         raw_text = chf.read()
         parser = parsers[lang]
-        doc = parser(raw_text)
-        sentences = [sent.string.strip() for sent in doc.sents]
-        return sentences
+        doc = parser(raw_text)        
+        return doc
 
 def alignSentences(title, chapter, lang_source, lang_target):
-    sent_source = analyze(title, chapter, lang_source)
-    sent_target = analyze(title, chapter, lang_target)
+    doc_source = analyze(title, chapter, lang_source)
+    doc_target = analyze(title, chapter, lang_target)
+    sent_source = [sent.string.strip() for sent in doc_source.sents]
+    sent_target = [sent.string.strip() for sent in doc_target.sents]
     len_source = [len(sent) for sent in sent_source]
     len_target = [len(sent) for sent in sent_target]
     alignment = gale_church.align_blocks(len_source, len_target)
-    print(len(len_source))
-    print(len(len_target))
-    print(alignment)
     src_set = set()
     tgt_set = set()
     blocks = []
@@ -96,9 +94,10 @@ def alignSentences(title, chapter, lang_source, lang_target):
     if len(src_set) or len(tgt_set):
         src_block = ' '.join([sent_source[i] for i in sorted(src_set)])
         tgt_block = ' '.join([sent_target[i] for i in sorted(tgt_set)])
-        blocks.append("%s => %s" % (src_block, tgt_block))            
+        blocks.append("%s\n=>\n%s" % (src_block, tgt_block))            
     return blocks
 
 blocks = alignSentences('20000LeaguesUnderTheSea', 1, 'fr', 'en')
+
 for idx, block in enumerate(blocks):
-    print("BLOCK: %d: %s" % (idx, block))
+    print("BLOCK[%d]\n%s\n" % (idx, block))
