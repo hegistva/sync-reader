@@ -1,0 +1,7 @@
+Check the named entity resolver in spacy
+Check and use POS tagging information in spacy
+Check and use word2vec similarity once translated
+Use the distance from the expected positions
+Interpolate where there is no information
+Create candidate alignments and find the best
+Create and use a dictionary with our successful alignment on word and lemma level
