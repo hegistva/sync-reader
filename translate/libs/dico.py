@@ -38,7 +38,7 @@ def load(fromLang, toLang):
     if not dbName in trans_dicts:
         try:
             trans_dicts[dbName] = pickle.load(open(os.path.join(CACHE,dbName), 'rb'))
-        except Exception as e:
+        except Exception:
             trans_dicts[dbName] = {}
 
 def __useDB(fromLang, toLang):
