@@ -4,23 +4,23 @@ import requests
 from nltk.translate import gale_church
 import spacy
 
-en = spacy.load('en')
-fr = spacy.load('fr')
+eng = spacy.load('en')
+fra = spacy.load('fr')
 
 parsers = {
-    'en': en,
-    'fr': fr
+    'ena': eng,
+    'fre': fra
 }
 
 books = {
     '20000LeaguesUnderTheSea': {
-        'fr': {
+        'fra': {
             'url': 'http://www.gutenberg.org/cache/epub/5097/pg5097.txt',
             'chapters': [(111, 365), (369, 604), (608, 844), (848, 1138), (1142, 1392),
             (1396, 1798), (1802, 2154), (2158, 2488), (2492, 2797), (2801, 3191)
             ]
         },
-        'en': {
+        'eng': {
             'url': 'http://www.gutenberg.org/cache/epub/2488/pg2488.txt',
             'chapters': [(696, 958), (969, 1215),(1227, 1472), (1482, 1770), (1782, 2036),
             (2046, 2450), (2462, 2805), (2817, 3170), (3182, 3495), (3507, 3899),
@@ -97,7 +97,7 @@ def alignSentences(title, chapter, lang_source, lang_target):
         blocks.append("%s\n=>\n%s" % (src_block, tgt_block))            
     return blocks
 
-blocks = alignSentences('20000LeaguesUnderTheSea', 1, 'fr', 'en')
+blocks = alignSentences('20000LeaguesUnderTheSea', 1, 'fra', 'eng')
 
 for idx, block in enumerate(blocks):
     print("BLOCK[%d]\n%s\n" % (idx, block))
