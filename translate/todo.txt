@@ -20,3 +20,5 @@ Then add maximum 16 2x branches
 Numbers 
 Probabilities
 Percentages
+
+Investigate spacy document spans
