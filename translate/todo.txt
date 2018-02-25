@@ -1,4 +1,4 @@
-Check the named entity resolver in spacy
+Check the named entity resolver in spacy - demo ready
 Check and use POS tagging information in spacy
 Check and use word2vec similarity once translated
 Use the distance from the expected positions

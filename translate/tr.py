@@ -8,7 +8,7 @@ eng = spacy.load('en')
 fra = spacy.load('fr')
 
 parsers = {
-    'ena': eng,
+    'eng': eng,
     'fre': fra
 }
 
