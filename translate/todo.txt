@@ -16,3 +16,7 @@ Features:
     HOW TO USE EXISTING ALIGNMENTS (LEMMA or TOKEN?)
 
 Then add maximum 16 2x branches
+
+Numbers 
+Probabilities
+Percentages
