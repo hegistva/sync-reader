@@ -5,3 +5,14 @@ Use the distance from the expected positions
 Interpolate where there is no information
 Create candidate alignments and find the best
 Create and use a dictionary with our successful alignment on word and lemma level
+
+Design:
+1. map sentences by beads
+2. crate spacy spans for each bead in both language
+3. each token maps to each token with a probabilty by each feature Features x (N x M)
+Features:
+    NAMED ENTITY RECOGNITION + LEVENSHTEIN DISTANCE + POSITION - MAPPING
+    LEMMA TRANSLATION EXACT + POS TAGGING + WORD2VEC SIMILARITY + POSITION + LEVENSHTEIN DISTANCE [Except named entities] - MAPPING
+    HOW TO USE EXISTING ALIGNMENTS (LEMMA or TOKEN?)
+
+Then add maximum 16 2x branches
