@@ -22,3 +22,5 @@ Probabilities
 Percentages
 
 Investigate spacy document spans
+
+map form both directions to reduce errors
