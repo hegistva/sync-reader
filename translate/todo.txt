@@ -29,7 +29,7 @@ Tag why how each phrase was mapped
 
 0. add tags - DONE
 1. further map further in the child nodes - DONE
-2. create module for glove with cache
+2. create module for glove with cache - IN PROGRESS
 3. use glove vectors to improve translation
 	- important nodes first
 	- then map all remaining translatables
@@ -41,7 +41,7 @@ Tag why how each phrase was mapped
 4. finalize mapping by interpolation
 5. find out the depth of each node - IN PROGRESS
 6. find out if a node has mapped parent - IN PROGRESS
-7. make sure to build a graph of mapped tokens - IN PROGRESS
+7. make sure to build a graph of mapped tokens - DONE
 8. fine tune the probabilities
 9. when smooth out the mapping around highly probably translations
 10. learning !!! (words, tuples, triplets)
