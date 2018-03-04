@@ -55,7 +55,9 @@ class MappedToken(object):
             colorFn = red
         else:
             colorFn = colorForConf(self.mapTarget.confidence)
-        return "%s [%s] at %d (%.2f) - size: %.2f is mapped to %s" % (colorFn(self.token.text), colorFn(self.token.lemma_), self.token.i, self.relativePosition, self.graphSize, self.mapTarget)
+        doc = Alignment.s2t if self.source else Alignment.t2s
+        hmp = utils.hasMappedParent(doc, self)
+        return "%s [%s] at %d (%.2f) - size: %.2f - depth: %d is mapped to %s, has mapped parent: %s" % (colorFn(self.token.text), colorFn(self.token.lemma_), self.token.i, self.relativePosition, self.graphSize, utils.nodeDepth(self.token), self.mapTarget, hmp)
 
 class Alignment(object):
     s2t = []
