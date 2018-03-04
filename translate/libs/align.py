@@ -34,14 +34,25 @@ class MappedToken(object):
 
     def __init__(self, token, documentSize, source):
         self.source = source # source or target token
-        self.relativePosition = token.i / documentSize # relative position in the document/sentence
-        self.dependents = utils.dependencyGraph(token) # list of dependent tokens
-        self.graphSize = len(self.dependents) / documentSize # size of the subgraph starting on this node
+        self.documentSize = documentSize # document size
+        self.relativePosition = token.i / documentSize # relative position in the document/sentence                
+        self.graphSize = 0.0 # size of the subgraph starting on this node
         self.token = token # token
         self.alternatives = [] # mapping alternatives (list of MapTarget objects)
         self.isMapped = False # has the map target been selected yet
         self.mapTarget = None # map target (MapTarget object)
-        
+        self.mapping = None # reference mapping object
+        self.head = None # list parent node
+        self.children = [] # list of children
+        self.dependents = []  # list of dependent tokens
+
+    def buildGraph(self, mapping):
+        self.mapping = mapping
+        self.head = self.mapping[self.token.head.i]
+        for child in self.token.children:
+            self.children.append(self.mapping[child.i])
+        self.dependents = utils.dependencyGraph(self)
+        self.graphSize = len(self.dependents) / self.documentSize
     
     def mapTo(self, mt):
         self.isMapped = True
@@ -55,9 +66,7 @@ class MappedToken(object):
             colorFn = red
         else:
             colorFn = colorForConf(self.mapTarget.confidence)
-        doc = Alignment.s2t if self.source else Alignment.t2s
-        hmp = utils.hasMappedParent(doc, self)
-        return "%s [%s] at %d (%.2f) - size: %.2f - depth: %d is mapped to %s, has mapped parent: %s" % (colorFn(self.token.text), colorFn(self.token.lemma_), self.token.i, self.relativePosition, self.graphSize, utils.nodeDepth(self.token), self.mapTarget, hmp)
+        return "%s [%s] at %d (%.2f) - size: %.2f - depth: %d is mapped to %s, has mapped parent: %s" % (colorFn(self.token.text), colorFn(self.token.lemma_), self.token.i, self.relativePosition, self.graphSize, utils.nodeDepth(self), self.mapTarget, utils.hasMappedParent(self))
 
 class Alignment(object):
     s2t = []
@@ -65,7 +74,10 @@ class Alignment(object):
 
 def initMapping(doc, source):
     doc_size = len(doc)
-    return [MappedToken(tkn, doc_size, source) for tkn in doc]
+    mapping = [MappedToken(tkn, doc_size, source) for tkn in doc]
+    for m in mapping:
+        m.buildGraph(mapping)
+    return mapping
 
 def initAlignment(doc_source, doc_target):
     Alignment.s2t = initMapping(doc_source, source=True)

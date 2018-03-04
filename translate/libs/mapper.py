@@ -74,26 +74,24 @@ def mapBaseNoTranslate(minScore, sourceMapping, targetMapping):
 def mapDependents(minScore, sourceMapping, targetMapping):
     for mts in sourceMapping:
         if mts.token.is_alpha and mts.isMapped:            
-            for dep_source in mts.dependents:
-                ms_child = sourceMapping[dep_source.i]
-                if dep_source.is_alpha and not ms_child.isMapped: # if source is not mapped yet
-                    trans = dico.translateToken(dep_source) # translate
-                    tgtToken = None # best target token
+            for ms_child in mts.dependents:
+                if ms_child.token.is_alpha and not ms_child.isMapped: # if source is not mapped yet
+                    trans = dico.translateToken(ms_child.token) # translate
+                    tgtMapping = None # best target token
                     bestScore = 0.0 # best matching score
-                    for dep_target in mts.mapTarget.target.dependents:
-                        mt_child = targetMapping[dep_target.i]
-                        if dep_target.is_alpha and not mt_child.isMapped: # if target is not mapped yet                                            
+                    for mt_child in mts.mapTarget.target.dependents:
+                        if mt_child.token.is_alpha and not mt_child.isMapped: # if target is not mapped yet                                            
                             # calculate a socore for the pair
-                            scorePos = 0.5 + 0.5 * (dep_source.pos_ == dep_target.pos_)
+                            scorePos = 0.5 + 0.5 * (ms_child.token.pos_ == mt_child.token.pos_)
                             scorePosition = 1.0 - abs(ms_child.relativePosition - mt_child.relativePosition)
                             score = scorePos * scorePosition
                             if score  > minScore:
-                                if (dep_target.text.lower() in trans) or (dep_target.lemma_.lower() in trans):
+                                if (mt_child.token.text.lower() in trans) or (mt_child.token.lemma_.lower() in trans):
                                     if score > bestScore:
-                                        tgtToken = dep_target
+                                        tgtMapping = mt_child
                                         bestScore = score
-                    if not tgtToken is None:
-                        ms_child.mapTo(align.MapTarget(tgtToken.i, 'DEPENDENT', bestScore))
+                    if not tgtMapping is None:
+                        ms_child.mapTo(align.MapTarget(tgtMapping.token.i, 'DEPENDENT', bestScore))
 
 def mapTranslatables(minScore, sourceMapping, targetMapping):
     for mts in sourceMapping:

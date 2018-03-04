@@ -1,26 +1,25 @@
 
 import itertools
 
-def dependencyGraph(token):
-    dep_list = [dependencyGraph(child) for child in token.children]
+def dependencyGraph(mt):
+    dep_list = [dependencyGraph(child) for child in mt.children]
     dep_list = list(itertools.chain.from_iterable(dep_list))
-    dep_list.append(token)
+    dep_list.append(mt)
     return dep_list
 
-def isRootNode(token):
-    return token == token.head
+def isRootNode(mt):
+    return mt == mt.head
 
-def nodeDepth(token):
-    if isRootNode(token):
+def nodeDepth(mt):
+    if isRootNode(mt):
         return 0
     else:
-        return 1 + nodeDepth(token.head)
+        return 1 + nodeDepth(mt.head)
 
-
-def hasMappedParent(doc, mt):
+def hasMappedParent(mt):
     """Find out if a token has a mapped parent"""
-    if mt.isMapped or isRootNode(mt.token): 
+    if mt.isMapped or isRootNode(mt): 
         # if node is mapped or it is root return its status
         return mt.isMapped
     else:
-        return hasMappedParent(doc, doc[mt.token.head.i])
+        return hasMappedParent(mt.head)
