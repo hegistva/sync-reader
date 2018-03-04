@@ -30,3 +30,5 @@ Tag why how each phrase was mapped
 0. add tags - DONE
 1. further map further in the child nodes
 2. create module for glove with cache
+3. use glove vectors to improve translation
+4. finalize mapping by interpolation

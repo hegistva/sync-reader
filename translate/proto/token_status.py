@@ -18,8 +18,8 @@ ed = en(text_eng)
 fd = fr(text_fra)
 
 def printTokens(doc):
-    tbldata = [[token.text, token.pos_, len(list(token.children)), utils.graphSize(token)] for token in doc]
-    tbldata.insert(0, ['Text', 'Part of Sentence', 'ChildCount', 'GraphSize'])    
+    tbldata = [[token.text, token.pos_, len(list(token.children))] for token in doc]
+    tbldata.insert(0, ['Text', 'Part of Sentence', 'ChildCount'])    
     print(AsciiTable(tbldata).table)
 
 printTokens(fd)
