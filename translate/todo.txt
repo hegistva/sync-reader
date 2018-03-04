@@ -28,7 +28,11 @@ map form both directions to reduce errors
 Tag why how each phrase was mapped
 
 0. add tags - DONE
-1. further map further in the child nodes
+1. further map further in the child nodes - DONE
 2. create module for glove with cache
 3. use glove vectors to improve translation
+	- important nodes first
+
 4. finalize mapping by interpolation
+5. find out the depth of each node - IN PROGRESS
+6. find out if a node has mapped parent - IN PROGRESS

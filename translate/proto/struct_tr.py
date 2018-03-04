@@ -41,7 +41,10 @@ mapper.mapBaseStructure(minScore=0.05, sourceMapping=align.Alignment.s2t, target
 mapper.mapBaseStructure(minScore=0.01, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
 mapper.mapBaseStructure(minScore=0.005, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
 
-# map in children
+# map in dependens
+mapper.mapDependents(minScore=0.05, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
+mapper.mapDependents(minScore=0.01, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
+mapper.mapDependents(minScore=0.005, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
 
 # display alignment
 for m in align.Alignment.s2t:
