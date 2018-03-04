@@ -2,8 +2,6 @@
 from terminaltables import AsciiTable
 import spacy
 import itertools
-import numpy as np
-import Levenshtein
 
 from translate.libs import dico
 from translate.libs import glove
@@ -33,15 +31,15 @@ tr_vocab = set(itertools.chain(*trs))
 align.initAlignment(fd, ed)
 
 # map named entities
-mapNamedEntities(confidence=0.5, sourceDoc=fd, targetDoc=ed)
+mapper.mapNamedEntities(confidence=0.5, sourceDoc=fd, targetDoc=ed)
 
 # map numbers
-mapNumbers(confidence=0.5, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
+mapper.mapNumbers(confidence=0.5, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
 
 # structural mapping with exact dictionary match
-mapAtScore(minScore=0.05, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
-mapAtScore(minScore=0.01, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
-mapAtScore(minScore=0.005, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
+mapper.mapAtScore(minScore=0.05, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
+mapper.mapAtScore(minScore=0.01, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
+mapper.mapAtScore(minScore=0.005, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
 
 # map in children
 

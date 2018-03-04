@@ -1,3 +1,7 @@
+import numpy as np
+import Levenshtein
+from translate.libs import align
+from translate.libs import dico
 
 def mapNamedEntities(confidence, sourceDoc, targetDoc):
     """map named entities from the source document to the target document"""
@@ -14,7 +18,7 @@ def mapNamedEntities(confidence, sourceDoc, targetDoc):
             del targetNames[idxMin] # found a match, remove target
             del targetEnts[idxMin]
             for idxSource in range(sourceName.start, sourceName.end):
-                align.Alignment.s2t[idxSource].mapTo(align.MapTarget(targetDoc[targetName.start], prob))
+                align.Alignment.s2t[idxSource].mapTo(align.MapTarget(targetDoc[targetName.start], prob), 'NER')
 
 def mapNumbers(confidence, sourceMapping, targetMapping):
     for sourceToken in sourceMapping:
@@ -24,7 +28,7 @@ def mapNumbers(confidence, sourceMapping, targetMapping):
                     d = Levenshtein.distance(sourceToken.token.text, targetToken.token.text)
                     prob = 1 - d / len(sourceToken.token.text)
                     if prob >= confidence:
-                        sourceToken.mapTo(align.MapTarget(targetToken.token, prob))
+                        sourceToken.mapTo(align.MapTarget(targetToken.token, prob), 'NUMBER')
 
 def mapAtScore(minScore, sourceMapping, targetMapping):
     for mts in sourceMapping:
@@ -45,4 +49,4 @@ def mapAtScore(minScore, sourceMapping, targetMapping):
                                 tgtToken = mtt
                                 bestScore = score
             if not tgtToken is None:
-                mts.mapTo(align.MapTarget(tgtToken.token, bestScore))
+                mts.mapTo(align.MapTarget(tgtToken.token, bestScore), 'BASE_STRUCT')
