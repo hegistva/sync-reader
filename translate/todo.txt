@@ -1,6 +1,6 @@
 Check the named entity resolver in spacy - demo ready
 Check and use POS tagging information in spacy
-Check and use word2vec similarity once translated
+Check and use glove similarity once translated
 Use the distance from the expected positions
 Interpolate where there is no information
 Create candidate alignments and find the best
@@ -24,3 +24,5 @@ Percentages
 Investigate spacy document spans
 
 map form both directions to reduce errors
+
+Tag why how each phrase was mapped

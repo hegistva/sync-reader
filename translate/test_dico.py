@@ -21,6 +21,6 @@ def testFrenchSentence():
                 tr = dico.translateLemma(lemma)
                 print("word %s: lemma: %s traslation: %s" % (word.text, lemma, tr))
 
-# testFrenchSentence()
+testFrenchSentence()
 # dico.printDict()
         

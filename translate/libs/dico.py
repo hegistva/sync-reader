@@ -14,6 +14,12 @@ trans_dicts = {}
 
 default_db = None
 
+def translateToken(token, fromLang=None, toLang=None):
+    tr = translateLemma(token.text.lower())
+    if not tr:
+        tr = translateLemma(token.lemma_.lower())
+    return tr
+
 def translateLemma(lemma, fromLang=None, toLang=None):
     """public function to translate a lemma"""
     dbName = __useDB(fromLang, toLang)
@@ -82,7 +88,7 @@ def __translateLemma(lemma, dbName):
     else:
         for d in foreign_defs['definitions']:
             words = d['desc'].splitlines()[-1].split(';')
-            words = [word.strip() for word in words]
+            words = [word.split('.')[-1].strip() for word in words]
             return words
 
 

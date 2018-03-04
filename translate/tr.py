@@ -9,7 +9,7 @@ fra = spacy.load('fr')
 
 parsers = {
     'eng': eng,
-    'fre': fra
+    'fra': fra
 }
 
 books = {
