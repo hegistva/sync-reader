@@ -22,12 +22,13 @@ def colorForConf(confidence):
 # Classes to support mapping
 
 class MapTarget(object):
-    def __init__(self, target, confidence):
-        self.target = target
+    def __init__(self, idxTarget, method, confidence, source=False):
+        self.target = Alignment.s2t[idxTarget] if source else Alignment.t2s[idxTarget]
+        self.method = method
         self.confidence = confidence
     def __str__(self):
         colorFn = colorForConf(self.confidence)
-        return "%s [%s] at %d with confidence %.2f" % (colorFn(self.target.text), colorFn(self.target.lemma_), self.target.i, self.confidence)
+        return "%s [%s] at %d with method %s, confidence %.2f" % (colorFn(self.target.token.text), colorFn(self.target.token.lemma_), self.target.token.i, self.method, self.confidence)
         
 class MappedToken(object):
 
@@ -40,18 +41,13 @@ class MappedToken(object):
         self.alternatives = [] # mapping alternatives (list of MapTarget objects)
         self.isMapped = False # has the map target been selected yet
         self.mapTarget = None # map target (MapTarget object)
-        self.method = None  # mapping method
         
     
-    def mapTo(self, mt, method, map_back=True):
+    def mapTo(self, mt):
         self.isMapped = True
         self.mapTarget = mt
-        self.method = method
-        if map_back:
-            if self.source:
-                Alignment.t2s[mt.target.i].mapTo(MapTarget(self.token, mt.confidence), method, map_back=False)
-            else:
-                Alignment.s2t[mt.target.i].mapTo(MapTarget(self.token, mt.confidence), method, map_back=False)
+        if self.source:
+            Alignment.t2s[mt.target.token.i].mapTo(MapTarget(self.token.i, mt.method, mt.confidence, source=True)) # establish opposite mapping
 
     def __str__(self):
         colorFn = blue
@@ -59,7 +55,7 @@ class MappedToken(object):
             colorFn = red
         else:
             colorFn = colorForConf(self.mapTarget.confidence)
-        return "%s [%s] at %d (%.2f) - size: %.2f is mapped to %s by %s" % (colorFn(self.token.text), colorFn(self.token.lemma_), self.token.i, self.relativePosition, self.graphSize, self.mapTarget, self.method)
+        return "%s [%s] at %d (%.2f) - size: %.2f is mapped to %s" % (colorFn(self.token.text), colorFn(self.token.lemma_), self.token.i, self.relativePosition, self.graphSize, self.mapTarget)
 
 class Alignment(object):
     s2t = []

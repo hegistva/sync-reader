@@ -18,7 +18,7 @@ def mapNamedEntities(confidence, sourceDoc, targetDoc):
             del targetNames[idxMin] # found a match, remove target
             del targetEnts[idxMin]
             for idxSource in range(sourceName.start, sourceName.end):
-                align.Alignment.s2t[idxSource].mapTo(align.MapTarget(targetDoc[targetName.start], prob), 'NER')
+                align.Alignment.s2t[idxSource].mapTo(align.MapTarget(targetName.start, 'NER', prob))
 
 def mapNumbers(confidence, sourceMapping, targetMapping):
     for sourceToken in sourceMapping:
@@ -28,9 +28,9 @@ def mapNumbers(confidence, sourceMapping, targetMapping):
                     d = Levenshtein.distance(sourceToken.token.text, targetToken.token.text)
                     prob = 1 - d / len(sourceToken.token.text)
                     if prob >= confidence:
-                        sourceToken.mapTo(align.MapTarget(targetToken.token, prob), 'NUMBER')
+                        sourceToken.mapTo(align.MapTarget(targetToken.token.i, 'NUMBER', prob))
 
-def mapAtScore(minScore, sourceMapping, targetMapping):
+def mapBaseStructure(minScore, sourceMapping, targetMapping):
     for mts in sourceMapping:
         if mts.token.is_alpha and not mts.isMapped:
             trans = dico.translateToken(mts.token)
@@ -49,4 +49,4 @@ def mapAtScore(minScore, sourceMapping, targetMapping):
                                 tgtToken = mtt
                                 bestScore = score
             if not tgtToken is None:
-                mts.mapTo(align.MapTarget(tgtToken.token, bestScore), 'BASE_STRUCT')
+                mts.mapTo(align.MapTarget(tgtToken.token.i, 'BASE_STRUCT', bestScore))

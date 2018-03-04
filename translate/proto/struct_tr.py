@@ -37,9 +37,9 @@ mapper.mapNamedEntities(confidence=0.5, sourceDoc=fd, targetDoc=ed)
 mapper.mapNumbers(confidence=0.5, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
 
 # structural mapping with exact dictionary match
-mapper.mapAtScore(minScore=0.05, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
-mapper.mapAtScore(minScore=0.01, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
-mapper.mapAtScore(minScore=0.005, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
+mapper.mapBaseStructure(minScore=0.05, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
+mapper.mapBaseStructure(minScore=0.01, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
+mapper.mapBaseStructure(minScore=0.005, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
 
 # map in children
 
