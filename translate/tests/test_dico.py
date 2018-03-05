@@ -1,5 +1,5 @@
 
-from libs import dico
+from translate.libs import dico
 import spacy
 
 

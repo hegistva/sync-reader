@@ -48,6 +48,9 @@ class MappedToken(object):
         self.children = [] # list of children
         self.dependents = []  # list of dependent tokens
         self.vector = None # word embedding vector
+        self.translations = [] # dico translations
+        if self.source and token.is_alpha:
+            self.translations = dico.translateToken(token)
 
     def buildGraph(self, mapping):
         self.mapping = mapping
