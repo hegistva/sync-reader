@@ -75,19 +75,22 @@ def __translateLemma(lemma, dbName):
     if foreign_defs.get('error', None) == '552': # NOT FOUND
         frmatches = dc.match(dbName, 'lev', lemma)
         if frmatches.get('error', None) == '552':
-            return []
+            return set()
         else:
             matches = frmatches.get('matches', None)
             if matches:
                 alternatives = matches.get(dbName, [])
                 trs = [__translateLemma(alt, dbName) for alt in alternatives] # translations                    
-                return list(itertools.chain.from_iterable(trs))
+                words = set(itertools.chain.from_iterable(trs))
+                words.discard('')
+                return words
             else:
-                return []
+                return set()
     else:
         for d in foreign_defs['definitions']:
             words = d['desc'].splitlines()[-1].split(';')
-            words = [word.split('.')[-1].strip() for word in words]
+            words = { word.split('.')[-1].strip() for word in words }
+            words.discard('')
             return words
 
 

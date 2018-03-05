@@ -1,6 +1,7 @@
 
 import colored
 import functools
+import itertools
 
 from translate.libs import utils
 from translate.libs import glove
@@ -22,7 +23,6 @@ def colorForConf(confidence):
 
 
 # Classes to support mapping
-
 class MapTarget(object):
     def __init__(self, idxTarget, method, confidence, source=False):
         self.target = MAPPING.source.tokens[idxTarget] if source else MAPPING.target.tokens[idxTarget]
@@ -48,10 +48,18 @@ class MappedToken(object):
         self.children = [] # list of children
         self.dependents = []  # list of dependent tokens
         self.vector = None # word embedding vector
-        self.translations = [] # dico translations
+        self.translations = set() # dico translations
+        self.translateVectors = [] # glove vectors for translations
         if self.source and token.is_alpha:
-            self.translations = dico.translateToken(token)
+            self.translations = set(dico.translateToken(token))
 
+    def mapTranslateVectors(self, gloveDict):
+        self.translateVectors = []
+        for tr in self.translations:
+            vec = gloveDict[tr]
+            if not vec is None:
+                self.translateVectors.append(vec)
+        
     def buildGraph(self, mapping):
         self.mapping = mapping
         self.head = self.mapping[self.token.head.i]
@@ -78,6 +86,7 @@ class Mapping(object):
     """"Mapping a langage"""
     def __init__(self, doc, language, source):
         self.langage = language
+        self.source = source
         doc_size = len(doc)
         self.tokens = [MappedToken(tkn, doc_size, source) for tkn in doc]
         for mt in self.tokens:
@@ -88,6 +97,13 @@ class Mapping(object):
             for mt in self.tokens:
                 if mt.token.is_alpha:
                     mt.vector = vecs[mt.token.lemma_]
+        if source:
+            trs = [mt.translations for mt in self.tokens] # all translations
+            tr_vocab = set(itertools.chain(*trs)) # raze
+            tr_vecs = glove.getVector(tr_vocab)
+            for mt in self.tokens:
+                mt.mapTranslateVectors(tr_vecs)
+
 class Alignment(object):
     def __init__(self, doc_source, lang_source, doc_target, lang_target):
         self.source = Mapping(doc_source, lang_source, source=True)
