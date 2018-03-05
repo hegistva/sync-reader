@@ -95,3 +95,9 @@ def __getVectorFromGloveTxtFile(words, path_to_glove=GLOVE_PATH, txt_file=GLOVE_
     for nfw in not_found:
         embedding_weights[nfw] = None
     return embedding_weights
+
+def printCache():
+    if __glove_dict is None:
+        load()
+    for word, vec in __glove_dict.items():
+        print(word, vec)

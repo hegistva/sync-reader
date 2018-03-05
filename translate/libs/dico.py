@@ -89,7 +89,7 @@ def __translateLemma(lemma, dbName):
     else:
         for d in foreign_defs['definitions']:
             words = d['desc'].splitlines()[-1].split(';')
-            words = { word.split('.')[-1].strip() for word in words }
+            words = { word.split('.')[-1].strip().lower() for word in words }
             words.discard('')
             return words
 

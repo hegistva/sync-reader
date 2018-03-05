@@ -31,7 +31,8 @@ Tag why how each phrase was mapped
 1. further map further in the child nodes - DONE
 2. create module for glove with cache - DONE
 	- integrate glove vectors into the mapping - DONE
-2.1 integrate the dico  translations into the data model - IN PROGRESS
+2.1 integrate the dico  translations into the data model - DONE
+2.2 try matching multiword translations
 3. use glove vectors to improve translation
 	- important nodes first
 	- then map all remaining translatables

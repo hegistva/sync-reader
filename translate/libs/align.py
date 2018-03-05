@@ -92,11 +92,11 @@ class Mapping(object):
         for mt in self.tokens:
             mt.buildGraph(self.tokens)
         if self.langage == 'eng':
-            words = { mt.token.lemma_ for mt in self.tokens if mt.token.is_alpha }
+            words = { mt.token.lemma_.lower() for mt in self.tokens if mt.token.is_alpha }
             vecs = glove.getVector(words)
             for mt in self.tokens:
                 if mt.token.is_alpha:
-                    mt.vector = vecs[mt.token.lemma_]
+                    mt.vector = vecs[mt.token.lemma_.lower()]
         if source:
             trs = [mt.translations for mt in self.tokens] # all translations
             tr_vocab = set(itertools.chain(*trs)) # raze
