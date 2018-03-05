@@ -3,8 +3,6 @@ from terminaltables import AsciiTable
 import spacy
 import itertools
 
-from translate.libs import dico
-from translate.libs import glove
 from translate.libs import align
 from translate.libs import mapper
 
@@ -27,50 +25,39 @@ fd = fr(text_fra)
 vocab_en = { tok.lemma_ for tok in ed if tok.is_alpha}
 vocab_fr = { tok.lemma_ for tok in fd if tok.is_alpha}
 
-dico.setDefault('fra', 'eng')
-
-trs = [dico.translateLemma(lemma) for lemma in vocab_fr]
-tr_vocab = set(itertools.chain(*trs))
-
-align.initAlignment(fd, ed)
+align.init(fd, 'fra', ed, 'eng')
 
 # map named entities
 mapper.mapNamedEntities(confidence=0.5, sourceDoc=fd, targetDoc=ed)
 
 # map numbers
-mapper.mapNumbers(confidence=0.5, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
+mapper.mapNumbers(confidence=0.5)
 
 # structural mapping with exact dictionary match
 scores = [0.05, 0.01, 0.005]
 for score in scores:
-    mapper.mapBaseStructure(minScore=score, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
+    mapper.mapBaseStructure(minScore=score)
 
 # map in dependents
 for score in scores:
-    mapper.mapDependents(minScore=score, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
+    mapper.mapDependents(minScore=score)
 
 # TODO map base structure using translation + glove
 
 # map base strutcure if the word is not in the dictionary
-mapper.mapBaseNoTranslate(minScore=0.3, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
+mapper.mapBaseNoTranslate(minScore=0.3)
 
 # map dependents again
 for score in scores:
-    mapper.mapDependents(minScore=score, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
-
+    mapper.mapDependents(minScore=score)
 
 # map dependents again
 for score in [0.5, 0.1, 0.01, 0.0]:
-    mapper.mapTranslatables(minScore=score, sourceMapping=align.Alignment.s2t, targetMapping=align.Alignment.t2s)
-
-# display target
-# print('TARAGET')
-# for m in align.Alignment.t2s:
-#     print(m)
+    mapper.mapTranslatables(minScore=score)
 
 # display source
 print('SOURCE')
-for m in align.Alignment.s2t:
+for m in align.MAPPING.source.tokens:
     print(m)
 
 html_fra = spacy.displacy.render(fd, style='dep', options={'compact': True}, page=True)
@@ -86,7 +73,3 @@ with open(os.path.join(VISUAL, 'fra.html'), 'w') as f:
 with open(os.path.join(VISUAL, 'eng.html'), 'w') as f:
     f.write(html_eng)
 
-# vectors = glove.getVector(vocab_en | tr_vocab)
-
-# for word, vec in vectors.items():
-#    print(word)

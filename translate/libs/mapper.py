@@ -18,25 +18,25 @@ def mapNamedEntities(confidence, sourceDoc, targetDoc):
             del targetNames[idxMin] # found a match, remove target
             del targetEnts[idxMin]
             for idxSource in range(sourceName.start, sourceName.end):
-                align.Alignment.s2t[idxSource].mapTo(align.MapTarget(targetName.start, 'NER', prob))
+                align.MAPPING.source.tokens[idxSource].mapTo(align.MapTarget(targetName.start, 'NER', prob))
 
-def mapNumbers(confidence, sourceMapping, targetMapping):
-    for sourceToken in sourceMapping:
+def mapNumbers(confidence):
+    for sourceToken in align.MAPPING.source.tokens:
         if sourceToken.token.is_digit and not sourceToken.isMapped:
-            for targetToken in targetMapping:
+            for targetToken in align.MAPPING.target.tokens:
                 if targetToken.token.is_digit and not targetToken.isMapped:
                     d = Levenshtein.distance(sourceToken.token.text, targetToken.token.text)
                     prob = 1 - d / len(sourceToken.token.text)
                     if prob >= confidence:
                         sourceToken.mapTo(align.MapTarget(targetToken.token.i, 'NUMBER', prob))
 
-def mapBaseStructure(minScore, sourceMapping, targetMapping):
-    for mts in sourceMapping:
+def mapBaseStructure(minScore):
+    for mts in align.MAPPING.source.tokens:
         if mts.token.is_alpha and not mts.isMapped:
             trans = dico.translateToken(mts.token)
             tgtToken = None
             bestScore = 0.0
-            for mtt in targetMapping:
+            for mtt in align.MAPPING.target.tokens:
                 if mtt.token.is_alpha and not mtt.isMapped:
                     # calculate a score for the pair
                     scorePos = 0.5 + 0.5 * (mts.token.pos_ == mtt.token.pos_)
@@ -51,14 +51,14 @@ def mapBaseStructure(minScore, sourceMapping, targetMapping):
             if not tgtToken is None:
                 mts.mapTo(align.MapTarget(tgtToken.token.i, 'BASE_STRUCT', bestScore))
 
-def mapBaseNoTranslate(minScore, sourceMapping, targetMapping):
-    for mts in sourceMapping:
+def mapBaseNoTranslate(minScore):
+    for mts in align.MAPPING.source.tokens:
         if mts.token.is_alpha and not mts.isMapped:
             trans = dico.translateToken(mts.token)
             if not trans: # if there is no translation for the term
                 tgtToken = None
                 bestScore = 0.0
-                for mtt in targetMapping:
+                for mtt in align.MAPPING.target.tokens:
                     if mtt.token.is_alpha and not mtt.isMapped:
                         # calculate a score for the pair
                         scorePos = 0.5 + 0.5 * (mts.token.pos_ == mtt.token.pos_)
@@ -71,8 +71,8 @@ def mapBaseNoTranslate(minScore, sourceMapping, targetMapping):
                 if not tgtToken is None:
                     mts.mapTo(align.MapTarget(tgtToken.token.i, 'BASE_NO_TRANSLATE', bestScore))
 
-def mapDependents(minScore, sourceMapping, targetMapping):
-    for mts in sourceMapping:
+def mapDependents(minScore):
+    for mts in align.MAPPING.source.tokens:
         if mts.token.is_alpha and mts.isMapped:            
             for ms_child in mts.dependents:
                 if ms_child.token.is_alpha and not ms_child.isMapped: # if source is not mapped yet
@@ -93,13 +93,13 @@ def mapDependents(minScore, sourceMapping, targetMapping):
                     if not tgtMapping is None:
                         ms_child.mapTo(align.MapTarget(tgtMapping.token.i, 'DEPENDENT', bestScore))
 
-def mapTranslatables(minScore, sourceMapping, targetMapping):
-    for mts in sourceMapping:
+def mapTranslatables(minScore):
+    for mts in align.MAPPING.source.tokens:
         if mts.token.is_alpha and not mts.isMapped:
             trans = dico.translateToken(mts.token)
             tgtToken = None
             bestScore = 0.0
-            for mtt in targetMapping:
+            for mtt in align.MAPPING.target.tokens:
                 if mtt.token.is_alpha and not mtt.isMapped:
                     # calculate a score for the pair
                     scorePos = 0.1 + 0.9 * (mts.token.pos_ == mtt.token.pos_)

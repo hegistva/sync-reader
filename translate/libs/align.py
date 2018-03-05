@@ -3,6 +3,8 @@ import colored
 import functools
 
 from translate.libs import utils
+from translate.libs import glove
+from translate.libs import dico
 
 blue = functools.partial(colored.stylize, styles=colored.fore.BLUE)
 green = functools.partial(colored.stylize, styles=colored.fore.GREEN)
@@ -23,7 +25,7 @@ def colorForConf(confidence):
 
 class MapTarget(object):
     def __init__(self, idxTarget, method, confidence, source=False):
-        self.target = Alignment.s2t[idxTarget] if source else Alignment.t2s[idxTarget]
+        self.target = MAPPING.source.tokens[idxTarget] if source else MAPPING.target.tokens[idxTarget]
         self.method = method
         self.confidence = confidence
     def __str__(self):
@@ -45,6 +47,7 @@ class MappedToken(object):
         self.head = None # list parent node
         self.children = [] # list of children
         self.dependents = []  # list of dependent tokens
+        self.vector = None # word embedding vector
 
     def buildGraph(self, mapping):
         self.mapping = mapping
@@ -53,12 +56,12 @@ class MappedToken(object):
             self.children.append(self.mapping[child.i])
         self.dependents = utils.dependencyGraph(self)
         self.graphSize = len(self.dependents) / self.documentSize
-    
+        
     def mapTo(self, mt):
         self.isMapped = True
         self.mapTarget = mt
         if self.source:
-            Alignment.t2s[mt.target.token.i].mapTo(MapTarget(self.token.i, mt.method, mt.confidence, source=True)) # establish opposite mapping
+            MAPPING.target.tokens[mt.target.token.i].mapTo(MapTarget(self.token.i, mt.method, mt.confidence, source=True)) # establish opposite mapping
 
     def __str__(self):
         colorFn = blue
@@ -68,17 +71,32 @@ class MappedToken(object):
             colorFn = colorForConf(self.mapTarget.confidence)
         return "%s [%s] at %d (%.2f) - size: %.2f - depth: %d is mapped to %s, has mapped parent: %s" % (colorFn(self.token.text), colorFn(self.token.lemma_), self.token.i, self.relativePosition, self.graphSize, utils.nodeDepth(self), self.mapTarget, utils.hasMappedParent(self))
 
+class Mapping(object):
+    """"Mapping a langage"""
+    def __init__(self, doc, language, source):
+        self.langage = language
+        doc_size = len(doc)
+        self.tokens = [MappedToken(tkn, doc_size, source) for tkn in doc]
+        for mt in self.tokens:
+            mt.buildGraph(self.tokens)
+        if self.langage == 'eng':
+            words = { mt.token.lemma_ for mt in self.tokens if mt.token.is_alpha }
+            vecs = glove.getVector(words)
+            for mt in self.tokens:
+                if mt.token.is_alpha:
+                    mt.vector = vecs[mt.token.lemma_]
 class Alignment(object):
-    s2t = []
-    t2s = []
+    def __init__(self, doc_source, lang_source, doc_target, lang_target):
+        self.source = Mapping(doc_source, lang_source, source=True)
+        self.target = Mapping(doc_target, lang_target, source=False)
 
-def initMapping(doc, source):
-    doc_size = len(doc)
-    mapping = [MappedToken(tkn, doc_size, source) for tkn in doc]
-    for m in mapping:
-        m.buildGraph(mapping)
-    return mapping
+# Global mapping object
+MAPPING = None
 
-def initAlignment(doc_source, doc_target):
-    Alignment.s2t = initMapping(doc_source, source=True)
-    Alignment.t2s = initMapping(doc_target, source=False)
+def init(doc_source, lang_source, doc_target, lang_target):
+    dico.setDefault(lang_source, lang_target)
+    global MAPPING
+    MAPPING = Alignment(doc_source, lang_source, doc_target, lang_target)
+
+
+

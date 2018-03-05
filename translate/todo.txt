@@ -29,7 +29,9 @@ Tag why how each phrase was mapped
 
 0. add tags - DONE
 1. further map further in the child nodes - DONE
-2. create module for glove with cache - IN PROGRESS
+2. create module for glove with cache - DONE
+	- integrate glove vectors into the mapping - DONE
+2.1 integrate the dico  translations into the data model - IN PROGRESS
 3. use glove vectors to improve translation
 	- important nodes first
 	- then map all remaining translatables
@@ -39,8 +41,8 @@ Tag why how each phrase was mapped
 	- then map the rest by interpolation
 
 4. finalize mapping by interpolation
-5. find out the depth of each node - IN PROGRESS
-6. find out if a node has mapped parent - IN PROGRESS
+5. find out the depth of each node - DONE
+6. find out if a node has mapped parent - DONE
 7. make sure to build a graph of mapped tokens - DONE
 8. fine tune the probabilities
 9. when smooth out the mapping around highly probably translations

@@ -13,12 +13,13 @@ CACHE = 'cache/glove'
 __glove_dict = None
 
 def load():
+    global __glove_dict
     try:
         __glove_dict = pickle.load(open(os.path.join(CACHE, 'words'), 'rb'))
     except Exception as e:        
-        print('WARNING: failed to load glove cache: %s' % e) # print warning       
-        global __glove_dict
+        print('WARNING: failed to load glove cache: %s' % e) # print warning               
         __glove_dict = {}
+    
 
 def __save():
     """Save in memory dictinary cache to disc"""
