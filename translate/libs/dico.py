@@ -63,7 +63,6 @@ def __dbName(fromLang, toLang):
 
 def __saveDicts():
     """Save in memory dictinary cache to disc"""
-    global trans_dicts
     for dbName, d in trans_dicts.items():
         os.makedirs(CACHE, exist_ok=True)
         pickle.dump(d, open(os.path.join(CACHE, dbName), 'wb'))
