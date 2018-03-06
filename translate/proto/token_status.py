@@ -19,9 +19,8 @@ fd = fr(text_fra)
 
 def printTokens(doc):
     tbldata = [[token.text, token.pos_, len(list(token.children)), token.head.text, utils.nodeDepth(token)] for token in doc]
-    tbldata.insert(0, ['Text', 'Part of Sentence', 'ChildCount', 'Head', 'Depth'])    
-    print(AsciiTable(tbldata).table)
-
+    utils.displayTable(tbldata, ['Text', 'Part of Sentence', 'ChildCount', 'Head', 'Depth'])
+    
 printTokens(fd)
 printTokens(ed)
 

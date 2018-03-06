@@ -30,9 +30,12 @@ def translateLemma(lemma, fromLang=None, toLang=None):
         trans_dicts[dbName][lemma] = v
         return v
 
-def printDict(fromLang = None, toLang = None):
+def printDict(word=None, fromLang=None, toLang=None):
     dbName = __useDB(fromLang, toLang)
-    print(trans_dicts[dbName])
+    if word is None:
+        print(trans_dicts[dbName])
+    else:
+        print(trans_dicts[dbName][word])
 
 def setDefault(fromLang, toLang):
     global default_db

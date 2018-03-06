@@ -32,8 +32,9 @@ def load():
 
 def __save():
     """Save in memory dictinary cache to disc"""
-    os.makedirs(CACHE, exist_ok=True)
-    pickle.dump(__glove_dict, open(os.path.join(CACHE, 'words'), 'wb'))
+    if not __glove_dict is None:
+        os.makedirs(CACHE, exist_ok=True)
+        pickle.dump(__glove_dict, open(os.path.join(CACHE, 'words'), 'wb'))
 
 atexit.register(__save)
 

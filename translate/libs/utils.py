@@ -1,5 +1,7 @@
 
 import itertools
+from terminaltables import AsciiTable
+import copy
 
 def dependencyGraph(mt):
     dep_list = [dependencyGraph(child) for child in mt.children]
@@ -23,3 +25,9 @@ def hasMappedParent(mt):
         return mt.isMapped
     else:
         return hasMappedParent(mt.head)
+
+def displayTable(tbl, header=None):
+    tblcopy = copy.copy(tbl)
+    if not header is None:
+        tblcopy.insert(0, header)
+    print(AsciiTable(tblcopy).table)

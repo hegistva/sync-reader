@@ -107,4 +107,25 @@ def mapTranslatables(minScore):
                                 tgtToken = mtt
                                 bestScore = score
             if not tgtToken is None:
-                mts.mapTo(align.MapTarget(tgtToken.token.i, 'ALL_TRANSLATABLE', bestScore))
+                mts.mapTo(align.MapTarget(tgtToken.token.i, 'MAP_TRANSLATABLE', bestScore))
+
+# This does not really work need more structural work before this...
+def mapGlove(minScore):
+    for mts in align.MAPPING.source.tokens:
+        if mts.token.is_alpha and not mts.isMapped:
+            tgtToken = None
+            bestScore = 0.0
+            for mtt in align.MAPPING.target.tokens:
+                if mtt.token.is_alpha and (not mtt.isMapped) and (not mtt.vector is None):
+                    # calculate a score for the pair
+                    scorePos = 0.9 + 0.1 * (mts.token.pos_ == mtt.token.pos_)
+                    scorePosition = 1.0 - abs(mts.relativePosition - mtt.relativePosition)
+                    score = scorePos * scorePosition
+                    if mts.translateVectors:
+                        similarity = max([np.dot(mtt.vector, vec) for vec in mts.translateVectors])
+                        score = score * similarity
+                        if score  > minScore and score > bestScore:                            
+                            tgtToken = mtt
+                            bestScore = score
+            if not tgtToken is None:
+                mts.mapTo(align.MapTarget(tgtToken.token.i, 'MAP_GLOVE', bestScore))

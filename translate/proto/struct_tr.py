@@ -1,8 +1,5 @@
 import os
-from terminaltables import AsciiTable
 import spacy
-import itertools
-
 from translate.libs import align
 from translate.libs import mapper
 
@@ -54,6 +51,10 @@ for score in scores:
 # map dependents again
 for score in [0.5, 0.1, 0.01, 0.0]:
     mapper.mapTranslatables(minScore=score)
+
+# map using word vectors
+for score in [0.5, 0.3]:
+    mapper.mapGlove(minScore=score)
 
 # display source
 print('SOURCE')
