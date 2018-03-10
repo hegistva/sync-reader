@@ -4,6 +4,7 @@ import requests
 from nltk.translate import gale_church
 import spacy
 from translate.libs import sentence_mapper
+from translate.libs import lemma_mapper
 
 eng = spacy.load('en')
 fra = spacy.load('fr')
@@ -100,9 +101,8 @@ def alignSentences(title, chapter, lang_source, lang_target):
 
 def mapChapter(source_lang, target_lang, book, chapter):
     blocks = alignSentences(book, chapter, source_lang, target_lang)
-    for source_sent, target_sent in blocks:        
-        print(source_sent)
-        print(target_sent)
+    for source_sent, target_sent in blocks:
         sentence_mapper.mapSentence(source_lang, target_lang, source_sent, target_sent)
+    lemma_mapper.printMapping()
 
 mapChapter('fra', 'eng', '20000LeaguesUnderTheSea', 1)

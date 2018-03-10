@@ -3,7 +3,7 @@ from translate.libs import align
 from translate.libs import mapper_lib
 from translate.libs import utils
 
-def mapSentence(lang_source, lang_target, sent_source, sent_target):
+def mapSentence(lang_source, lang_target, sent_source, sent_target, debug=False):
     # get spacy models for language processing
     sp_source = utils.getSpacy(lang_source)
     sp_target = utils.getSpacy(lang_target)
@@ -41,6 +41,6 @@ def mapSentence(lang_source, lang_target, sent_source, sent_target):
         mapper_lib.mapGlove(minScore=score)
 
     # display source
-    print('SOURCE')
-    for m in align.MAPPING.source.tokens:
-        print(m)
+    if debug:
+        for m in align.MAPPING.source.tokens:
+            print(m)

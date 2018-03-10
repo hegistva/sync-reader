@@ -6,6 +6,7 @@ import itertools
 from translate.libs import utils
 from translate.libs import glove
 from translate.libs import dico
+from translate.libs import lemma_mapper
 
 blue = functools.partial(colored.stylize, styles=colored.fore.BLUE)
 green = functools.partial(colored.stylize, styles=colored.fore.GREEN)
@@ -71,6 +72,7 @@ class MappedToken(object):
     def mapTo(self, mt):
         self.isMapped = True
         self.mapTarget = mt
+        lemma_mapper.addMapping(self.token.lemma_, mt.target.token.lemma_)
         if self.source:
             MAPPING.target.tokens[mt.target.token.i].mapTo(MapTarget(self.token.i, mt.method, mt.confidence, source=True)) # establish opposite mapping
 
@@ -114,6 +116,7 @@ MAPPING = None
 
 def init(doc_source, lang_source, doc_target, lang_target):
     dico.setDefault(lang_source, lang_target)
+    lemma_mapper.setDefault(lang_source, lang_target)
     global MAPPING
     MAPPING = Alignment(doc_source, lang_source, doc_target, lang_target)
 
