@@ -1,6 +1,5 @@
 
 import os
-import requests
 from nltk.translate import gale_church
 import spacy
 from tr.libs import sentence_mapper
@@ -13,37 +12,6 @@ parsers = {
     'eng': eng,
     'fra': fra
 }
-
-
-BOOKS = './books'
-CHAPTERS = 'chapters'
-os.makedirs(BOOKS, exist_ok=True)
-
-def chapterFile(chnum):
-    return 'chapter_%04d.txt' % chnum
-
-for title, langs in books.items():
-    for lang, loc in langs.items():
-        langpath = os.path.join(BOOKS, title, lang)
-        os.makedirs(langpath, exist_ok=True)
-        bookfile = os.path.join(langpath, 'book.txt')
-        if not os.path.exists(bookfile):
-            r = requests.get(loc['url'])
-            with open(bookfile, 'w')  as bf:
-                bf.write(r.text)
-        ch_path = os.path.join(langpath, CHAPTERS)
-        os.makedirs(ch_path, exist_ok=True)
-        with open(bookfile, 'r') as f:
-            lines = [line.strip() for line in f.readlines()]
-            for ch_idx, (ch_start_line, ch_end_line) in enumerate(loc[CHAPTERS]):
-                ch_file = chapterFile(ch_idx + 1)
-                curr_ch = os.path.join(ch_path, ch_file)
-                if not os.path.exists(curr_ch):
-                    # extract and save chapter
-                    ch_cont = ' '.join(lines[ch_start_line-1:ch_end_line+1])
-                    with open(curr_ch, 'w') as chf:
-                        chf.write(ch_cont)
-                        print("Saved chapter %s" % curr_ch)
 
 def analyze(title, chapter, lang):
     ch_file = os.path.join(BOOKS, title, lang, CHAPTERS, chapterFile(chapter))
