@@ -1,7 +1,7 @@
 import os
-from translate.libs import align
-from translate.libs import mapper_lib
-from translate.libs import utils
+from tr.libs import align
+from tr.libs import mapper_lib
+from tr.libs import utils
 
 def mapSentence(lang_source, lang_target, sent_source, sent_target, debug=False):
     # get spacy models for language processing

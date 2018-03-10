@@ -1,5 +1,5 @@
 
-from translate.libs import glove
+from tr.libs import glove
 import numpy as np
 
 words = {'computer', 'machine', 'cpu', 'gpu', 'tree', 'oak', 'beech', 'elm', 'hickory'}

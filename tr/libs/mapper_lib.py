@@ -1,8 +1,8 @@
 import numpy as np
 import Levenshtein
-from translate.libs import align
-from translate.libs import dico
-from translate.libs import utils
+from tr.libs import align
+from tr.libs import dico
+from tr.libs import utils
 
 def mapNamedEntities(confidence, sourceDoc, targetDoc):
     """map named entities from the source document to the target document"""

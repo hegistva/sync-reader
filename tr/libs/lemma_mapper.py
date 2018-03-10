@@ -2,7 +2,7 @@ import pickle
 import os
 import atexit
 
-from translate.libs import utils
+from tr.libs import utils
 
 CACHE = 'cache/lemma'
 

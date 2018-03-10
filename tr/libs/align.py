@@ -3,10 +3,10 @@ import colored
 import functools
 import itertools
 
-from translate.libs import utils
-from translate.libs import glove
-from translate.libs import dico
-from translate.libs import lemma_mapper
+from tr.libs import utils
+from tr.libs import glove
+from tr.libs import dico
+from tr.libs import lemma_mapper
 
 blue = functools.partial(colored.stylize, styles=colored.fore.BLUE)
 green = functools.partial(colored.stylize, styles=colored.fore.GREEN)

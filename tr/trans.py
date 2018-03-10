@@ -3,8 +3,8 @@ import os
 import requests
 from nltk.translate import gale_church
 import spacy
-from translate.libs import sentence_mapper
-from translate.libs import lemma_mapper
+from tr.libs import sentence_mapper
+from tr.libs import lemma_mapper
 
 eng = spacy.load('en')
 fra = spacy.load('fr')
@@ -14,22 +14,6 @@ parsers = {
     'fra': fra
 }
 
-books = {
-    '20000LeaguesUnderTheSea': {
-        'fra': {
-            'url': 'http://www.gutenberg.org/cache/epub/5097/pg5097.txt',
-            'chapters': [(111, 365), (369, 604), (608, 844), (848, 1138), (1142, 1392),
-            (1396, 1798), (1802, 2154), (2158, 2488), (2492, 2797), (2801, 3191)
-            ]
-        },
-        'eng': {
-            'url': 'http://www.gutenberg.org/cache/epub/2488/pg2488.txt',
-            'chapters': [(696, 958), (969, 1215),(1227, 1472), (1482, 1770), (1782, 2036),
-            (2046, 2450), (2462, 2805), (2817, 3170), (3182, 3495), (3507, 3899),
-            ]
-        }
-    }
-}
 
 BOOKS = './books'
 CHAPTERS = 'chapters'
