@@ -49,16 +49,16 @@ class MappedToken(object):
         self.dependents = []  # list of dependent tokens
         self.vector = None # word embedding vector
         self.translations = set() # dico translations
-        self.translateVectors = [] # glove vectors for translations
+        self.translateVectors = {} # glove vectors for translations
         if self.source and token.is_alpha:
             self.translations = set(dico.translateToken(token))
 
     def mapTranslateVectors(self, gloveDict):
-        self.translateVectors = []
+        self.translateVectors = {}
         for tr in self.translations:
             vec = gloveDict[tr]
             if not vec is None:
-                self.translateVectors.append(vec)
+                self.translateVectors[tr]=vec
         
     def buildGraph(self, mapping):
         self.mapping = mapping

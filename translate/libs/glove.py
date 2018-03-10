@@ -8,7 +8,7 @@ import numpy as np
 
 GLOVE_PATH = '/home/hegistva/programming/python/AI'
 GLOVE_ZIP_FILE = 'glove.6B.zip'
-GLOVE_TXT_FILE = 'glove.6B.50d.txt'
+GLOVE_TXT_FILE = 'glove.6B.100d.txt'
 
 CACHE = 'cache/glove'
 

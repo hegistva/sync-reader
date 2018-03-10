@@ -2,6 +2,7 @@ import numpy as np
 import Levenshtein
 from translate.libs import align
 from translate.libs import dico
+from translate.libs import utils
 
 def mapNamedEntities(confidence, sourceDoc, targetDoc):
     """map named entities from the source document to the target document"""
@@ -110,22 +111,32 @@ def mapTranslatables(minScore):
                 mts.mapTo(align.MapTarget(tgtToken.token.i, 'MAP_TRANSLATABLE', bestScore))
 
 # This does not really work need more structural work before this...
-def mapGlove(minScore):
+def mapGlove(minScore, debug=False):
+    header = ['Source', 'Translation', 'Target', 'Similarity']
     for mts in align.MAPPING.source.tokens:
-        if mts.token.is_alpha and not mts.isMapped:
+        if mts.token.is_alpha and not mts.isMapped and mts.translateVectors and not mts.token.is_stop:
+            mappingTable = []
             tgtToken = None
             bestScore = 0.0
             for mtt in align.MAPPING.target.tokens:
-                if mtt.token.is_alpha and (not mtt.isMapped) and (not mtt.vector is None):
+                if mtt.token.is_alpha and (not mtt.isMapped) and not mtt.vector is None and not mtt.token.is_stop:
                     # calculate a score for the pair
-                    scorePos = 0.9 + 0.1 * (mts.token.pos_ == mtt.token.pos_)
+                    scorePos = 0.5 + 0.5 * (mts.token.pos_ == mtt.token.pos_)
+                    scorePos = 1.0
                     scorePosition = 1.0 - abs(mts.relativePosition - mtt.relativePosition)
                     score = scorePos * scorePosition
-                    if mts.translateVectors:
-                        similarity = max([np.dot(mtt.vector, vec) for vec in mts.translateVectors])
-                        score = score * similarity
-                        if score  > minScore and score > bestScore:                            
-                            tgtToken = mtt
-                            bestScore = score
+                    mostSimilarTranslation = 0.0
+                    for translation, vec in mts.translateVectors.items():
+                        similarity = np.dot(mtt.vector, vec)
+                        mappingTable.append([mts.token.text, translation, mtt.token.text, similarity])
+                        mostSimilarTranslation = max(mostSimilarTranslation, similarity)
+                    score = score * mostSimilarTranslation                        
+                    if score > minScore and score > bestScore:
+                        tgtToken = mtt
+                        bestScore = score
+            if debug:
+                utils.displayTable(mappingTable, header)
             if not tgtToken is None:
+                if debug:
+                    print("Selected translation %s => %s" % (mts.token.text, tgtToken.token.text))
                 mts.mapTo(align.MapTarget(tgtToken.token.i, 'MAP_GLOVE', bestScore))

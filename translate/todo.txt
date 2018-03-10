@@ -48,3 +48,5 @@ Tag why how each phrase was mapped
 8. fine tune the probabilities
 9. when smooth out the mapping around highly probably translations
 10. learning !!! (words, tuples, triplets)
+11. add tracing for glove similarity - IN PROGRESS
+12. make sure we can call the mapping as a function - IN PROGRESS
