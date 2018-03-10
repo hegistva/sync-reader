@@ -1,7 +1,7 @@
 import os
 import spacy
 from translate.libs import align
-from translate.libs import mapper
+from translate.libs import mapper_lib
 
 text_eng = """They even reprinted reports from ancient times:  the views of Aristotle and Pliny accepting the existence of such monsters, then the Norwegian stories of Bishop Pontoppidan, the narratives of Paul Egede, and finally the reports of Captain Harrington-- whose good faith is above suspicion--in which he claims he saw, while aboard the Castilian in 1857, one of those enormous serpents that, until then, had frequented only the seas of France's old extremist newspaper, The Constitutionalist."""
 text_eng = """A Runaway Reef    THE YEAR 1866 was marked by a bizarre development, an unexplained and downright inexplicable phenomenon that surely no one has forgotten."""
@@ -25,36 +25,36 @@ vocab_fr = { tok.lemma_ for tok in fd if tok.is_alpha}
 align.init(fd, 'fra', ed, 'eng')
 
 # map named entities
-mapper.mapNamedEntities(confidence=0.5, sourceDoc=fd, targetDoc=ed)
+mapper_lib.mapNamedEntities(confidence=0.5, sourceDoc=fd, targetDoc=ed)
 
 # map numbers
-mapper.mapNumbers(confidence=0.5)
+mapper_lib.mapNumbers(confidence=0.5)
 
 # structural mapping with exact dictionary match
 scores = [0.05, 0.01, 0.005]
 for score in scores:
-    mapper.mapBaseStructure(minScore=score)
+    mapper_lib.mapBaseStructure(minScore=score)
 
 # map in dependents
 for score in scores:
-    mapper.mapDependents(minScore=score)
+    mapper_lib.mapDependents(minScore=score)
 
 # TODO map base structure using translation + glove
 
 # map base strutcure if the word is not in the dictionary
-mapper.mapBaseNoTranslate(minScore=0.3)
+mapper_lib.mapBaseNoTranslate(minScore=0.3)
 
 # map dependents again
 for score in scores:
-    mapper.mapDependents(minScore=score)
+    mapper_lib.mapDependents(minScore=score)
 
 # map dependents again
 for score in [0.5, 0.1]:
-    mapper.mapTranslatables(minScore=score)
+    mapper_lib.mapTranslatables(minScore=score)
 
 # map using word vectors
 for score in [0.5, 0.4]:
-    mapper.mapGlove(minScore=score)
+    mapper_lib.mapGlove(minScore=score)
 
 # display source
 print('SOURCE')

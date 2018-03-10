@@ -3,6 +3,7 @@ import os
 import requests
 from nltk.translate import gale_church
 import spacy
+from translate.libs import sentence_mapper
 
 eng = spacy.load('en')
 fra = spacy.load('fr')
@@ -86,7 +87,7 @@ def alignSentences(title, chapter, lang_source, lang_target):
             if len(src_set) or len(tgt_set):
                 src_block = ' '.join([sent_source[i] for i in sorted(src_set)])
                 tgt_block = ' '.join([sent_target[i] for i in sorted(tgt_set)])
-                blocks.append("%s => %s" % (src_block, tgt_block))
+                blocks.append((src_block, tgt_block))
             src_set.clear()
             tgt_set.clear()
             src_set.add(src_idx)
@@ -94,10 +95,14 @@ def alignSentences(title, chapter, lang_source, lang_target):
     if len(src_set) or len(tgt_set):
         src_block = ' '.join([sent_source[i] for i in sorted(src_set)])
         tgt_block = ' '.join([sent_target[i] for i in sorted(tgt_set)])
-        blocks.append("%s\n=>\n%s" % (src_block, tgt_block))            
+        blocks.append((src_block, tgt_block))
     return blocks
 
-blocks = alignSentences('20000LeaguesUnderTheSea', 1, 'fra', 'eng')
+def mapChapter(source_lang, target_lang, book, chapter):
+    blocks = alignSentences(book, chapter, source_lang, target_lang)
+    for source_sent, target_sent in blocks:        
+        print(source_sent)
+        print(target_sent)
+        sentence_mapper.mapSentence(source_lang, target_lang, source_sent, target_sent)
 
-for idx, block in enumerate(blocks):
-    print("BLOCK[%d]\n%s\n" % (idx, block))
+mapChapter('fra', 'eng', '20000LeaguesUnderTheSea', 1)

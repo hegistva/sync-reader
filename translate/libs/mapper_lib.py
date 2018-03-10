@@ -7,6 +7,8 @@ from translate.libs import utils
 def mapNamedEntities(confidence, sourceDoc, targetDoc):
     """map named entities from the source document to the target document"""
     targetNames = [sp.text.lower() for sp in targetDoc.ents]
+    if len(targetNames) == 0:
+        return
     targetEnts = list(targetDoc.ents)
 
     for sourceName in sourceDoc.ents:

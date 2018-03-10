@@ -2,7 +2,19 @@
 import itertools
 from terminaltables import AsciiTable
 import copy
+import spacy
 
+SPACY_LANG = {'eng': 'en', 'fra': 'fr'}
+
+SPACY_MODELS = {}
+
+def getSpacy(lang):
+    ret = SPACY_MODELS.get(lang, None)
+    if ret is None:
+        ret = spacy.load(SPACY_LANG[lang])
+        SPACY_MODELS[lang] = ret
+    return ret
+    
 def dependencyGraph(mt):
     dep_list = [dependencyGraph(child) for child in mt.children]
     dep_list = list(itertools.chain.from_iterable(dep_list))
