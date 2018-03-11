@@ -50,3 +50,6 @@ Tag why how each phrase was mapped
 10. learning !!! (words, tuples, triplets)
 11. add tracing for glove similarity - IN PROGRESS
 12. make sure we can call the mapping as a function - IN PROGRESS
+13. export mapping information
+14. android client
+15. firebase

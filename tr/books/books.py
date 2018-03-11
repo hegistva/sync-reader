@@ -20,6 +20,14 @@ LIBRARY = {
                     { 'firstLine': 3195, 'lastLine': 3512 },
                     { 'firstLine': 3516, 'lastLine': 3809 },
                     { 'firstLine': 3813, 'lastLine': 4107 },
+                    { 'firstLine': 4111, 'lastLine': 4606 },
+                    { 'firstLine': 4610, 'lastLine': 4981 },
+                    { 'firstLine': 4985, 'lastLine': 5242 },
+                    { 'firstLine': 5246, 'lastLine': 5512 },
+                    { 'firstLine': 5516, 'lastLine': 5844 },
+                    { 'firstLine': 5848, 'lastLine': 6256 },
+                    { 'firstLine': 6260, 'lastLine': 6616 },
+                    { 'firstLine': 6620, 'lastLine': 7125 },
                 ]
             },
             'eng': {
@@ -39,6 +47,14 @@ LIBRARY = {
                     { 'firstLine': 3920, 'lastLine': 4240 },
                     { 'firstLine': 4250, 'lastLine': 4546 },
                     { 'firstLine': 4560, 'lastLine': 4846 },
+                    { 'firstLine': 4859, 'lastLine': 5349 },
+                    { 'firstLine': 5378, 'lastLine': 5761 },
+                    { 'firstLine': 5772, 'lastLine': 6029 },
+                    { 'firstLine': 6039, 'lastLine': 6307 },
+                    { 'firstLine': 6326, 'lastLine': 6655 },
+                    { 'firstLine': 6669, 'lastLine': 7087 },
+                    { 'firstLine': 7101, 'lastLine': 7456 },
+                    { 'firstLine': 7466, 'lastLine': 7982 },
                 ]
             },
         }

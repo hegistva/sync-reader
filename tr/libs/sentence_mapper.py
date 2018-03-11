@@ -37,8 +37,8 @@ def mapSentence(lang_source, lang_target, sent_source, sent_target, debug=False)
         mapper_lib.mapTranslatables(minScore=score)
 
     # map using word vectors
-    for score in [0.5, 0.4]:
-        mapper_lib.mapGlove(minScore=score)
+    # for score in [0.5, 0.4]:
+    #     mapper_lib.mapGlove(minScore=score)
 
     # display source
     if debug:
