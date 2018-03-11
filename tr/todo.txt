@@ -53,3 +53,4 @@ Tag why how each phrase was mapped
 13. export mapping information
 14. android client
 15. firebase
+16. explore phrases in spacy
