@@ -2,6 +2,7 @@
 from nltk.translate import gale_church
 
 from tr.libs import utils
+from tr.libs import glove
 
 def alignSentences(lang_source, lang_target, text_source, text_target):
     # get spacy models for language processing
@@ -9,6 +10,17 @@ def alignSentences(lang_source, lang_target, text_source, text_target):
     sp_target = utils.getSpacy(lang_target)
     doc_source = sp_source(text_source)
     doc_target = sp_target(text_target)
+    
+    # if we use english, use load the embeddings in a single step to improve performance
+    eng_doc = None
+    if lang_source == 'eng':
+        eng_doc = doc_source
+    elif lang_target == 'eng':
+        eng_doc = doc_target
+    if not eng_doc is None:    
+        words = { t.lemma_.lower() for t in eng_doc if t.is_alpha }
+        glove.getVector(words)
+
     sent_source = [sent.string.strip() for sent in doc_source.sents]
     sent_target = [sent.string.strip() for sent in doc_target.sents]
     len_source = [len(sent) for sent in sent_source]
