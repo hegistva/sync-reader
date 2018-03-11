@@ -14,6 +14,24 @@ trans_dicts = {}
 
 default_db = None
 
+def dc_define(dbName, lemma):
+    foreign_defs = None
+    try:
+        foreign_defs = dc.define(dbName, lemma)
+    except dicoclient.DicoNotConnectedError as e:
+        dc.open('localhost')
+        foreign_defs = dc.define(dbName, lemma) 
+    return foreign_defs
+
+def dc_match(dbName, lemma):
+    frmatches = None
+    try:
+        frmatches = dc.match(dbName, 'lev', lemma)
+    except dicoclient.DicoNotConnectedError as e:
+        dc.open('localhost')
+        frmatches = dc.match(dbName, 'lev', lemma)
+    return frmatches
+
 def translateToken(token, fromLang=None, toLang=None):
     tr = translateLemma(token.text.lower())
     if not tr:
@@ -73,14 +91,10 @@ def __saveDicts():
 atexit.register(__saveDicts)
 
 def __translateLemma(lemma, dbName):
-    """Internal function to"""
-    try:
-        foreign_defs = dc.define(dbName, lemma)
-    except dicoclient.DicoNotConnectedError as e:
-        dc.open('localhost')
-        foreign_defs = dc.define(dbName, lemma)        
+    """Internal function to"""    
+    foreign_defs = dc_define(dbName, lemma)
     if foreign_defs.get('error', None) == '552': # NOT FOUND
-        frmatches = dc.match(dbName, 'lev', lemma)
+        frmatches = dc_match(dbName, lemma)
         if frmatches.get('error', None) == '552':
             return set()
         else:

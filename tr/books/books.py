@@ -17,6 +17,9 @@ LIBRARY = {
                     { 'firstLine': 2158, 'lastLine': 2488 }, 
                     { 'firstLine': 2492, 'lastLine': 2797 },
                     { 'firstLine': 2801, 'lastLine': 3191 },
+                    { 'firstLine': 3195, 'lastLine': 3512 },
+                    { 'firstLine': 3516, 'lastLine': 3809 },
+                    { 'firstLine': 3813, 'lastLine': 4107 },
                 ]
             },
             'eng': {
@@ -32,7 +35,10 @@ LIBRARY = {
                     { 'firstLine': 2462, 'lastLine': 2805 },
                     { 'firstLine': 2817, 'lastLine': 3170 },
                     { 'firstLine': 3182, 'lastLine': 3495 },
-                    { 'firstLine': 3507, 'lastLine': 3899 },            
+                    { 'firstLine': 3507, 'lastLine': 3899 },
+                    { 'firstLine': 3920, 'lastLine': 4240 },
+                    { 'firstLine': 4250, 'lastLine': 4546 },
+                    { 'firstLine': 4560, 'lastLine': 4846 },
                 ]
             },
         }
