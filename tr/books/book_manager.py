@@ -14,6 +14,12 @@ LAST_LINE = 'lastLine'
 def chapterFile(chnum):
     return 'chapter_%04d.txt' % chnum
 
+def chapterPath(lang, bookid, chapter):
+    return os.path.join(BOOKS, bookid, lang, CHAPTERS, chapterFile(chapter))
+
+def allChapters(bookid, lang):
+    return list(range(1, 1+len(books.LIBRARY[bookid][TRANSLATIONS][lang][CHAPTERS])))
+
 def downloadBook(bookid):
     # find book in library
     bookdef = books.LIBRARY[bookid]

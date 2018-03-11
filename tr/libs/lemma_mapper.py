@@ -52,6 +52,16 @@ def load(fromLang, toLang):
         except Exception:
             lemma_mappings[dbName] = {}
 
+def reset(fromLang, toLang):
+    dbName = __dbName(fromLang, toLang)
+    lemma_mappings[dbName] = {}
+    file_to_del = os.path.join(CACHE, dbName)
+    try:
+        os.remove(file_to_del)
+        setDefault(fromLang, toLang)
+    except Exception as e:
+        print('ERROR: could not remove lemma cache under %s: %s' % (file_to_del, e))
+        
 def __useDB(fromLang, toLang):
     """Find out the database to be used"""
     if fromLang is None or toLang is None:

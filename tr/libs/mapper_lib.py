@@ -14,14 +14,15 @@ def mapNamedEntities(confidence, sourceDoc, targetDoc):
     for sourceName in sourceDoc.ents:
         sourceText = sourceName.text.lower()        
         dists = [Levenshtein.distance(sourceText, targetText) for targetText in targetNames]
-        idxMin = np.argmin(dists)
-        targetName = targetEnts[idxMin]        
-        prob = 1 - dists[idxMin] / len(sourceText)
-        if prob >= confidence:
-            del targetNames[idxMin] # found a match, remove target
-            del targetEnts[idxMin]
-            for idxSource in range(sourceName.start, sourceName.end):
-                align.MAPPING.source.tokens[idxSource].mapTo(align.MapTarget(targetName.start, 'NER', prob))
+        if len(dists) > 0:
+            idxMin = np.argmin(dists)
+            targetName = targetEnts[idxMin]        
+            prob = 1 - dists[idxMin] / len(sourceText)
+            if prob >= confidence:
+                del targetNames[idxMin] # found a match, remove target
+                del targetEnts[idxMin]
+                for idxSource in range(sourceName.start, sourceName.end):
+                    align.MAPPING.source.tokens[idxSource].mapTo(align.MapTarget(targetName.start, 'NER', prob))
 
 def mapNumbers(confidence):
     for sourceToken in align.MAPPING.source.tokens:

@@ -74,7 +74,11 @@ atexit.register(__saveDicts)
 
 def __translateLemma(lemma, dbName):
     """Internal function to"""
-    foreign_defs = dc.define(dbName, lemma)
+    try:
+        foreign_defs = dc.define(dbName, lemma)
+    except dicoclient.DicoNotConnectedError as e:
+        dc.open('localhost')
+        foreign_defs = dc.define(dbName, lemma)        
     if foreign_defs.get('error', None) == '552': # NOT FOUND
         frmatches = dc.match(dbName, 'lev', lemma)
         if frmatches.get('error', None) == '552':

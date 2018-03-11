@@ -72,8 +72,9 @@ class MappedToken(object):
     def mapTo(self, mt):
         self.isMapped = True
         self.mapTarget = mt
-        lemma_mapper.addMapping(self.token.lemma_, mt.target.token.lemma_)
         if self.source:
+            if self.token.lemma_ and mt.target.token.lemma_:
+                lemma_mapper.addMapping(self.token.lemma_.lower(), mt.target.token.lemma_.lower())            
             MAPPING.target.tokens[mt.target.token.i].mapTo(MapTarget(self.token.i, mt.method, mt.confidence, source=True)) # establish opposite mapping
 
     def __str__(self):
