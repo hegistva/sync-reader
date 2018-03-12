@@ -115,7 +115,7 @@ def mapTranslatables(minScore):
                 mts.mapTo(align.MapTarget(tgtToken.token.i, 'MAP_TRANSLATABLE', bestScore))
 
 # This does not really work need more structural work before this...
-def mapGlove(bestOfN, debug=False):
+def mapGlove(bestOfN, doMapping=False, debug=False):
     header = ['Source', 'Translation', 'Target', 'Similarity']
     for mts in align.MAPPING.source.tokens:
         if mts.token.is_alpha and not mts.isMapped and mts.translateVectors and mts.token.lemma_:
@@ -133,12 +133,18 @@ def mapGlove(bestOfN, debug=False):
                     stopSocre = 0.5 + 0.5 * (mts.token.is_stop == mtt.token.is_stop)
                     score = scorePosition * mostSimilarTranslation * stopSocre
                     if mtt.token.lemma_:
-                        candidates.append((mtt.token.lemma_.lower(), score))
-            candidates.sort(key=lambda c: c[1], reverse=True)
-            best = candidates[:bestOfN]            
-            sum_score=sum([score for (_, score) in best])
-            if len(best) > 0 and sum_score > 0:
-                for lm, lm_score in best:
-                    lemma_mapper.addMapping(mts.token.lemma_.lower(), lm, probability=lm_score / sum_score)
+                        if doMapping:
+                            score = score * lemma_mapper.getProbability(mts.token.lemma_.lower(), mtt.token.lemma_.lower())
+                        candidates.append((mtt, score))
+            if candidates:
+                candidates.sort(key=lambda c: c[1], reverse=True)
+                if doMapping:
+                    mts.mapTo(align.MapTarget(candidates[0][0].token.i, 'MAP_GLOVE', candidates[0][1]))                
+                else:
+                    best = candidates[:bestOfN]
+                    sum_score=sum([score for (_, score) in best])
+                    if sum_score > 0:
+                        for mt, lm_score in best:
+                            lemma_mapper.addMapping(mts.token.lemma_.lower(), mt.token.lemma_.lower(), probability=lm_score / sum_score)
             if debug:            
                 utils.displayTable(mappingTable, header)

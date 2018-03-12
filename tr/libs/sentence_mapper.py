@@ -3,7 +3,7 @@ from tr.libs import align
 from tr.libs import mapper_lib
 from tr.libs import utils
 
-def mapSentence(lang_source, lang_target, sent_source, sent_target, debug=False):
+def mapSentence(lang_source, lang_target, sent_source, sent_target, doMapping, debug=False):
     # get spacy models for language processing
     sp_source = utils.getSpacy(lang_source)
     sp_target = utils.getSpacy(lang_target)
@@ -37,7 +37,7 @@ def mapSentence(lang_source, lang_target, sent_source, sent_target, debug=False)
         mapper_lib.mapTranslatables(minScore=score)
 
     # map using word vectors    
-    mapper_lib.mapGlove(3, debug=debug)
+    mapper_lib.mapGlove(3, doMapping=doMapping, debug=False)
 
     # display source
     if debug:

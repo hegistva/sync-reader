@@ -21,6 +21,15 @@ def addMapping(source_lemma, target_lemma, probability=1.0, fromLang=None, toLan
     lm[target_lemma] = lm.get(target_lemma, 0) + probability
     lm[TOTAL] = lm.get(TOTAL, 0) + probability
 
+def getProbability(source_lemma, target_lemma, fromLang=None, toLang=None):
+    dbName = __useDB(fromLang, toLang)
+    try:
+        cnt = lemma_mappings[dbName][source_lemma][target_lemma]
+        total = lemma_mappings[dbName][source_lemma][TOTAL]
+        return cnt / total
+    except Exception as e:
+        return 0
+    
 def printMapping(lemma=None, fromLang=None, toLang=None):
     dbName = __useDB(fromLang, toLang)
     header = ['source', 'target', 'count', 'prob']

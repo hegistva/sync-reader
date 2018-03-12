@@ -15,6 +15,5 @@ text_fra = """Ce fantastique animal endossa la responsabilité de tous ces naufr
 # text_fra = """Depuis ce moment, en effet, les sinistres maritimes qui n'avaient pas de cause déterminée furent mis sur le compte du monstre."""
 
 # map using word vectors
-lemma_mapper.reset('fra', 'eng')
-sentence_mapper.mapSentence('fra', 'eng', text_fra, text_eng, debug=False)
-lemma_mapper.printMapping()
+sentence_mapper.mapSentence('fra', 'eng', text_fra, text_eng, doMapping=True, debug=True)
+

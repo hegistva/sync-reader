@@ -54,3 +54,4 @@ Tag why how each phrase was mapped
 14. android client
 15. firebase
 16. explore phrases in spacy
+17. iteratively build and use mapping probabilities
