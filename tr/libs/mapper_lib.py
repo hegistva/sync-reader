@@ -3,6 +3,7 @@ import Levenshtein
 from tr.libs import align
 from tr.libs import dico
 from tr.libs import utils
+from tr.libs import lemma_mapper
 
 def mapNamedEntities(confidence, sourceDoc, targetDoc):
     """map named entities from the source document to the target document"""
@@ -114,32 +115,30 @@ def mapTranslatables(minScore):
                 mts.mapTo(align.MapTarget(tgtToken.token.i, 'MAP_TRANSLATABLE', bestScore))
 
 # This does not really work need more structural work before this...
-def mapGlove(minScore, debug=False):
+def mapGlove(bestOfN, debug=False):
     header = ['Source', 'Translation', 'Target', 'Similarity']
     for mts in align.MAPPING.source.tokens:
-        if mts.token.is_alpha and not mts.isMapped and mts.translateVectors and not mts.token.is_stop:
+        if mts.token.is_alpha and not mts.isMapped and mts.translateVectors and mts.token.lemma_:
             mappingTable = []
-            tgtToken = None
-            bestScore = 0.0
+            candidates = []
             for mtt in align.MAPPING.target.tokens:
-                if mtt.token.is_alpha and (not mtt.isMapped) and not mtt.vector is None and not mtt.token.is_stop:
+                if mtt.token.is_alpha and (not mtt.isMapped) and not mtt.vector is None:
                     # calculate a score for the pair
-                    scorePos = 0.5 + 0.5 * (mts.token.pos_ == mtt.token.pos_)
-                    scorePos = 1.0
                     scorePosition = 1.0 - abs(mts.relativePosition - mtt.relativePosition)
-                    score = scorePos * scorePosition
                     mostSimilarTranslation = 0.0
                     for translation, vec in mts.translateVectors.items():
                         similarity = np.dot(mtt.vector, vec)
                         mappingTable.append([mts.token.text, translation, mtt.token.text, similarity])
                         mostSimilarTranslation = max(mostSimilarTranslation, similarity)
-                    score = score * mostSimilarTranslation                        
-                    if score > minScore and score > bestScore:
-                        tgtToken = mtt
-                        bestScore = score
-            if debug:
+                    stopSocre = 0.5 + 0.5 * (mts.token.is_stop == mtt.token.is_stop)
+                    score = scorePosition * mostSimilarTranslation * stopSocre
+                    if mtt.token.lemma_:
+                        candidates.append((mtt.token.lemma_.lower(), score))
+            candidates.sort(key=lambda c: c[1], reverse=True)
+            best = candidates[:bestOfN]            
+            sum_score=sum([score for (_, score) in best])
+            if len(best) > 0 and sum_score > 0:
+                for lm, lm_score in best:
+                    lemma_mapper.addMapping(mts.token.lemma_.lower(), lm, probability=lm_score / sum_score)
+            if debug:            
                 utils.displayTable(mappingTable, header)
-            if not tgtToken is None:
-                if debug:
-                    print("Selected translation %s => %s" % (mts.token.text, tgtToken.token.text))
-                mts.mapTo(align.MapTarget(tgtToken.token.i, 'MAP_GLOVE', bestScore))

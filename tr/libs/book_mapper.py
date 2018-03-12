@@ -16,10 +16,11 @@ def mapChapter(source_lang, target_lang, bookid, chapter, debug=False):
     print('Completed mapping chapter %s' % chapter)   
         
 
-def mapBook(source_lang, target_lang, bookid):
+def mapBook(source_lang, target_lang, bookid, chapters=None, debug=False):
     
     lemma_mapper.reset(source_lang, target_lang)
     chlist = book_manager.allChapters(bookid, source_lang)
     for ch in chlist:
-        mapChapter(source_lang, target_lang, bookid, ch)        
+        if chapters is None or ch in chapters:
+            mapChapter(source_lang, target_lang, bookid, ch, debug)
     lemma_mapper.printMapping()

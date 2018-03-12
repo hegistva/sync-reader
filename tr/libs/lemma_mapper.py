@@ -12,14 +12,14 @@ default_db = None
 
 TOTAL = 'TOTAL'
 
-def addMapping(source_lemma, target_lemma, fromLang=None, toLang=None):
+def addMapping(source_lemma, target_lemma, probability=1.0, fromLang=None, toLang=None):
     """add a mapping for a lemma"""
     dbName = __useDB(fromLang, toLang)
     if not source_lemma in lemma_mappings[dbName]:
         lemma_mappings[dbName][source_lemma] = {}
     lm = lemma_mappings[dbName][source_lemma]
-    lm[target_lemma] = lm.get(target_lemma, 0) + 1
-    lm[TOTAL] = lm.get(TOTAL, 0) + 1
+    lm[target_lemma] = lm.get(target_lemma, 0) + probability
+    lm[TOTAL] = lm.get(TOTAL, 0) + probability
 
 def printMapping(lemma=None, fromLang=None, toLang=None):
     dbName = __useDB(fromLang, toLang)
@@ -57,7 +57,8 @@ def reset(fromLang, toLang):
     lemma_mappings[dbName] = {}
     file_to_del = os.path.join(CACHE, dbName)
     try:
-        os.remove(file_to_del)
+        if os.path.exists(file_to_del):
+            os.remove(file_to_del)
         setDefault(fromLang, toLang)
     except Exception as e:
         print('ERROR: could not remove lemma cache under %s: %s' % (file_to_del, e))
