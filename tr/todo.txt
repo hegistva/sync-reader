@@ -55,3 +55,8 @@ Tag why how each phrase was mapped
 15. firebase
 16. explore phrases in spacy
 17. iteratively build and use mapping probabilities
+	- sentence matcher
+	- structural mapper
+	- dependentm mapper
+	- translate mapper
+	- glove mapper

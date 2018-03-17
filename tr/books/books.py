@@ -1,9 +1,11 @@
 
+from tr.libs import utils
+
 LIBRARY = {
     '20000LeaguesUnderTheSea': {
         'author': 'Jules Verne',
         'translations': {
-            'fra': {
+            utils.Lang.FRA: {
                 'title': '20000 Lieues sous les mers',
                 'url': 'http://www.gutenberg.org/cache/epub/5097/pg5097.txt',
                 'chapters': [
@@ -30,7 +32,7 @@ LIBRARY = {
                     { 'firstLine': 6620, 'lastLine': 7125 },
                 ]
             },
-            'eng': {
+            utils.Lang.ENG: {
                 'title': '20000 Leagues Under the Seas',
                 'url': 'http://www.gutenberg.org/cache/epub/2488/pg2488.txt',
                 'chapters': [

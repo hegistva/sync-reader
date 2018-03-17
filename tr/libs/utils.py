@@ -4,7 +4,11 @@ from terminaltables import AsciiTable
 import copy
 import spacy
 
-SPACY_LANG = {'eng': 'en', 'fra': 'fr'}
+class Lang:
+    ENG = 'eng'
+    FRA = 'fra'
+
+SPACY_LANG = {Lang.ENG: 'en', Lang.FRA: 'fr'}
 
 SPACY_MODELS = {}
 

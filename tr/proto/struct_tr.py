@@ -3,6 +3,7 @@ import spacy
 from tr.libs import align
 from tr.libs import sentence_mapper
 from tr.libs import lemma_mapper
+from tr.libs import utils
 
 text_eng = """They even reprinted reports from ancient times:  the views of Aristotle and Pliny accepting the existence of such monsters, then the Norwegian stories of Bishop Pontoppidan, the narratives of Paul Egede, and finally the reports of Captain Harrington-- whose good faith is above suspicion--in which he claims he saw, while aboard the Castilian in 1857, one of those enormous serpents that, until then, had frequented only the seas of France's old extremist newspaper, The Constitutionalist."""
 text_eng = """A Runaway Reef    THE YEAR 1866 was marked by a bizarre development, an unexplained and downright inexplicable phenomenon that surely no one has forgotten."""
@@ -15,5 +16,5 @@ text_fra = """Ce fantastique animal endossa la responsabilité de tous ces naufr
 # text_fra = """Depuis ce moment, en effet, les sinistres maritimes qui n'avaient pas de cause déterminée furent mis sur le compte du monstre."""
 
 # map using word vectors
-sentence_mapper.mapSentence('fra', 'eng', text_fra, text_eng, doMapping=True, debug=True)
+sentence_mapper.mapSentence(utils.Lang.FRA, utils.Lang.ENG, text_fra, text_eng, doMapping=True, debug=True)
 

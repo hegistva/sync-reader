@@ -1,5 +1,6 @@
 
 from tr.libs import dico
+from tr.libs import utils
 import spacy
 
 
@@ -9,7 +10,7 @@ def testFrenchSentence():
 
     text = """Tel était ce dernier fait, qui eut pour résultat de passionner à nouveau l'opinion publique."""
 
-    dico.setDefault('fra', 'eng')
+    dico.setDefault(utils.Lang.FRA, utils.Lang.ENG)
 
     doc = fr(text)
 

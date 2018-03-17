@@ -17,6 +17,12 @@ def chapterFile(chnum):
 def chapterPath(lang, bookid, chapter):
     return os.path.join(BOOKS, bookid, lang, CHAPTERS, chapterFile(chapter))
 
+
+def bookChapter(lang, bookid, chapter):
+    cp = chapterPath(lang, bookid, chapter)
+    with open(cp, 'r') as cf:
+        return cf.read()
+
 def allChapters(bookid, lang):
     return list(range(1, 1+len(books.LIBRARY[bookid][TRANSLATIONS][lang][CHAPTERS])))
 

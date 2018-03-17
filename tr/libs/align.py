@@ -94,7 +94,7 @@ class Mapping(object):
         self.tokens = [MappedToken(tkn, doc_size, source) for tkn in doc]
         for mt in self.tokens:
             mt.buildGraph(self.tokens)
-        if self.langage == 'eng':
+        if self.langage == utils.Lang.ENG:
             words = { mt.token.lemma_.lower() for mt in self.tokens if mt.token.is_alpha }
             vecs = glove.getVector(words)
             for mt in self.tokens:
