@@ -2,9 +2,9 @@ import numpy as np
 import math
 from nltk.translate import gale_church
 
-from tr.libs import utils
-from tr.libs import glove
-from tr.libs import lemma_mapper
+from tr.libs.trans import utils
+from tr.libs.trans import glove
+from tr.libs.trans import lemma_mapper
 
 
 def alignSentences(lang_source, lang_target, text_source, text_target):

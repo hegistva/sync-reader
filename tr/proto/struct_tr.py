@@ -1,9 +1,9 @@
 import os
 import spacy
-from tr.libs import align
-from tr.libs import sentence_mapper
-from tr.libs import lemma_mapper
-from tr.libs import utils
+from tr.libs.trans import align
+from tr.libs.trans import sentence_mapper
+from tr.libs.trans import lemma_mapper
+from tr.libs.trans import utils
 
 text_eng = """They even reprinted reports from ancient times:  the views of Aristotle and Pliny accepting the existence of such monsters, then the Norwegian stories of Bishop Pontoppidan, the narratives of Paul Egede, and finally the reports of Captain Harrington-- whose good faith is above suspicion--in which he claims he saw, while aboard the Castilian in 1857, one of those enormous serpents that, until then, had frequented only the seas of France's old extremist newspaper, The Constitutionalist."""
 text_eng = """A Runaway Reef    THE YEAR 1866 was marked by a bizarre development, an unexplained and downright inexplicable phenomenon that surely no one has forgotten."""

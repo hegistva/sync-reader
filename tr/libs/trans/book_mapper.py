@@ -1,8 +1,8 @@
 from tr.books import book_manager
-from tr.libs import sentence_mapper
-from tr.libs import sentence_matcher
-from tr.libs import lemma_mapper
-from tr.libs import align
+from tr.libs.trans import sentence_mapper
+from tr.libs.trans import sentence_matcher
+from tr.libs.trans import lemma_mapper
+from tr.libs.trans import align
 
 def mapChapter(source_lang, target_lang, bookid, chapter, doMapping, debug=False):
     source_path = book_manager.chapterPath(source_lang, bookid, chapter)

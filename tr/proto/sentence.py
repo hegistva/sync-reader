@@ -1,8 +1,8 @@
 
 from tr.books import book_manager
-from tr.libs import sentence_matcher
-from tr.libs import utils
-from tr.libs import lemma_mapper
+from tr.libs.trans import sentence_matcher
+from tr.libs.trans import utils
+from tr.libs.trans import lemma_mapper
 
 book_id = '20000LeaguesUnderTheSea'
 

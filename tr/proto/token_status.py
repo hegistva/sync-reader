@@ -2,7 +2,7 @@
 from nltk.translate.ibm5 import IBMModel5
 from nltk.translate.api import AlignedSent
 from terminaltables import AsciiTable
-from tr.libs import utils
+from tr.libs.trans import utils
 import spacy
 
 text_eng = """They even reprinted reports from ancient times:  the views of Aristotle and Pliny accepting the existence of such monsters, then the Norwegian stories of Bishop Pontoppidan, the narratives of Paul Egede, and finally the reports of Captain Harrington-- whose good faith is above suspicion--in which he claims he saw, while aboard the Castilian in 1857, one of those enormous serpents that, until then, had frequented only the seas of France's old extremist newspaper, The Constitutionalist."""

@@ -1,5 +1,5 @@
 
-from tr.libs import utils
+from tr.libs.trans import utils
 
 LIBRARY = {
     '20000LeaguesUnderTheSea': {

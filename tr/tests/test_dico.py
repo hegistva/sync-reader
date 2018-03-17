@@ -1,6 +1,6 @@
 
-from tr.libs import dico
-from tr.libs import utils
+from tr.libs.trans import dico
+from tr.libs.trans import utils
 import spacy
 
 
