@@ -9,7 +9,7 @@ LIBRARY = {
                 'title': '20000 Lieues sous les mers',
                 'url': 'http://www.gutenberg.org/cache/epub/5097/pg5097.txt',
                 'chapters': [
-                    { 'firstLine': 111, 'lastLine': 365 }, 
+                    { 'firstLine': 111, 'lastLine': 365, 'audioFile': '20000lieues_1_01_verne_64kb.mp3', 'audioStart': '00:00:28', 'audioStop':'00:16:42' },
                     { 'firstLine': 369, 'lastLine': 604 }, 
                     { 'firstLine': 608, 'lastLine': 844 }, 
                     { 'firstLine': 848, 'lastLine': 1138 }, 

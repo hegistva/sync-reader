@@ -7,9 +7,13 @@ from tr.books import books
 # constants
 BOOKS = './library'
 CHAPTERS = 'chapters'
+AUDIO = 'audio'
 TRANSLATIONS = 'translations'
 FIRST_LINE = 'firstLine'
 LAST_LINE = 'lastLine'
+AUDIO_FILE = 'audioFile'
+AUDIO_START = 'audioStart'
+AUDIO_STOP = 'audioStop'
 
 def chapterFile(chnum):
     return 'chapter_%04d.txt' % chnum
@@ -17,6 +21,13 @@ def chapterFile(chnum):
 def chapterPath(lang, bookid, chapter):
     return os.path.join(BOOKS, bookid, lang, CHAPTERS, chapterFile(chapter))
 
+def chapterAudio(lang, bookid, chapter):
+    ch = books.LIBRARY[bookid][TRANSLATIONS][lang][CHAPTERS][chapter-1]
+    fname = ch[AUDIO_FILE]
+    fpath = os.path.join(BOOKS, bookid, lang, AUDIO, fname)
+    audio_start = ch[AUDIO_START]
+    audio_stop = ch[AUDIO_STOP]
+    return (fpath, audio_start, audio_stop)
 
 def bookChapter(lang, bookid, chapter):
     cp = chapterPath(lang, bookid, chapter)
