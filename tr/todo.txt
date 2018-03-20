@@ -60,4 +60,5 @@ Tag why how each phrase was mapped
 	- dependentm mapper
 	- translate mapper
 	- glove mapper
-	- make sure we avoid having very short sentences
+	- make sure we avoid having very short sentences (DONE)
+	- implement post processing to map unmapped tokens

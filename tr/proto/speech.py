@@ -18,13 +18,6 @@ spacy.tokens.Token.set_extension('spoken', default='')
 TEMP_DIR = 'temp'
 ALIGNER = 'tools/speechaligner.jar'
 
-audio_file = 'library/20000LeaguesUnderTheSea/eng/audio/20000leaguesundertheseas_1-01_verne_64kb.mp3'
-wavfile = "%s.wav" %  os.path.splitext(audio_file)[0]
-
-infile = "library/20000LeaguesUnderTheSea/fra/audio/sentence.mp3"
-audiofile = "library/20000LeaguesUnderTheSea/fra/audio/sentence.wav"
-transcript = "library/20000LeaguesUnderTheSea/fra/audio/sentence.txt"
-
 class AudioWord:
     def __init__(self, token, status, begin=-1, end=-1):
         self.token = token
@@ -93,7 +86,7 @@ def segmentTranscript(lang, bookid, chapter, audiofile):
     begin_tkn = 0
     begin_audio = 0
     while begin_tkn < token_count:
-        chunk = doc_tokens[begin_tkn:begin_tkn+40]
+        chunk = doc_tokens[begin_tkn:begin_tkn+50]
         last_idx, begin_audio = alignSentence(lang, audio_segment=audio_segment, audio_len=audio_len, begin=begin_audio, trans_len=token_count, sent=chunk)
         print("Mapped up to token %d, time: %s" % (last_idx, msec2min(begin_audio)))
         for tkn in chunk:            
@@ -111,7 +104,7 @@ def segmentTranscript(lang, bookid, chapter, audiofile):
 def alignSentence(lang, audio_segment, audio_len, begin, trans_len, sent):
     temp_audio = os.path.join(TEMP_DIR, 'temp.wav')
     temp_transcript = os.path.join(TEMP_DIR, 'transcript.txt')
-    rel_len = len(sent) / trans_len
+    rel_len = 1.25 * len(sent) / trans_len
     audio_span = int(rel_len * audio_len)
     print("Audiospan: %s" % msec2min(audio_span))
     audio = audio_segment[begin:begin+audio_span]
@@ -145,6 +138,5 @@ def alignSentence(lang, audio_segment, audio_len, begin, trans_len, sent):
 
 book_id = '20000LeaguesUnderTheSea'
 alignChapter(utils.Lang.FRA, book_id, 1)
-
-# alignSpeech(utils.Lang.FRA, audiofile, transcript)
+# alignChapter(utils.Lang.ENG, book_id, 1)
 

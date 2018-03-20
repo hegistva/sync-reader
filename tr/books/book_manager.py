@@ -11,9 +11,6 @@ AUDIO = 'audio'
 TRANSLATIONS = 'translations'
 FIRST_LINE = 'firstLine'
 LAST_LINE = 'lastLine'
-AUDIO_FILE = 'audioFile'
-AUDIO_START = 'audioStart'
-AUDIO_STOP = 'audioStop'
 
 def chapterFile(chnum):
     return 'chapter_%04d.txt' % chnum
@@ -23,10 +20,10 @@ def chapterPath(lang, bookid, chapter):
 
 def chapterAudio(lang, bookid, chapter):
     ch = books.LIBRARY[bookid][TRANSLATIONS][lang][CHAPTERS][chapter-1]
-    fname = ch[AUDIO_FILE]
+    fname = ch[books.AUDIO_FILE]
     fpath = os.path.join(BOOKS, bookid, lang, AUDIO, fname)
-    audio_start = ch[AUDIO_START]
-    audio_stop = ch[AUDIO_STOP]
+    audio_start = ch[books.AUDIO_START]
+    audio_stop = ch[books.AUDIO_STOP]
     return (fpath, audio_start, audio_stop)
 
 def bookChapter(lang, bookid, chapter):

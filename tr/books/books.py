@@ -1,6 +1,10 @@
 
 from tr.libs.trans import utils
 
+AUDIO_FILE = 'audioFile'
+AUDIO_START = 'audioStart'
+AUDIO_STOP = 'audioStop'
+
 LIBRARY = {
     '20000LeaguesUnderTheSea': {
         'author': 'Jules Verne',
@@ -9,7 +13,7 @@ LIBRARY = {
                 'title': '20000 Lieues sous les mers',
                 'url': 'http://www.gutenberg.org/cache/epub/5097/pg5097.txt',
                 'chapters': [
-                    { 'firstLine': 111, 'lastLine': 365, 'audioFile': '20000lieues_1_01_verne_64kb.mp3', 'audioStart': '00:00:28', 'audioStop':'00:16:42' },
+                    { 'firstLine': 111, 'lastLine': 365, AUDIO_FILE: '20000lieues_1_01_verne_64kb.mp3', AUDIO_START: '00:00:28', AUDIO_STOP:'00:16:42' },
                     { 'firstLine': 369, 'lastLine': 604 }, 
                     { 'firstLine': 608, 'lastLine': 844 }, 
                     { 'firstLine': 848, 'lastLine': 1138 }, 
@@ -36,7 +40,7 @@ LIBRARY = {
                 'title': '20000 Leagues Under the Seas',
                 'url': 'http://www.gutenberg.org/cache/epub/2488/pg2488.txt',
                 'chapters': [
-                    { 'firstLine': 696, 'lastLine': 958 },
+                    { 'firstLine': 696, 'lastLine': 958, AUDIO_FILE: '20000leaguesundertheseas_1-01_verne_64kb.mp3', AUDIO_START: '00:00:35', AUDIO_STOP:'00:19:23' },
                     { 'firstLine': 969, 'lastLine': 1215 },
                     { 'firstLine': 1227, 'lastLine': 1472 },
                     { 'firstLine': 1482, 'lastLine': 1770 },
