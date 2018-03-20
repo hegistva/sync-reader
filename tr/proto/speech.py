@@ -71,37 +71,49 @@ def alignChapter(lang, bookid, chapter):
     segmentTranscript(lang, bookid, chapter, wavfile)
     # alignSpeech(lang, audio_file, transcript) # try to align the audio with the text
 
+def msec2min(msec):
+    if msec >= 0:
+        minutes = int(msec / 60000)
+        secs = (msec % 60000) / 1000
+        return "%02d:%05.2f" % (minutes,secs)
+    else:
+        return "NONE"
+
 def segmentTranscript(lang, bookid, chapter, audiofile):
     # get spacy models for language processing
     sp = utils.getSpacy(lang)
     text = book_manager.bookChapter(lang, bookid, chapter)
     doc = sp(text)    
     # prepare sentences without punctuation
-    token_count = 0
-    sentences = []    
-    for sent in doc.sents:        
-        sent_tokens = [tkn for tkn in sent if not tkn.is_punct and tkn.text.strip()]
-        sentences.append(sent_tokens)
-        token_count += len(sent_tokens)
+    token_count = 0    
+    doc_tokens = [tkn for tkn in doc if tkn.is_alpha and (not tkn.is_punct) and tkn.text.strip()]
+    token_count = len(doc_tokens)
     audio_segment = AudioSegment.from_wav(audiofile) # read the audio
     audio_len = len(audio_segment)
-    begin = 0
-    for sent in sentences:
-        begin = alignSentence(lang, audio_segment=audio_segment, audio_len=audio_len, begin=begin, trans_len=token_count, sent=sent)
-        for tkn in sent:
-            print("token: %s, begin: %d, end: %d, spoken: %s" % (tkn.text, tkn._.begin, tkn._.end, tkn._.spoken))
+    begin_tkn = 0
+    begin_audio = 0
+    while begin_tkn < token_count:
+        chunk = doc_tokens[begin_tkn:begin_tkn+40]
+        last_idx, begin_audio = alignSentence(lang, audio_segment=audio_segment, audio_len=audio_len, begin=begin_audio, trans_len=token_count, sent=chunk)
+        print("Mapped up to token %d, time: %s" % (last_idx, msec2min(begin_audio)))
+        for tkn in chunk:            
+            print("token: %s, begin: %s, end: %s, spoken: %s" % (tkn.text, msec2min(tkn._.begin), msec2min(tkn._.end), tkn._.spoken))
+        if last_idx == -1: # could not map anything
+            break
+        else:
+            begin_tkn += last_idx + 1
         
 # align a single sentence
 # takes the
 #   audio, length of audio, begin
 #   sent length of transcript
-#   returns the end of the last token
+#   returns the end of the last index of the last mapped token and the end time for it
 def alignSentence(lang, audio_segment, audio_len, begin, trans_len, sent):
     temp_audio = os.path.join(TEMP_DIR, 'temp.wav')
     temp_transcript = os.path.join(TEMP_DIR, 'transcript.txt')
-    rel_len = 2 * len(sent) / trans_len
-    audio_span = 5000 + int(rel_len * audio_len)
-    print("Audiospan: %d" % audio_span)
+    rel_len = len(sent) / trans_len
+    audio_span = int(rel_len * audio_len)
+    print("Audiospan: %s" % msec2min(audio_span))
     audio = audio_segment[begin:begin+audio_span]
     audio.export(temp_audio, format="wav", parameters=["-ac", "1", "-ar", "16000"])
     trans = " ".join([word.lower_ for word in sent])
@@ -109,14 +121,19 @@ def alignSentence(lang, audio_segment, audio_len, begin, trans_len, sent):
         f.write(trans)
     alignment = alignSpeech(lang, temp_audio, temp_transcript) # try to align the audio with the text
     lastMappedEnd = -1
+    lastIdx = -1
+    if alignment is None:
+        return (lastIdx, lastMappedEnd)
+    
     for idx, tkn in enumerate(sent):
         # print("idx: %d, token: %s" % (idx, tkn.text))
         tkn._.spoken = alignment[idx].token
         end = alignment[idx].end
         end = end if end == -1 else end + begin
-        if end > 0 and ((lastMappedEnd < 0) or (end < lastMappedEnd + 5000)):
+        if end > 0 and ((lastMappedEnd < 0) or (end < lastMappedEnd + 10000)):
             tkn._.end = end
             lastMappedEnd = end
+            lastIdx = idx
             bgn = alignment[idx].begin
             if bgn > 0:
                 bgn += begin
@@ -124,7 +141,7 @@ def alignSentence(lang, audio_segment, audio_len, begin, trans_len, sent):
         
     # for idx, aw in enumerate(alignment):
     #     print("idx: %d, token: %s" % (idx, aw.token))
-    return lastMappedEnd
+    return (lastIdx, lastMappedEnd)
 
 book_id = '20000LeaguesUnderTheSea'
 alignChapter(utils.Lang.FRA, book_id, 1)
