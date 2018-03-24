@@ -1,8 +1,8 @@
 import pickle
 import os
 import atexit
-
 from tr.libs.trans import utils
+from tr.libs.utils import general as gu
 
 CACHE = 'cache/lemma'
 
@@ -66,8 +66,7 @@ def reset(fromLang, toLang):
     lemma_mappings[dbName] = {}
     file_to_del = os.path.join(CACHE, dbName)
     try:
-        if os.path.exists(file_to_del):
-            os.remove(file_to_del)
+        gu.removeFile(file_to_del)
         setDefault(fromLang, toLang)
     except Exception as e:
         print('ERROR: could not remove lemma cache under %s: %s' % (file_to_del, e))
