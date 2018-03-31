@@ -1,4 +1,6 @@
 /cache/
 /temp/
 /library/
+.idea/
+.vscode/
 __pycache__/

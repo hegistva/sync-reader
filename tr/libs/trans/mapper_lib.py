@@ -1,7 +1,6 @@
 import numpy as np
 import Levenshtein
 from tr.libs.trans import align
-from tr.libs.trans import dico
 from tr.libs.trans import utils
 from tr.libs.trans import lemma_mapper
 

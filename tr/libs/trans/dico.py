@@ -5,10 +5,12 @@ import os
 import atexit
 import itertools
 
+from tr.libs.utils import config
+
 dc = dicoclient.DicoClient()
 dc.open('localhost')
 
-CACHE = 'cache/dictionaries'
+CACHE = os.path.join(config.ROOT, 'cache/dictionaries')
 
 trans_dicts = {}
 

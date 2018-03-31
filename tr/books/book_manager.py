@@ -3,9 +3,10 @@ import os
 import requests
 
 from tr.books import books
+from tr.libs.utils import config
 
 # constants
-BOOKS = './library'
+BOOKS = os.path.join(config.ROOT, 'library')
 CHAPTERS = 'chapters'
 AUDIO = 'audio'
 TRANSLATIONS = 'translations'

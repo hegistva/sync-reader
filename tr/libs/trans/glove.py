@@ -4,13 +4,15 @@ import pickle
 import os
 import atexit
 
+from tr.libs.utils import config
+
 import numpy as np
 
 GLOVE_PATH = '/home/hegistva/programming/python/AI'
 GLOVE_ZIP_FILE = 'glove.6B.zip'
 GLOVE_TXT_FILE = 'glove.6B.100d.txt'
 
-CACHE = 'cache/glove'
+CACHE = os.path.join(config.ROOT, 'cache/glove')
 
 __glove_dict = None
 

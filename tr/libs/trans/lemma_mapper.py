@@ -3,8 +3,9 @@ import os
 import atexit
 from tr.libs.trans import utils
 from tr.libs.utils import general as gu
+from tr.libs.utils import config
 
-CACHE = 'cache/lemma'
+CACHE = os.path.join(config.ROOT, 'cache/lemma')
 
 lemma_mappings = {}
 
