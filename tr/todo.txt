@@ -62,3 +62,10 @@ Tag why how each phrase was mapped
 	- glove mapper
 	- make sure we avoid having very short sentences (DONE)
 	- implement post processing to map unmapped tokens
+
+GUI Work
+I. Pyqt5 gui
+1. how to work with qt designer
+2. design simple gui with qt designer
+3. test rich text vs webkit for the reader pane
+3. play words and sentences with qt designer
