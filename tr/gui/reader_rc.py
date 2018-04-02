@@ -13,8 +13,6 @@ import os
 ROOT = os.path.dirname(os.path.realpath(__file__))
 ICONS = os.path.join(ROOT, 'icons')
 
-print(ICONS)
-
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -140,6 +138,13 @@ class Ui_MainWindow(object):
         icon12.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "download.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionDownload.setIcon(icon12)
         self.actionDownload.setObjectName("actionDownload")
+        # Settings toolbar item
+        self.actionSettings = QtWidgets.QAction(MainWindow)
+        icon13 = QtGui.QIcon()
+        icon13.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "settings.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionSettings.setIcon(icon13)
+        self.actionSettings.setObjectName("actionSettings")
+        
         self.toolBar.addAction(self.actionAdd)
         self.toolBar.addAction(self.actionRemove)
         self.toolBar.addAction(self.actionDownload)
@@ -155,6 +160,7 @@ class Ui_MainWindow(object):
         self.toolBar.addAction(self.actionNextSent)
         self.toolBar.addAction(self.actionNextChaper)
         self.toolBar.addSeparator()
+        self.toolBar.addAction(self.actionSettings)
         self.toolBar.addAction(self.actionQuit)
 
         self.retranslateUi(MainWindow)
@@ -204,5 +210,7 @@ class Ui_MainWindow(object):
         self.actionRemove.setShortcut(_translate("MainWindow", "Ctrl+R"))
         self.actionDownload.setText(_translate("MainWindow", "Download"))
         self.actionDownload.setToolTip(_translate("MainWindow", "Download book or chapter"))
-        self.actionDownload.setShortcut(_translate("MainWindow", "Ctrl+D"))
+        self.actionDownload.setShortcut(_translate("MainWindow", "Ctrl+D"))        
+        self.actionSettings.setText(_translate("MainWindow", "Settings"))
+        self.actionSettings.setToolTip(_translate("MainWindow", "Application Settings"))
 
