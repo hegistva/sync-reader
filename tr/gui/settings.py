@@ -26,16 +26,27 @@ class SettingsDialog(QtWidgets.QDialog):
         layout.addLayout(grid)
         
         book_location = SETTINGS.get('book_location', os.path.join(APP_FOLDER, 'books'))
+        if not os.path.exists(book_location):
+            os.makedirs(book_location)
+
         self.book_location = QtWidgets.QLineEdit(book_location)
         grid.addWidget(QtWidgets.QLabel("Book Location"), 0, 0)
         grid.addWidget(self.book_location, 0, 1)
-        grid.addWidget(QtWidgets.QPushButton("..."), 0, 2)
+        self.selectorButton = QtWidgets.QPushButton("...")
+        self.selectorButton.clicked.connect(self.selectPath)
+        grid.addWidget(self.selectorButton, 0, 2)
         self.setWindowTitle('Application Settings')
         buttons = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel, Qt.Horizontal, self)
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
-    
+
+    def selectPath(self):
+        options = QtWidgets.QFileDialog.DontResolveSymlinks | QtWidgets.QFileDialog.ShowDirsOnly
+        file = QtWidgets.QFileDialog.getExistingDirectory(self, "Select Book Location", self.book_location.text(), options=options)
+        if file:
+            self.book_location.setText(file)
+        
 def showSettings(parent):
     dialog = SettingsDialog(parent)
     result = dialog.exec_()
