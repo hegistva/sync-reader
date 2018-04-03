@@ -7,6 +7,7 @@ from tr.books import book_manager
 from pydub import AudioSegment
 from tr.libs.utils import general as gu
 from tr.libs.utils import config
+from progress.bar import IncrementalBar
 
 spacy.tokens.Token.set_extension('begin', default=-1)
 spacy.tokens.Token.set_extension('end', default=-1)
@@ -103,7 +104,7 @@ def alignChunk(lang, audio_segment, audio_begin, audio_end, chunk):
     """
     temp_audio = os.path.join(config.TEMP_DIR, 'temp.wav')
     temp_transcript = os.path.join(config.TEMP_DIR, 'transcript.txt')
-    print("Audio: %s - %s" % (msec2time(audio_begin), msec2time(audio_end)))
+    # print("Audio: %s - %s" % (msec2time(audio_begin), msec2time(audio_end)))
     audio = audio_segment[audio_begin:audio_end]
     audio.export(temp_audio, format="wav", parameters=["-ac", "1", "-ar", "16000"])
     trans = " ".join([word.lower_ for word in chunk])
@@ -163,7 +164,7 @@ def saveAudioMapping(mtks, start_time, stop_time, outfile):
         if has_unrecognized: # close the unrecognized section
             f.write("%d,%d,%d,%d\n" % (unrecognized_text_start, mtks[-1].idx + len(mtks[-1]), last_recognized_audio_end + 100, stop_time))
                 
-def alignChapter(lang, bookid, chapter, outfile):
+def alignChapter(lang, bookid, chapter):
     """
     Align a chapter of a book
 
@@ -175,6 +176,9 @@ def alignChapter(lang, bookid, chapter, outfile):
     Returns:
         list of spacy tokens: the tokens with the added audio alignment information
     """
+    bar = IncrementalBar('Processing %s [%s] (%s)' % (bookid, lang, chapter) , max=100)
+    bar.start()
+    outfile = os.path.join(book_manager.chaptersPath(lang, bookid),'chapter_%04d.audio.map' % chapter)
     audio_file, start_time, stop_time = book_manager.chapterAudio(lang, bookid, chapter)
     wavfile = os.path.join(config.TEMP_DIR, 'chapter%s.wav' % chapter)
     gu.removeFile(wavfile)
@@ -191,11 +195,16 @@ def alignChapter(lang, bookid, chapter, outfile):
     audio_len = len(audio_segment)
     begin_tkn = 0
     begin_audio = 0
+    startm = time2msec(start_time)
+    stopm = time2msec(stop_time)
+    l = stopm - startm
+    
     while begin_tkn < token_count:
         chunk = doc_tokens[begin_tkn:begin_tkn+50]
         rel_len = 1.25 * len(chunk) / token_count
         end_audio = begin_audio + int(rel_len * audio_len)
-        last_idx, begin_audio = alignChunk(lang, audio_segment=audio_segment, audio_begin=begin_audio, audio_end=end_audio, chunk=chunk)
+        last_idx, begin_audio = alignChunk(lang, audio_segment=audio_segment, audio_begin=begin_audio, audio_end=end_audio, chunk=chunk)        
+        bar.goto(int(100.0 * begin_audio / l))
         # print("Mapped up to token %d, time: %s" % (last_idx, msec2time(begin_audio)))
         # for tkn in chunk:            
         #     print("token: %s, begin: %s, end: %s, spoken: %s" % (tkn.text, msec2time(tkn._.begin), msec2time(tkn._.end), tkn._.spoken))
@@ -204,4 +213,4 @@ def alignChapter(lang, bookid, chapter, outfile):
         else:
             begin_tkn += last_idx + 1
     gu.removeFile(wavfile)
-    saveAudioMapping(doc_tokens, time2msec(start_time), time2msec(stop_time), outfile)
+    saveAudioMapping(doc_tokens, startm, stopm, outfile)

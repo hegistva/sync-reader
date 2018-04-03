@@ -16,6 +16,9 @@ LAST_LINE = 'lastLine'
 def chapterFile(chnum):
     return 'chapter_%04d.txt' % chnum
 
+def chaptersPath(lang, bookid):
+    return os.path.join(BOOKS, bookid, lang, CHAPTERS)
+
 def chapterPath(lang, bookid, chapter):
     return os.path.join(BOOKS, bookid, lang, CHAPTERS, chapterFile(chapter))
 
