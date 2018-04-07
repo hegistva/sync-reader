@@ -4,11 +4,11 @@ import json
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5 import QtGui
-
+from tr.books import book_manager
 
 class SearchDialog(QtWidgets.QDialog):
     
-    BOOK, TITLE, LANGUAGES, CHAPTERS = range(4)
+    BOOK, AUTHOR, TITLE, LANGUAGES, CHAPTERS = range(5)
 
     def __init__(self, parent=None):
         super(SearchDialog, self).__init__(parent)
@@ -21,7 +21,7 @@ class SearchDialog(QtWidgets.QDialog):
         searchLayout.addWidget(self.searchTerm)
         
         self.searchButton = QtWidgets.QPushButton('Search')
-        self.searchButton.clicked.connect(lambda _: self.addSearchResult("Bookid", "Booktitle", "ENG,FRA", "21"))
+        self.searchButton.clicked.connect(self.searchBooks)
         searchLayout.addWidget(self.searchButton)
         
         self.results = QtWidgets.QTreeView()
@@ -41,27 +41,42 @@ class SearchDialog(QtWidgets.QDialog):
         buttons.rejected.connect(self.reject)
         mainLayout.addWidget(buttons)
     
-    def addSearchResult(self, *args):
-        row = [QtGui.QStandardItem(item) for item in args]
+    def addSearchResult(self, row):
+        row = [QtGui.QStandardItem(item) for item in row]
         row[0].setCheckable(True)
         row[0].setCheckState(Qt.Unchecked)
         self.model.appendRow(row)
-        self.results.resizeColumnToContents(0)
+        for idx, _ in enumerate(row):
+            self.results.resizeColumnToContents(idx)
         
     def createResultModel(self, parent):
-        model = QtGui.QStandardItemModel(0, 4, parent)
+        model = QtGui.QStandardItemModel(0, 5, parent)
         model.setHeaderData(self.BOOK, Qt.Horizontal, "Book")
+        model.setHeaderData(self.AUTHOR, Qt.Horizontal, "Author")
         model.setHeaderData(self.TITLE, Qt.Horizontal, "Title")
         model.setHeaderData(self.LANGUAGES, Qt.Horizontal, "Languages")
         model.setHeaderData(self.CHAPTERS, Qt.Horizontal, "Chapters")
         return model
 
-        
+    def searchBooks(self):
+        rc = self.model.rowCount()
+        if rc:
+            self.model.removeRows(0, rc)
+        keyword = self.searchTerm.text()
+        if 3 <= len(keyword):
+            results = book_manager.searchLibary(keyword)
+            for result in results:
+                self.addSearchResult(result.asList())
+
 def showSearch(parent):
     dialog = SearchDialog(parent)
     result = dialog.exec_()
     if result == QtWidgets.QDialog.Accepted:
-        print('Book has been selected for import')
+        for i in range(dialog.model.rowCount()):
+            itm = dialog.model.item(i)
+            if itm.checkState() == Qt.Checked:
+                # TODO: implement book import
+                print("Checked: %s" % itm.text())
 
 
 
