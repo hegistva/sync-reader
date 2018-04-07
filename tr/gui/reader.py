@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QDialog
 from PyQt5.QtWidgets import QPushButton, QLabel
 from reader_rc import Ui_MainWindow
 import settings
+import search
 class ReaderWidget(QMainWindow):
     
     def __init__(self, parent=None):
@@ -16,6 +17,7 @@ class ReaderWidget(QMainWindow):
         self.ui.actionStop.triggered.connect(self.stop)
         self.ui.actionPlay.triggered.connect(self.play)
         self.ui.actionSettings.triggered.connect(self.showSettings)
+        self.ui.actionAdd.triggered.connect(self.showSearch)
 
     def stop(self):
         self.ui.chapterProgress.hide()
@@ -28,6 +30,9 @@ class ReaderWidget(QMainWindow):
     
     def showSettings(self):
         settings.showSettings(self)
+
+    def showSearch(self):
+        search.showSearch(self)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
