@@ -44,6 +44,12 @@ class Ui_MainWindow(object):
         self.horizontalSplitter.addWidget(self.navigatorWidget)
         self.progressLayout = QtWidgets.QVBoxLayout()
         self.progressLayout.setObjectName("progressLayout")
+
+        self.selectedChapter = QtWidgets.QLabel("Selected Chapter: None")
+        self.selectedChapter.setObjectName("selectedChapter")
+
+        self.progressLayout.addWidget(self.selectedChapter)
+
         self.chapterProgress = QtWidgets.QProgressBar(self.centralwidget)
         self.chapterProgress.setProperty("value", 0)
         self.chapterProgress.setObjectName("chapterProgress")
@@ -55,7 +61,7 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.amplitudeChart.sizePolicy().hasHeightForWidth())
         self.amplitudeChart.setSizePolicy(sizePolicy)
         self.amplitudeChart.setMinimumSize(QtCore.QSize(0, 0))
-        self.amplitudeChart.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        self.amplitudeChart.setMaximumSize(QtCore.QSize(2000, 2000))
         self.amplitudeChart.setBaseSize(QtCore.QSize(0, 0))
         self.amplitudeChart.setObjectName("amplitudeChart")
         self.progressLayout.addWidget(self.amplitudeChart)
@@ -89,6 +95,11 @@ class Ui_MainWindow(object):
         self.readerSplitter.addWidget(self.readerPaneWidget)
         self.readerSplitter.setStretchFactor(1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
+
+        self.chapterProgress.hide()
+        self.downloadProgress.hide()
+        self.lblDownload.hide()
+
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)

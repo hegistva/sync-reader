@@ -17,25 +17,31 @@ class ReaderWidget(QMainWindow):
         self.ui.actionQuit.triggered.connect(self.close)
         self.ui.actionStop.triggered.connect(self.stop)
         self.ui.actionPlay.triggered.connect(self.play)
+        self.ui.actionDownload.triggered.connect(self.download)
         self.ui.actionSettings.triggered.connect(self.showSettings)
-        self.ui.actionAdd.triggered.connect(self.showSearch)
-        book_nav.init(self.ui.bookList)
+        self.ui.actionAdd.triggered.connect(self.showSearch)   
+        book_nav.initNavigator(self.ui.bookList, self)
 
     def stop(self):
         self.ui.chapterProgress.hide()
 
     def play(self):
+        sender = self.sender()
+        print("Playing chaper: %s" % sender.property('chapter'))
         self.ui.chapterProgress.show()
 
     def download(self):
-        self.ui.chapterProgress.show()
+        sender = self.sender()
+        print("Downloading chaper: %s" % sender.property('chapter'))
+        self.ui.lblDownload.show()
+        self.ui.downloadProgress.show()        
     
     def showSettings(self):
         settings.showSettings(self)
 
     def showSearch(self):
         search.showSearch(self)
-
+    
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     reader = ReaderWidget()
