@@ -5,6 +5,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5 import QtGui
 from tr.books import book_manager
+from settings import Config
 
 class SearchDialog(QtWidgets.QDialog):
     
@@ -75,8 +76,13 @@ def showSearch(parent):
         for i in range(dialog.model.rowCount()):
             itm = dialog.model.item(i)
             if itm.checkState() == Qt.Checked:
-                book_def = book_manager.getNetBook(itm.text())
-                print(book_def)
+                book_id = itm.text() # selected book identifier
+                book_def = book_manager.getNetBook(book_id) # get the book configuration
+                lpath = Config.value(Config.LIBRARY) # save location
+                os.makedirs(lpath, exist_ok=True)
+                fname = os.path.join(lpath, book_id + ".json")
+                with open(fname, 'w') as f:
+                    f.write(book_def)
 
 
 

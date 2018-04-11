@@ -6,15 +6,34 @@ import json
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
 
+BOOK_LOCATION = 'book_location'
+
+LIBRARY = 'lib'
+CONTENT = 'content'
+
 SETTINGS = {}
 APP_FOLDER = os.path.join(pathlib.Path.home(), 'booktranslate')
-if not os.path.exists(APP_FOLDER):
-    os.makedirs(APP_FOLDER)    
+os.makedirs(APP_FOLDER, exist_ok=True)    
 SETTINGS_FILE = os.path.join(pathlib.Path.home(), 'booktranslate', 'settings.json')
 if os.path.exists(SETTINGS_FILE):
     with open(SETTINGS_FILE, 'r') as f:
         SETTINGS.update(json.load(f))
 
+class Config:
+    APP_FOLDER, BOOK_LOCATION, LIBRARY, CONTENT = range(4)
+    @classmethod
+    def value(cls, s):
+        if s == cls.APP_FOLDER:
+            return APP_FOLDER
+        elif s == cls.BOOK_LOCATION:
+            return SETTING[BOOK_LOCATION]
+        elif s == cls.LIBRARY:
+            return os.path.join(SETTINGS[BOOK_LOCATION], LIBRARY)
+        elif s == cls.CONTENT:
+            return os.path.join(SETTINGS[BOOK_LOCATION], CONTENT)
+        else:
+            raise RuntimeError('Unkonw GUI setting')
+        
 class SettingsDialog(QtWidgets.QDialog):
     def __init__(self, parent=None):
         super(SettingsDialog, self).__init__(parent)
@@ -25,9 +44,8 @@ class SettingsDialog(QtWidgets.QDialog):
         grid = QtWidgets.QGridLayout()
         layout.addLayout(grid)
         
-        book_location = SETTINGS.get('book_location', os.path.join(APP_FOLDER, 'books'))
-        if not os.path.exists(book_location):
-            os.makedirs(book_location)
+        book_location = SETTINGS.get(BOOK_LOCATION, os.path.join(APP_FOLDER, 'books'))        
+        os.makedirs(book_location, exists_ok=True)
 
         self.book_location = QtWidgets.QLineEdit(book_location)
         grid.addWidget(QtWidgets.QLabel("Book Location"), 0, 0)
@@ -51,7 +69,7 @@ def showSettings(parent):
     dialog = SettingsDialog(parent)
     result = dialog.exec_()
     if result == QtWidgets.QDialog.Accepted:
-        SETTINGS.update({'book_location': dialog.book_location.text()})
+        SETTINGS.update({BOOK_LOCATION: dialog.book_location.text()})
         with open(SETTINGS_FILE, 'w') as f:
             f.write(json.dumps(SETTINGS))        
 
