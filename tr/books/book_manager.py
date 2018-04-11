@@ -1,16 +1,23 @@
 
 import os
 import requests
-
+import json
+import copy
 from tr.books import books
 from tr.libs.utils import config
 
 # constants
 BOOKS = os.path.join(config.ROOT, 'library')
 AUDIO = 'audio'
+AUDIO_URL = 'audio_url'
+MAPPING_URL = 'mapping_url'
+ID = 'id'
 
 def chapterFile(chnum):
     return 'chapter_%04d.txt' % chnum
+
+def mappingFile(chnum):
+    return 'chapter_%04d.mapping.map' % chnum
 
 def chaptersPath(lang, bookid):
     return os.path.join(BOOKS, bookid, lang, books.CHAPTERS)
@@ -18,7 +25,37 @@ def chaptersPath(lang, bookid):
 def chapterPath(lang, bookid, chapter):
     return os.path.join(BOOKS, bookid, lang, books.CHAPTERS, chapterFile(chapter))
 
-class SearchResult(object):
+class NetBook(object):
+    
+    PORT = 8000
+    SERVER = "http://localhost"
+
+    def __init__(self, book):
+        self.book = book
+
+    def toJson(self):
+        return json.dumps(self.book)
+
+    @classmethod
+    def fromBook(cls, bookid):
+        book = copy.deepcopy(books.LIBRARY[bookid])
+        book_url = "%s:%s/%s/" % (cls.SERVER, cls.PORT, bookid)
+        book[ID] = bookid
+        for lang, tr in book[books.TRANSLATIONS].items():
+            tr_url = "%s%s/" % (book_url, lang)
+            tr[books.URL] = tr_url + "book.txt"
+            chapters = []
+            for idx, ch in enumerate(tr[books.CHAPTERS]):
+                chapter = {}
+                chapter[books.FIRST_LINE] = ch[books.FIRST_LINE]
+                chapter[books.LAST_LINE] = ch[books.LAST_LINE]
+                chapter[AUDIO_URL] = "%s%s/%s" % (tr_url, AUDIO, ch[books.AUDIO_FILE])
+                chapter[MAPPING_URL] = "%s%s/%s" % (tr_url, books.CHAPTERS, mappingFile(idx + 1))
+                chapters.append(chapter)
+            tr[books.CHAPTERS] = chapters
+        return cls(book)
+
+class SearchResultSummary(object):
     def __init__(self, book, author, title, langs, chapters):
         self.book = book
         self.author = author
@@ -42,8 +79,12 @@ class SearchResult(object):
             titles.append(tr[books.TITLE])
             langs.append(lang)
             chapters = len(tr[books.CHAPTERS])
-        return SearchResult(bookid, author, " / ".join(titles), " / ".join(langs), chapters)
-                        
+        return SearchResultSummary(bookid, author, " / ".join(titles), " / ".join(langs), chapters)
+
+def getNetBook(bookid):
+    nb = NetBook.fromBook(bookid)
+    return nb.toJson()
+
 def searchLibary(keyword):
     """
     Keyword based search for books, case insensitive in author and title
@@ -59,11 +100,11 @@ def searchLibary(keyword):
     for bookid, book in books.LIBRARY.items():
         author = book[books.AUTHOR]
         if author.lower().find(lk) >= 0:
-            results.append(SearchResult.fromBook(bookid, book))
+            results.append(SearchResultSummary.fromBook(bookid, book))
             continue
         for _, tr in book[books.TRANSLATIONS].items():
             if tr[books.TITLE].lower().find(lk) >= 0:
-                results.append(SearchResult.fromBook(bookid, book))
+                results.append(SearchResultSummary.fromBook(bookid, book))
                 continue
     return results
 

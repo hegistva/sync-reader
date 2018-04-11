@@ -75,8 +75,8 @@ def showSearch(parent):
         for i in range(dialog.model.rowCount()):
             itm = dialog.model.item(i)
             if itm.checkState() == Qt.Checked:
-                # TODO: implement book import
-                print("Checked: %s" % itm.text())
+                book_def = book_manager.getNetBook(itm.text())
+                print(book_def)
 
 
 
