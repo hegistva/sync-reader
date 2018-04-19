@@ -73,3 +73,7 @@ I. Pyqt5 gui
 6. select translation for the active chapter (default in user settings)
 7. play models (one language, translation, audio translation) - sentence delay (%)
 8. implement web server and test the download
+9. make sure navigator is populated from local content - DONE
+10. refresh button for the navigator
+11. make sure the correct button is displayed for each chapter based on availability
+12. enable/disable toolbar buttons

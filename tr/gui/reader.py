@@ -27,12 +27,12 @@ class ReaderWidget(QMainWindow):
 
     def play(self):
         sender = self.sender()
-        print("Playing chaper: %s" % sender.property('chapter'))
+        print("Playing chaper: %s" % sender.property('model'))
         self.ui.chapterProgress.show()
 
     def download(self):
         sender = self.sender()
-        print("Downloading chaper: %s" % sender.property('chapter'))
+        print("Downloading chaper: %s" % sender.property('model'))
         self.ui.lblDownload.show()
         self.ui.downloadProgress.show()        
     

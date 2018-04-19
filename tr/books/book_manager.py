@@ -47,6 +47,7 @@ class NetBook(object):
             chapters = []
             for idx, ch in enumerate(tr[books.CHAPTERS]):
                 chapter = {}
+                chapter[books.IDX] = ch[books.IDX]
                 chapter[books.FIRST_LINE] = ch[books.FIRST_LINE]
                 chapter[books.LAST_LINE] = ch[books.LAST_LINE]
                 chapter[AUDIO_URL] = "%s%s/%s" % (tr_url, AUDIO, ch[books.AUDIO_FILE])
