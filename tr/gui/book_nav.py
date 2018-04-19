@@ -51,40 +51,24 @@ def refresh():
 
     bookfiles = glob.glob(lpath+"/*.json")
     for bookf in bookfiles:
-        book = json.load(open(bookf, 'r'))
-        # Create Book Node
-        book_id = book[book_manager.ID]
-        book_node = QtGui.QStandardItem(book_icon, book_id)
-        book_model = model.BookInfo(book_id)
-        book_node.setData(book_model)
+        bi = model.BookInfo.fromJsonFile(bookf)
+        book_node = QtGui.QStandardItem(book_icon, bi.bookid)
+        book_node.setData(bi)
         MODEL.appendRow(book_node)
 
-        for lang, tr in book[books.TRANSLATIONS].items():
+        for tr in bi.translations:
             # Create Language Node
-            lang_node = QtGui.QStandardItem(lang_icon, lang)
-            tr_url = tr[books.URL]
-            tr_title = tr[books.TITLE]
-            tr_model = model.TranslationInfo(book_id, lang, tr_title, tr_url)
-            book_model.addTranslation(tr_model)
-            lang_node.setData(tr_model)
+            lang_node = QtGui.QStandardItem(lang_icon, tr.language)
+            lang_node.setData(tr)
             book_node.appendRow(lang_node)
-            for idx, chapter in enumerate(tr[books.CHAPTERS]):
+            for chapter in tr.chapters:
                 # Create Chapter Node
-                chnum = chapter[books.IDX]
-                chapter_title = CHAPTER_CAPTION[lang] + ' %04d' % chnum
-                chapter_node = QtGui.QStandardItem(track_icon, chapter_title)
-                chapter_model = model.ChapterInfo(chapter)
-                tr_model.addChapter(chapter_model)
-                chapter_node.setData(chapter_model)
+                chnum = chapter.idx
+                chapter_title = CHAPTER_CAPTION[tr.language] + ' %04d' % chnum
+                chapter_node = QtGui.QStandardItem(track_icon, chapter_title)                
+                chapter_node.setData(chapter)
                 lang_node.appendRow(chapter_node)
-                # btn_node = QtGui.QStandardItem()
-                # lang_node.appendRow([chapter_node, btn_node])
-                # btn = QtWidgets.QPushButton()
-                # btn.setIcon(dl_icon)
-                # btn.clicked.connect(MAIN_WINDOW.download)
-                # btn.setProperty('model', chapter_model)                
-                # TREE_VIEW.setIndexWidget(btn_node.index(), btn)
-    # adjust column sizes on the tree view        
+    # adjust column sizes on the tree view
     TREE_VIEW.resizeColumnToContents(0)
     TREE_VIEW.resizeColumnToContents(1)
 
