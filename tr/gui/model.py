@@ -20,7 +20,6 @@ class BookInfo(object):
 
     def addTranslation(self, ti):
         self.translations.append(ti)
-        ti.book = self
 
     def __str__(self):
         translations = ",".join([tr.language for tr in self.translations])
@@ -34,11 +33,9 @@ class BookInfo(object):
         for lang, tr in book[TRANSLATIONS].items():
             tr_url = tr[URL]
             tr_title = tr[TITLE]
-            tr_model = TranslationInfo(book_id, lang, tr_title, tr_url)
-            ret.addTranslation(tr_model)
+            tr_model = TranslationInfo(ret, lang, tr_title, tr_url)
             for chapter in tr[CHAPTERS]:
-                chapter_model = ChapterInfo(chapter)
-                tr_model.addChapter(chapter_model)
+                chapter_model = ChapterInfo(tr_model, chapter)
         return ret
     
     @classmethod
@@ -47,34 +44,38 @@ class BookInfo(object):
             return cls.fromJson(f.read())        
         
 class TranslationInfo(object):
-    def __init__(self, bookid, lang, title, content_url):
+    def __init__(self, book_info, lang, title, content_url):
         """Initialize information on a book"""
         cpath = Config.value(Config.CONTENT) # book contents
-        self.book_path = os.path.join(cpath, bookid, lang) # root path of the book        
-        self.book = None # identifier of the book
+        self.book = book_info # identifier of the book
+        self.book_path = os.path.join(cpath, book_info.bookid, lang) # root path of the book                
         self.book_file = os.path.join(self.book_path, BOOK_FILE) # path to the local file
         self.book_dl = os.path.exists(self.book_file) # downloaded?
         self.language = lang # Language
         self.title = title # Title
         self.content_url = content_url # URL of the content
         self.chapters = [] # List of chapters
+        self.book.addTranslation(self)
     
     def addChapter(self, chapter):
         """Add a chapter to the book"""
         self.chapters.append(chapter)
-        chapter.translation = self
 
     def __str__(self):
         return "Title: %s [%s, %d chapters]" % (self.title, self.language, len(self.chapters))
 
 class ChapterInfo(object):
-    def __init__(self, chapter):        
-        self.translation = None
+    def __init__(self, translation, chapter):
+        self.translation = translation
         self.idx = chapter[IDX]
         self.firstLine = chapter[FIRST_LINE]
         self.lastLine = chapter[LAST_LINE]
         self.audioURL = chapter[AUDIO_URL]
+        self.audioFile = os.path.join(self.translation.book_path, self.audioURL.split('/')[-1])
         self.mappingURL = chapter[MAPPING_URL]
+        self.mappingFile = os.path.join(self.translation.book_path, self.mappingURL.split('/')[-1])        
+        self.downloaded = os.path.exists(self.audioFile) and os.path.exists(self.mappingFile)
+        self.translation.addChapter(self)
 
     def __str__(self):
         return "%s - %s %d" % (self.translation.title, CHAPTER_CAPTION[self.translation.language], self.idx)

@@ -39,6 +39,7 @@ class ReaderWidget(QMainWindow):
         self.ui.selectedContent.setText("Selected Content: %s" % m)
 
     def download(self):
+        
         sender = self.sender()
         print("Downloading chaper: %s" % sender.property('model'))
         self.ui.lblDownload.show()

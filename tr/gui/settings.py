@@ -45,7 +45,7 @@ class SettingsDialog(QtWidgets.QDialog):
         layout.addLayout(grid)
         
         book_location = SETTINGS.get(BOOK_LOCATION, os.path.join(APP_FOLDER, 'books'))        
-        os.makedirs(book_location, exists_ok=True)
+        os.makedirs(book_location, exist_ok=True)
 
         self.book_location = QtWidgets.QLineEdit(book_location)
         grid.addWidget(QtWidgets.QLabel("Book Location"), 0, 0)

@@ -18,7 +18,6 @@ MODEL = QtGui.QStandardItemModel()
 dl_icon = QtGui.QIcon(os.path.join(ICONS, 'download.svg'))
 book_icon = QtGui.QIcon(os.path.join(ICONS, 'book.svg'))
 lang_icon = QtGui.QIcon(os.path.join(ICONS, 'language.svg'))
-track_icon = QtGui.QIcon(os.path.join(ICONS, 'track.svg'))
 play_icon = QtGui.QIcon(os.path.join(ICONS, 'play.svg'))
 
 # initalize a tree 
@@ -59,7 +58,8 @@ def refresh():
                 # Create Chapter Node
                 chnum = chapter.idx
                 chapter_title = model.CHAPTER_CAPTION[tr.language] + ' %04d' % chnum
-                chapter_node = QtGui.QStandardItem(track_icon, chapter_title)                
+                ch_icon = play_icon if chapter.downloaded else dl_icon
+                chapter_node = QtGui.QStandardItem(ch_icon, chapter_title)               
                 chapter_node.setData(chapter)
                 lang_node.appendRow(chapter_node)
     # adjust column sizes on the tree view
