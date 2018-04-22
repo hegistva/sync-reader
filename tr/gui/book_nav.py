@@ -8,17 +8,12 @@ from reader_rc import ICONS
 from settings import Config
 from tr.books import book_manager
 from tr.books import books
-from tr.libs.trans.utils import Lang
+
 import model
 
 TREE_VIEW = None
 MAIN_WINDOW = None
 MODEL = QtGui.QStandardItemModel()
-
-CHAPTER_CAPTION = {
-    Lang.ENG: 'Chapter',
-    Lang.FRA: 'Chapitre'
-}
 
 dl_icon = QtGui.QIcon(os.path.join(ICONS, 'download.svg'))
 book_icon = QtGui.QIcon(os.path.join(ICONS, 'book.svg'))
@@ -37,17 +32,16 @@ def initNavigator(treeView, parent):
     TREE_VIEW.setEditTriggers(Qt.QAbstractItemView.NoEditTriggers)
     TREE_VIEW.setModel(MODEL)
     TREE_VIEW.setUniformRowHeights(True)
-    TREE_VIEW.clicked.connect(clicked)
+    TREE_VIEW.clicked.connect(lambda idx: MAIN_WINDOW.select(idx))
     # refresh contents
     refresh()
-
 
 def refresh():
     
     lpath = Config.value(Config.LIBRARY) # book location
 
     MODEL.clear()
-    MODEL.setHorizontalHeaderLabels(['Book/Chapter', ''])
+    MODEL.setHorizontalHeaderLabels(['Book/Language/Chapter', ''])
 
     bookfiles = glob.glob(lpath+"/*.json")
     for bookf in bookfiles:
@@ -64,17 +58,11 @@ def refresh():
             for chapter in tr.chapters:
                 # Create Chapter Node
                 chnum = chapter.idx
-                chapter_title = CHAPTER_CAPTION[tr.language] + ' %04d' % chnum
+                chapter_title = model.CHAPTER_CAPTION[tr.language] + ' %04d' % chnum
                 chapter_node = QtGui.QStandardItem(track_icon, chapter_title)                
                 chapter_node.setData(chapter)
                 lang_node.appendRow(chapter_node)
     # adjust column sizes on the tree view
     TREE_VIEW.resizeColumnToContents(0)
     TREE_VIEW.resizeColumnToContents(1)
-
-def clicked(idx):
-    itm = TREE_VIEW.model().itemFromIndex(idx)
-    m = itm.data()
-    if m:
-        print("chapter clicked: %s" % m)
 

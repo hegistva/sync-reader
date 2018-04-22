@@ -2,9 +2,14 @@
 import os
 import json
 from settings import Config
+from tr.libs.trans.utils import Lang
 from tr.books.book_manager import AUDIO_URL, MAPPING_URL, ID
 from tr.books.books import FIRST_LINE, LAST_LINE, IDX, TRANSLATIONS, URL, TITLE, CHAPTERS
 
+CHAPTER_CAPTION = {
+    Lang.ENG: 'Chapter',
+    Lang.FRA: 'Chapitre'
+}
 
 BOOK_FILE = "book.txt"
 
@@ -16,6 +21,10 @@ class BookInfo(object):
     def addTranslation(self, ti):
         self.translations.append(ti)
         ti.book = self
+
+    def __str__(self):
+        translations = ",".join([tr.language for tr in self.translations])
+        return ("Book: %s Translations: %s" % (self.bookid, translations))
 
     @classmethod
     def fromJson(cls, jsonStr):
@@ -37,8 +46,6 @@ class BookInfo(object):
         with open(pathToJson, 'r') as f:
             return cls.fromJson(f.read())        
         
-        
-
 class TranslationInfo(object):
     def __init__(self, bookid, lang, title, content_url):
         """Initialize information on a book"""
@@ -57,6 +64,9 @@ class TranslationInfo(object):
         self.chapters.append(chapter)
         chapter.translation = self
 
+    def __str__(self):
+        return "Title: %s [%s, %d chapters]" % (self.title, self.language, len(self.chapters))
+
 class ChapterInfo(object):
     def __init__(self, chapter):        
         self.translation = None
@@ -67,4 +77,4 @@ class ChapterInfo(object):
         self.mappingURL = chapter[MAPPING_URL]
 
     def __str__(self):
-        return "%s %s %s" % (self.translation.title, self.translation.language, self.idx)
+        return "%s - %s %d" % (self.translation.title, CHAPTER_CAPTION[self.translation.language], self.idx)

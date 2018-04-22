@@ -19,7 +19,9 @@ class ReaderWidget(QMainWindow):
         self.ui.actionPlay.triggered.connect(self.play)
         self.ui.actionDownload.triggered.connect(self.download)
         self.ui.actionSettings.triggered.connect(self.showSettings)
-        self.ui.actionAdd.triggered.connect(self.showSearch)   
+        self.ui.actionAdd.triggered.connect(self.showSearch)
+        self.selectedContent = None # selected book/translation/chapter
+
         book_nav.initNavigator(self.ui.bookList, self)
 
     def stop(self):
@@ -29,6 +31,12 @@ class ReaderWidget(QMainWindow):
         sender = self.sender()
         print("Playing chaper: %s" % sender.property('model'))
         self.ui.chapterProgress.show()
+
+    def select(self, idx):        
+        itm = self.ui.bookList.model().itemFromIndex(idx)
+        m = itm.data()
+        self.selectedContent = m
+        self.ui.selectedContent.setText("Selected Content: %s" % m)
 
     def download(self):
         sender = self.sender()

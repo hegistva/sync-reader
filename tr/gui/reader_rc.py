@@ -45,10 +45,10 @@ class Ui_MainWindow(object):
         self.progressLayout = QtWidgets.QVBoxLayout()
         self.progressLayout.setObjectName("progressLayout")
 
-        self.selectedChapter = QtWidgets.QLabel("Selected Chapter: None")
-        self.selectedChapter.setObjectName("selectedChapter")
+        self.selectedContent = QtWidgets.QLabel("Selected Content: None")
+        self.selectedContent.setObjectName("selectedContent")
 
-        self.progressLayout.addWidget(self.selectedChapter)
+        self.progressLayout.addWidget(self.selectedContent)
 
         self.chapterProgress = QtWidgets.QProgressBar(self.centralwidget)
         self.chapterProgress.setProperty("value", 0)
