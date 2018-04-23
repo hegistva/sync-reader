@@ -3,7 +3,7 @@ import os
 import json
 from settings import Config
 from tr.libs.trans.utils import Lang
-from tr.books.book_manager import AUDIO_URL, MAPPING_URL, ID
+from tr.books.book_manager import AUDIO_URL, MAPPING_URL, ID, chapterFile
 from tr.books.books import FIRST_LINE, LAST_LINE, IDX, TRANSLATIONS, URL, TITLE, CHAPTERS
 
 import res
@@ -79,6 +79,7 @@ class ChapterInfo(object):
         self.audioFile = os.path.join(self.translation.book_path, self.audioURL.split('/')[-1])
         self.mappingURL = chapter[MAPPING_URL]
         self.mappingFile = os.path.join(self.translation.book_path, self.mappingURL.split('/')[-1])
+        self.contentFile = os.path.join(self.translation.book_path, chapterFile(self.idx))
         self.treeNode = None
         self.translation.addChapter(self)
         self.updateStatus()
@@ -91,6 +92,15 @@ class ChapterInfo(object):
                 self.treeNode.setIcon(res.play_icon)
             else:
                 self.treeNode.setIcon(res.dl_icon)
+
+    def saveContent(self):
+        """Save the content file from the book"""
+        if not os.path.exists(self.contentFile):
+            with open(self.translation.book_file, 'r') as f:
+                lines = [line.strip() for line in f.readlines()]
+                ch_cont = ' '.join(lines[self.firstLine-1:self.lastLine+1])
+                with open(self.contentFile, 'w') as chf:
+                    chf.write(ch_cont)
 
     def __str__(self):
         return "%s - %s %d" % (self.translation.title, CHAPTER_CAPTION[self.translation.language], self.idx)

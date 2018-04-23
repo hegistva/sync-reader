@@ -8,7 +8,6 @@ from reader_rc import Ui_MainWindow
 import settings
 import search
 import book_nav
-import model
 import dl_manager
 
 class ReaderWidget(QMainWindow):
@@ -53,8 +52,7 @@ class ReaderWidget(QMainWindow):
         self.ui.selectedContent.setText("Selected Content: %s" % m)
 
     def download(self):
-        if isinstance(self.selectedContent, model.ChapterInfo):
-            self.downloadManager.downloadChapter(self.selectedContent)
+        self.downloadManager.downloadContent(self.selectedContent)
 
     def showSettings(self):
         settings.showSettings(self)

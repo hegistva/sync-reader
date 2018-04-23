@@ -1,6 +1,7 @@
 
 import os
 from pySmartDL import SmartDL
+import model
 
 class DownloadManager(object):
     def __init__(self, mainWindow, progressBar, progressMessage):
@@ -28,6 +29,8 @@ class DownloadManager(object):
         if not chapter.translation.book_dl:
             self.download(chapter.translation.content_url, dest, blocking=True) # download the book first
             chapter.translation.updateStatus() # update the book status
+    
+        chapter.saveContent() # save contents of the chapter
 
         # download the chapter files next
         if not chapter.downloaded:            
@@ -35,7 +38,28 @@ class DownloadManager(object):
                 self.download(chapter.audioURL, dest, chapter=chapter)
             if not os.path.exists(chapter.mappingFile):
                 self.download(chapter.mappingURL, dest, chapter=chapter)
-    
+
+    def downloadTranslation(self, translation):
+        # download each chapter
+        for chapter in translation.chapters:
+            self.downloadChapter(chapter)
+
+    def downloadBook(self, book):
+        # download each translation
+        for tr in book.translations:
+            self.downloadTranslation(tr)
+
+    def downloadContent(self, content):
+        # download content
+        if isinstance(content, model.ChapterInfo):
+            self.downloadChapter(content)
+        elif isinstance(content, model.TranslationInfo):
+            self.downloadTranslation(content)
+        elif isinstance(content, model.BookInfo):
+            self.downloadBook(content)
+        else:
+            raise RuntimeError('Unknown content, cannot download it')
+
     def update(self):
         sum_dl_size = 0
         sum_file_size = 0
