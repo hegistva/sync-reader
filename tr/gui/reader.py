@@ -1,11 +1,16 @@
 
 import sys
+import os
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QDialog
 from PyQt5.QtWidgets import QPushButton, QLabel
+from PyQt5.QtCore import QTimer
 from reader_rc import Ui_MainWindow
 import settings
 import search
 import book_nav
+import model
+import dl_manager
+
 class ReaderWidget(QMainWindow):
     
     def __init__(self, parent=None):
@@ -21,11 +26,20 @@ class ReaderWidget(QMainWindow):
         self.ui.actionSettings.triggered.connect(self.showSettings)
         self.ui.actionAdd.triggered.connect(self.showSearch)
         self.selectedContent = None # selected book/translation/chapter
-
+        self.downloadManager = dl_manager.DownloadManager(self, self.ui.downloadProgress, self.ui.lblDownload) # download manager
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.updateGUI)
+        self.timer.start(100)
         book_nav.initNavigator(self.ui.bookList, self)
 
     def stop(self):
         self.ui.chapterProgress.hide()
+
+    def updateGUI(self):
+        self.downloadManager.update() # update the download status
+
+    def updateLibrary(self):
+        book_nav.refresh()
 
     def play(self):
         sender = self.sender()
@@ -39,12 +53,9 @@ class ReaderWidget(QMainWindow):
         self.ui.selectedContent.setText("Selected Content: %s" % m)
 
     def download(self):
-        
-        sender = self.sender()
-        print("Downloading chaper: %s" % sender.property('model'))
-        self.ui.lblDownload.show()
-        self.ui.downloadProgress.show()        
-    
+        if isinstance(self.selectedContent, model.ChapterInfo):
+            self.downloadManager.downloadChapter(self.selectedContent)
+
     def showSettings(self):
         settings.showSettings(self)
 

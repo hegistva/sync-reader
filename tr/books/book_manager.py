@@ -17,7 +17,7 @@ def chapterFile(chnum):
     return 'chapter_%04d.txt' % chnum
 
 def mappingFile(chnum):
-    return 'chapter_%04d.mapping.map' % chnum
+    return 'chapter_%04d.audio.map' % chnum
 
 def chaptersPath(lang, bookid):
     return os.path.join(BOOKS, bookid, lang, books.CHAPTERS)

@@ -83,6 +83,7 @@ def showSearch(parent):
                 fname = os.path.join(lpath, book_id + ".json")
                 with open(fname, 'w') as f:
                     f.write(book_def)
+                parent.updateLibrary()
 
 
 
