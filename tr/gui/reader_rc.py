@@ -13,6 +13,10 @@ import os
 ROOT = os.path.dirname(os.path.realpath(__file__))
 ICONS = os.path.join(ROOT, 'icons')
 
+class ReaderPane(QtWidgets.QTextEdit):
+    def __init__(self, parent=None):
+        super(ReaderPane, self).__init__(parent)
+            
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -69,7 +73,7 @@ class Ui_MainWindow(object):
         self.textTokens = QtWidgets.QHBoxLayout()
         self.textTokens.setObjectName("textTokens")
         self.progressLayout.addLayout(self.textTokens)
-        self.readerPane = QtWidgets.QTextEdit(self.centralwidget)
+        self.readerPane = ReaderPane(self.centralwidget)
         self.readerPane.setReadOnly(True)
         self.readerPane.setObjectName("readerPane")        
         self.readerSplitter = QtWidgets.QSplitter(QtCore.Qt.Vertical)
@@ -174,7 +178,18 @@ class Ui_MainWindow(object):
         icon13.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "settings.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionSettings.setIcon(icon13)
         self.actionSettings.setObjectName("actionSettings")
+        # ZoomIn
+        self.actionZoomIn = QtWidgets.QAction(MainWindow)
+        iconZoomIn = QtGui.QIcon()
+        iconZoomIn.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "zoomin.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionZoomIn.setIcon(iconZoomIn)
+        # ZoomOut
+        self.actionZoomOut = QtWidgets.QAction(MainWindow)
+        iconZoomOut = QtGui.QIcon()
+        iconZoomOut.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "zoomout.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionZoomOut.setIcon(iconZoomOut)
         
+
         self.toolBar.addAction(self.actionAdd)
         self.toolBar.addAction(self.actionRemove)
         self.toolBar.addAction(self.actionDownload)
@@ -189,15 +204,20 @@ class Ui_MainWindow(object):
         self.toolBar.addAction(self.actionNextWord)
         self.toolBar.addAction(self.actionNextSent)
         self.toolBar.addAction(self.actionNextChaper)
+        
+        self.toolBar.addSeparator()
+        self.toolBar.addAction(self.actionZoomIn)
+        self.toolBar.addAction(self.actionZoomOut)        
+
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionSettings)
         self.toolBar.addAction(self.actionQuit)
 
         self.volumeSlider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
-        self.volumeSlider.setRange(0, 100)
+        self.volumeSlider.setRange(0, 200)
         self.volumeSlider.setValue(70)
         self.toolBar.addWidget(self.volumeSlider)
-        self.toolBar.addWidget
+
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -249,4 +269,9 @@ class Ui_MainWindow(object):
         self.actionDownload.setShortcut(_translate("MainWindow", "Ctrl+D"))        
         self.actionSettings.setText(_translate("MainWindow", "Settings"))
         self.actionSettings.setToolTip(_translate("MainWindow", "Application Settings"))
+        self.actionZoomIn.setText(_translate("MainWindow", "Zoom In"))
+        self.actionZoomIn.setToolTip(_translate("MainWindow", "Zoom in the reader pane"))
+        self.actionZoomOut.setText(_translate("MainWindow", "Zoom Out"))
+        self.actionZoomOut.setToolTip(_translate("MainWindow", "Zoom out the reader pane"))
+
 

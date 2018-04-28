@@ -71,6 +71,7 @@ class TranslationInfo(object):
 
 class ChapterInfo(object):
     def __init__(self, translation, chapter):
+        self.downloaded = False
         self.translation = translation
         self.idx = chapter[IDX]
         self.firstLine = chapter[FIRST_LINE]

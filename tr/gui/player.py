@@ -19,24 +19,23 @@ class Player(object):
         self.audio_file = None
         
     def play(self, content):
-        if content:
-            if isinstance(content, model.ChapterInfo):
-                # need to play a chapter
-                if not content.audioFile == self.audio_file:
-                    # need to load the chapter
-                    self.audio_file = content.audioFile
-                    media = self.instance.media_new(self.audio_file)
-                    self.player.set_media(media)
-                    self.player.play()
-                    time.sleep(0.1)
-                    self.length = self.player.get_length()
-                    self.chapterSlider.setMaximum(self.length)
+        if content:            
+            # need to play a chapter
+            if not content.audioFile == self.audio_file:
+                # need to load the chapter
+                self.audio_file = content.audioFile
+                media = self.instance.media_new(self.audio_file)
+                self.player.set_media(media)
+                self.player.play()
+                time.sleep(0.1)
+                self.length = self.player.get_length()
+                self.chapterSlider.setMaximum(self.length)
+            else:
+                # chapter is already loaded resume/start
+                if self.player.is_playing():
+                    pass
                 else:
-                    # chapter is already loaded resume/start
-                    if self.player.is_playing():
-                        pass
-                    else:
-                        self.player.play()
+                    self.player.play()
 
     def getPosition(self):
         position = self.length * self.player.get_position()

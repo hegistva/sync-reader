@@ -3,13 +3,15 @@ import sys
 import os
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QDialog
 from PyQt5.QtWidgets import QPushButton, QLabel
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QTimer, Qt
+from PyQt5.QtGui import QTextCursor, QTextCharFormat, QFont, QColor, QBrush
 from reader_rc import Ui_MainWindow
 import settings
 import search
 import book_nav
 import dl_manager
 import player
+import model
 
 class ReaderWidget(QMainWindow):
     
@@ -26,7 +28,9 @@ class ReaderWidget(QMainWindow):
         self.ui.actionPause.triggered.connect(self.player.pause)
         self.ui.actionDownload.triggered.connect(self.download)
         self.ui.actionSettings.triggered.connect(self.showSettings)
-        self.ui.actionAdd.triggered.connect(self.showSearch)        
+        self.ui.actionAdd.triggered.connect(self.showSearch)
+        self.ui.actionZoomIn.triggered.connect(self.zoomIn)
+        self.ui.actionZoomOut.triggered.connect(self.zoomOut)
         self.downloadManager = dl_manager.DownloadManager(self, self.ui.downloadProgress, self.ui.lblDownload) # download manager        
         self.timer = QTimer()
         self.timer.timeout.connect(self.updateGUI)
@@ -48,9 +52,14 @@ class ReaderWidget(QMainWindow):
         itm = self.ui.bookList.model().itemFromIndex(idx)
         m = itm.data()
         self.selectedContent = m
-        self.ui.selectedContent.setText("Selected Content: %s" % m)
-        self.player.play(self.selectedContent)
-
+        self.ui.selectedContent.setText("Selected Content: %s" % m)        
+        if isinstance(self.selectedContent, model.ChapterInfo):
+            if self.selectedContent.downloaded:
+                self.player.play(self.selectedContent)
+                with open(self.selectedContent.contentFile, 'r') as f:
+                    self.ui.readerPane.setText(f.read())
+                    
+                    
     def download(self):
         """Download selected content"""
         self.downloadManager.downloadContent(self.selectedContent)
@@ -62,7 +71,27 @@ class ReaderWidget(QMainWindow):
     def showSearch(self):
         """Show Search Dialog"""
         search.showSearch(self)
-    
+
+    def zoomIn(self):
+        self.ui.readerPane.zoomIn(2)
+        self.selectText(10, 40)
+
+    def zoomOut(self):
+        self.ui.readerPane.zoomOut(2)
+        self.selectText(50, 100)
+
+    def selectText(self, start_pos, end_pos):
+        cursor = self.ui.readerPane.textCursor()
+        cursor.setPosition(start_pos, QTextCursor.MoveAnchor)
+        print("Cursor position: %s" % cursor.position())
+        print("Moving to %s" % end_pos)
+        cursor.setPosition(end_pos, QTextCursor.KeepAnchor)
+        print("Cursor position: %s, text: %s" % (cursor.position(), cursor.selectedText()))
+        format = QTextCharFormat();
+        format.setForeground(Qt.darkRed)
+        format.setFontWeight(QFont.Bold);
+        cursor.mergeCharFormat(format)
+            
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     reader = ReaderWidget()
