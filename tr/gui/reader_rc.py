@@ -7,6 +7,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QTextCursor
 
 import os
 
@@ -16,6 +17,22 @@ ICONS = os.path.join(ROOT, 'icons')
 class ReaderPane(QtWidgets.QTextEdit):
     def __init__(self, parent=None):
         super(ReaderPane, self).__init__(parent)
+        # format for highlighting text
+        self.highlightFmt = QtGui.QTextCharFormat()
+        self.highlightFmt.setForeground(QtCore.Qt.darkRed)
+        self.highlightFmt.setFontWeight(QtGui.QFont.Bold)
+        # default format with no special settings
+        self.regularFmt = QtGui.QTextCharFormat()
+        self.regularFmt.setForeground(self.textColor())
+        self.regularFmt.setFontWeight(QtGui.QFont.Normal)
+        # cursor
+        self.readerCursor = self.textCursor()
+        
+    def highlight(self, start_pos, end_pos):
+        self.readerCursor.mergeCharFormat(self.regularFmt) # make sure the current selection is normal
+        self.readerCursor.setPosition(start_pos, QTextCursor.MoveAnchor)
+        self.readerCursor.setPosition(end_pos, QTextCursor.KeepAnchor)
+        self.readerCursor.mergeCharFormat(self.highlightFmt)   
             
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):

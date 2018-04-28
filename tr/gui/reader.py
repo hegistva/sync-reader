@@ -4,7 +4,6 @@ import os
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QDialog
 from PyQt5.QtWidgets import QPushButton, QLabel
 from PyQt5.QtCore import QTimer, Qt
-from PyQt5.QtGui import QTextCursor, QTextCharFormat, QFont, QColor, QBrush
 from reader_rc import Ui_MainWindow
 import settings
 import search
@@ -74,24 +73,10 @@ class ReaderWidget(QMainWindow):
 
     def zoomIn(self):
         self.ui.readerPane.zoomIn(2)
-        self.selectText(10, 40)
 
     def zoomOut(self):
         self.ui.readerPane.zoomOut(2)
-        self.selectText(50, 100)
-
-    def selectText(self, start_pos, end_pos):
-        cursor = self.ui.readerPane.textCursor()
-        cursor.setPosition(start_pos, QTextCursor.MoveAnchor)
-        print("Cursor position: %s" % cursor.position())
-        print("Moving to %s" % end_pos)
-        cursor.setPosition(end_pos, QTextCursor.KeepAnchor)
-        print("Cursor position: %s, text: %s" % (cursor.position(), cursor.selectedText()))
-        format = QTextCharFormat();
-        format.setForeground(Qt.darkRed)
-        format.setFontWeight(QFont.Bold);
-        cursor.mergeCharFormat(format)
-            
+                
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     reader = ReaderWidget()
