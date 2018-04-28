@@ -50,10 +50,8 @@ class Ui_MainWindow(object):
 
         self.progressLayout.addWidget(self.selectedContent)
 
-        self.chapterProgress = QtWidgets.QProgressBar(self.centralwidget)
-        self.chapterProgress.setProperty("value", 0)
-        self.chapterProgress.setObjectName("chapterProgress")
-        self.progressLayout.addWidget(self.chapterProgress)
+        self.chapterSlider = QtWidgets.QSlider(QtCore.Qt.Horizontal, self.centralwidget)
+        self.progressLayout.addWidget(self.chapterSlider)
         self.amplitudeChart = QtWidgets.QGraphicsView(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -96,7 +94,6 @@ class Ui_MainWindow(object):
         self.readerSplitter.setStretchFactor(1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
 
-        self.chapterProgress.hide()
         self.downloadProgress.hide()
         self.lblDownload.hide()
 
@@ -195,6 +192,12 @@ class Ui_MainWindow(object):
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionSettings)
         self.toolBar.addAction(self.actionQuit)
+
+        self.volumeSlider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
+        self.volumeSlider.setRange(0, 100)
+        self.volumeSlider.setValue(70)
+        self.toolBar.addWidget(self.volumeSlider)
+        self.toolBar.addWidget
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)

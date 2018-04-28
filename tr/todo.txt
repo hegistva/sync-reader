@@ -77,3 +77,4 @@ I. Pyqt5 gui
 10. refresh button for the navigator
 11. make sure the correct button is displayed for each chapter based on availability
 12. enable/disable toolbar buttons
+13. use PyQt5 signals to manage events/handlers
