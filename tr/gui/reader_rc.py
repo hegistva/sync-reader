@@ -18,30 +18,44 @@ from res import ICONS
 class ReaderPane(QtWidgets.QTextEdit):
     def __init__(self, parent=None):
         super(ReaderPane, self).__init__(parent)
-        # format for highlighting text
-        self.highlightFmt = QtGui.QTextCharFormat()
-        self.highlightFmt.setForeground(QtCore.Qt.darkRed)
-        self.highlightFmt.setFontWeight(QtGui.QFont.Bold)
+        # format for highlighting token
+        self.tokenFmt = QtGui.QTextCharFormat()
+        self.tokenFmt.setForeground(QtCore.Qt.darkRed)
+        self.tokenFmt.setFontWeight(QtGui.QFont.Bold)
+        # format for highlighting token
+        self.beadFmt = QtGui.QTextCharFormat()
+        self.beadFmt.setForeground(QtCore.Qt.darkBlue)
+        self.beadFmt.setFontWeight(QtGui.QFont.Normal)
         # default format with no special settings
         self.regularFmt = QtGui.QTextCharFormat()
         self.regularFmt.setForeground(self.textColor())
         self.regularFmt.setFontWeight(QtGui.QFont.Normal)
-        # cursor
-        self.readerCursor = self.textCursor()
+        # cursors
+        self.tokenCursor = self.textCursor()
+        self.beadCursor = self.textCursor()
         self.visibleCursor = self.textCursor()
         self.length = 0
 
     def setText(self, text):
         self.length = len(text)
         return super(ReaderPane, self).setText(text)
-        
-    def highlight(self, start_pos, end_pos):
-        self.readerCursor.mergeCharFormat(self.regularFmt) # make sure the current selection is normal
-        self.readerCursor.setPosition(start_pos, QTextCursor.MoveAnchor)
-        self.readerCursor.setPosition(end_pos, QTextCursor.KeepAnchor)
-        self.readerCursor.mergeCharFormat(self.highlightFmt)
-        self.visibleCursor.setPosition(min(start_pos + 200, self.length), QTextCursor.MoveAnchor) # for the autoscroll
+    
+    def highlightBead(self, start_pos, end_pos):
+        self.beadCursor.setPosition(0, QTextCursor.MoveAnchor)
+        self.beadCursor.setPosition(self.length, QTextCursor.KeepAnchor)
+        self.beadCursor.mergeCharFormat(self.regularFmt) # make sure the current selection is normal
+        self.beadCursor.setPosition(start_pos, QTextCursor.MoveAnchor)
+        self.beadCursor.setPosition(end_pos, QTextCursor.KeepAnchor)
+        self.beadCursor.mergeCharFormat(self.beadFmt)
+        self.visibleCursor.setPosition(min(end_pos + 200, self.length), QTextCursor.MoveAnchor) # for the autoscroll
         self.setTextCursor(self.visibleCursor)
+
+    def highlightToken(self, start_pos, end_pos):
+        fmt = self.beadFmt if (self.tokenCursor.selectionStart() <= self.beadCursor.selectionEnd()) and self.tokenCursor.selectionEnd() >= self.beadCursor.selectionStart() else self.regularFmt
+        self.tokenCursor.mergeCharFormat(fmt) # make sure the current selection is normal
+        self.tokenCursor.setPosition(start_pos, QTextCursor.MoveAnchor)
+        self.tokenCursor.setPosition(end_pos, QTextCursor.KeepAnchor)
+        self.tokenCursor.mergeCharFormat(self.tokenFmt)
                     
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):

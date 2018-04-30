@@ -32,6 +32,7 @@ class ReaderWidget(QMainWindow):
         self.ui.player.position_changed.connect(self.positionChanged)
         self.ui.player.length_changed.connect(self.lengthChanged)
         self.ui.player.token_changed.connect(self.tokenChanged)
+        self.ui.player.bead_changed.connect(self.beadChanged)
         self.ui.downloadManager.completed.connect(self.downloadCompleted)
         self.ui.downloadManager.chapter_completed.connect(self.chapterDownloaded)
         self.ui.downloadManager.progress_changed.connect(self.downloadProgress)
@@ -65,9 +66,13 @@ class ReaderWidget(QMainWindow):
 
     def tokenChanged(self, newToken):
         # highlight the token in the text
-        self.ui.readerPane.highlight(newToken.text_start, newToken.text_end)
-        self.ui.readerPane.ensureCursorVisible()
+        self.ui.readerPane.highlightToken(newToken.text_start, newToken.text_end)
         
+    def beadChanged(self, newBead):
+        # highlight the bead in the text
+        self.ui.readerPane.highlightBead(newBead.text_start, newBead.text_end)
+        self.ui.readerPane.ensureCursorVisible()
+
     def download(self):
         """Download selected content"""
         self.ui.downloadManager.downloadContent(self.selectedContent)

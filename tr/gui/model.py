@@ -77,7 +77,17 @@ class Token(object):
         self.audio_end = audioe    
 
     def __str__(self):
-        return "Id: %s, TextStart: %s, TextEnd: %s, AudioStart: %s, AudioEnd: %s" % (self.id, self.text_start, self.text_end, self.audio_start, self.audio_end)
+        return "Token[Id: %s, TextStart: %s, TextEnd: %s, AudioStart: %s, AudioEnd: %s]" % (self.id, self.text_start, self.text_end, self.audio_start, self.audio_end)
+
+class Bead(object):
+    def __init__(self, idx, texts, texte):
+        self.id = idx
+        self.text_start = texts
+        self.text_end = texte
+
+    def __str__(self):
+        return "Bead[Id: %s, TextStart: %s, TextEnd: %s]" % (self.id, self.text_start, self.text_end)
+
 class ChapterInfo(object):
     def __init__(self, translation, chapter):
         self.audioMap = None
@@ -107,7 +117,11 @@ class ChapterInfo(object):
     def currentToken(self, time_ms):
         if not self.audioMap is None:
             return np.searchsorted(self.audioMap['as'], time_ms) - 1
-            
+
+    def currentBead(self, char_pos):
+        if not self.beads is None:
+            return np.searchsorted(self.beads['start'], char_pos) - 1
+
     def updateStatus(self):
         self.downloaded = os.path.exists(self.audioFile) and os.path.exists(self.mappingFile)
 

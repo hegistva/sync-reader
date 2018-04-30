@@ -9,7 +9,8 @@ from PyQt5 import QtCore
 
 class Player(QtCore.QObject):
 
-    token_changed = QtCore.pyqtSignal(model.Token, name="tokenChanged")
+    token_changed = QtCore.pyqtSignal(model.Token, name='tokenChanged')
+    bead_changed = QtCore.pyqtSignal(model.Bead, name='beadChanged')
     position_changed = QtCore.pyqtSignal(int, name='positionChanged')
     length_changed = QtCore.pyqtSignal(int, name='lengthChanged')
 
@@ -26,6 +27,7 @@ class Player(QtCore.QObject):
         self.audio_file = None
         self.content = None
         self.token = None
+        self.bead = None
 
     def play(self, content):
         self.content = content        
@@ -84,7 +86,12 @@ class Player(QtCore.QObject):
                 if tkn != self.token:
                     self.token = tkn
                     if tkn >= 0:
-                        tkn_obj = model.Token(tkn, *self.content.audioMap[tkn])
+                        tkn_obj = model.Token(tkn, *self.content.audioMap[tkn])                        
+                        bead = self.content.currentBead(tkn_obj.text_end)
+                        if bead != self.bead:
+                            self.bead = bead
+                            bead_obj = model.Bead(*self.content.beads[bead])
+                            self.bead_changed.emit(bead_obj)
                         self.token_changed.emit(tkn_obj)
 
 
