@@ -23,26 +23,30 @@ def alignment(lang_source, lang_target, text_source, text_target):
     src_set = set()
     tgt_set = set()
     blocks = []
+    last_source_end = 0
+    last_target_end = 0    
     for src_idx, tgt_idx in alignment:
         if src_idx in src_set or tgt_idx in tgt_set:
             src_set.add(src_idx)
             tgt_set.add(tgt_idx)
         else:
             if len(src_set) or len(tgt_set):
-                src_bead = (0, 0)
-                tgt_bead = (0, 0)
+                src_bead = (last_source_end, last_source_end)
+                tgt_bead = (last_target_end, last_target_end)
                 if len(src_set):
-                    src_bead = (sent_source[min(src_set)].start_char, sent_source[max(src_set)].end_char)
+                    last_source_end = sent_source[max(src_set)].end_char
+                    src_bead = (sent_source[min(src_set)].start_char, last_source_end)
                 if len(tgt_set):
-                    tgt_bead = (sent_target[min(tgt_set)].start_char, sent_target[max(tgt_set)].end_char)                
+                    last_target_end = sent_target[max(tgt_set)].end_char
+                    tgt_bead = (sent_target[min(tgt_set)].start_char, last_target_end)
                 blocks.append(src_bead + tgt_bead)
             src_set.clear()
             tgt_set.clear()
             src_set.add(src_idx)
             tgt_set.add(tgt_idx)
     if len(src_set) or len(tgt_set):
-        src_bead = (0, 0)
-        tgt_bead = (0, 0)
+        src_bead = (last_source_end, last_source_end)
+        tgt_bead = (last_target_end, last_target_end)
         if len(src_set):
             src_bead = (sent_source[min(src_set)].start_char, sent_source[max(src_set)].end_char)
         if len(tgt_set):

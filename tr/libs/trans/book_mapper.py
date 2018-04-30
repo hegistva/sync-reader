@@ -42,9 +42,9 @@ def beadMapChapter(source_lang, target_lang, bookid, chapter, saveResults=False)
         source_file = os.path.join(book_manager.chaptersPath(source_lang, bookid),book_manager.beadFile(chapter))
         target_file = os.path.join(book_manager.chaptersPath(target_lang, bookid),book_manager.beadFile(chapter))
         with open(source_file, 'w') as sourcef, open(target_file, 'w') as targetf:
-            for block in blocks:
-                sourcef.write("%d,%d\n" % block[:2])
-                targetf.write("%d,%d\n" % block[2:])
+            for idx, block in enumerate(blocks):
+                sourcef.write("%d,%d,%d\n" % (idx+1, block[0], block[1]))
+                targetf.write("%d,%d,%d\n" % (idx+1, block[2], block[3]))
     print('Completed bead mapping chapter %s' % chapter)
     return blocks
 
