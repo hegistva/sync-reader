@@ -19,6 +19,9 @@ def chapterFile(chnum):
 def mappingFile(chnum):
     return 'chapter_%04d.audio.map' % chnum
 
+def beadFile(chnum):
+    return 'chapter_%04d.beads' % chnum
+
 def chaptersPath(lang, bookid):
     return os.path.join(BOOKS, bookid, lang, books.CHAPTERS)
 

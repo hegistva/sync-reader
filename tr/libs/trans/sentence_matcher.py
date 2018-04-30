@@ -6,6 +6,49 @@ from tr.libs.trans import utils
 from tr.libs.trans import glove
 from tr.libs.trans import lemma_mapper
 
+# calculate the position of each bead (corresponding content) in both languages
+def alignment(lang_source, lang_target, text_source, text_target):
+    # get spacy models for language processing
+    sp_source = utils.getSpacy(lang_source)
+    sp_target = utils.getSpacy(lang_target)
+    doc_source = sp_source(text_source)
+    doc_target = sp_target(text_target)
+    
+    # if we use english, use load the embeddings in a single step to improve performances
+    sent_source = [sent for sent in doc_source.sents]
+    sent_target = [sent for sent in doc_target.sents]
+    len_source = [sent.end_char - sent.start_char for sent in sent_source]
+    len_target = [sent.end_char - sent.start_char for sent in sent_target]
+    alignment = gale_church.align_blocks(len_source, len_target)
+    src_set = set()
+    tgt_set = set()
+    blocks = []
+    for src_idx, tgt_idx in alignment:
+        if src_idx in src_set or tgt_idx in tgt_set:
+            src_set.add(src_idx)
+            tgt_set.add(tgt_idx)
+        else:
+            if len(src_set) or len(tgt_set):
+                src_bead = (0, 0)
+                tgt_bead = (0, 0)
+                if len(src_set):
+                    src_bead = (sent_source[min(src_set)].start_char, sent_source[max(src_set)].end_char)
+                if len(tgt_set):
+                    tgt_bead = (sent_target[min(tgt_set)].start_char, sent_target[max(tgt_set)].end_char)                
+                blocks.append(src_bead + tgt_bead)
+            src_set.clear()
+            tgt_set.clear()
+            src_set.add(src_idx)
+            tgt_set.add(tgt_idx)
+    if len(src_set) or len(tgt_set):
+        src_bead = (0, 0)
+        tgt_bead = (0, 0)
+        if len(src_set):
+            src_bead = (sent_source[min(src_set)].start_char, sent_source[max(src_set)].end_char)
+        if len(tgt_set):
+            tgt_bead = (sent_target[min(tgt_set)].start_char, sent_target[max(tgt_set)].end_char)                
+        blocks.append(src_bead + tgt_bead)
+    return blocks
 
 def alignSentences(lang_source, lang_target, text_source, text_target):
     # get spacy models for language processing

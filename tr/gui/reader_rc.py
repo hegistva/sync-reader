@@ -40,7 +40,7 @@ class ReaderPane(QtWidgets.QTextEdit):
         self.readerCursor.setPosition(start_pos, QTextCursor.MoveAnchor)
         self.readerCursor.setPosition(end_pos, QTextCursor.KeepAnchor)
         self.readerCursor.mergeCharFormat(self.highlightFmt)
-        self.visibleCursor.setPosition(min(start_pos + 1000, self.length), QTextCursor.MoveAnchor) # for the autoscroll
+        self.visibleCursor.setPosition(min(start_pos + 200, self.length), QTextCursor.MoveAnchor) # for the autoscroll
         self.setTextCursor(self.visibleCursor)
                     
 class Ui_MainWindow(object):

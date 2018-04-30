@@ -178,7 +178,7 @@ def alignChapter(lang, bookid, chapter):
     """
     bar = IncrementalBar('Processing %s [%s] (%s)' % (bookid, lang, chapter) , max=100)
     bar.start()
-    outfile = os.path.join(book_manager.chaptersPath(lang, bookid),'chapter_%04d.audio.map' % chapter)
+    outfile = os.path.join(book_manager.chaptersPath(lang, bookid),book_manager.mappingFile(chapter))
     audio_file, start_time, stop_time = book_manager.chapterAudio(lang, bookid, chapter)
     wavfile = os.path.join(config.TEMP_DIR, 'chapter%s.wav' % chapter)
     gu.removeFile(wavfile)
