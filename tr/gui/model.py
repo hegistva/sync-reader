@@ -1,12 +1,11 @@
 
 import os
 import json
+import numpy as np
 from settings import Config
 from tr.libs.trans.utils import Lang
 from tr.books.book_manager import AUDIO_URL, MAPPING_URL, ID, chapterFile
 from tr.books.books import FIRST_LINE, LAST_LINE, IDX, TRANSLATIONS, URL, TITLE, CHAPTERS
-
-import res
 
 CHAPTER_CAPTION = {
     Lang.ENG: 'Chapter',
@@ -69,8 +68,19 @@ class TranslationInfo(object):
     def __str__(self):
         return "Title: %s [%s, %d chapters]" % (self.title, self.language, len(self.chapters))
 
+class Token(object):
+    def __init__(self, idx, texts, texte, audios, audioe):
+        self.id = idx
+        self.text_start = texts
+        self.text_end = texte
+        self.audio_start = audios
+        self.audio_end = audioe    
+
+    def __str__(self):
+        return "Id: %s, TextStart: %s, TextEnd: %s, AudioStart: %s, AudioEnd: %s" % (self.id, self.text_start, self.text_end, self.audio_start, self.audio_end)
 class ChapterInfo(object):
     def __init__(self, translation, chapter):
+        self.audioMap = None
         self.downloaded = False
         self.translation = translation
         self.idx = chapter[IDX]
@@ -85,14 +95,16 @@ class ChapterInfo(object):
         self.translation.addChapter(self)
         self.updateStatus()
 
+    def loadAudioMap(self):
+        self.audioMap = np.genfromtxt(self.mappingFile, delimiter=',', dtype=[('ts', int),('te', int),('as', int),('ae', int)])
+        self.audioMap.sort(order=['as'], kind='mergesort', axis=0)
+        
+    def currentToken(self, time_ms):
+        if not self.audioMap is None:
+            return np.searchsorted(self.audioMap['as'], time_ms) - 1
+            
     def updateStatus(self):
         self.downloaded = os.path.exists(self.audioFile) and os.path.exists(self.mappingFile)
-        # update display
-        if self.treeNode:
-            if self.downloaded:
-                self.treeNode.setIcon(res.play_icon)
-            else:
-                self.treeNode.setIcon(res.dl_icon)
 
     def saveContent(self):
         """Save the content file from the book"""

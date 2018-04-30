@@ -11,8 +11,9 @@ from PyQt5.QtGui import QTextCursor
 
 import os
 
-ROOT = os.path.dirname(os.path.realpath(__file__))
-ICONS = os.path.join(ROOT, 'icons')
+import player
+import dl_manager
+from res import ICONS
 
 class ReaderPane(QtWidgets.QTextEdit):
     def __init__(self, parent=None):
@@ -27,17 +28,27 @@ class ReaderPane(QtWidgets.QTextEdit):
         self.regularFmt.setFontWeight(QtGui.QFont.Normal)
         # cursor
         self.readerCursor = self.textCursor()
+        self.visibleCursor = self.textCursor()
+        self.length = 0
+
+    def setText(self, text):
+        self.length = len(text)
+        return super(ReaderPane, self).setText(text)
         
     def highlight(self, start_pos, end_pos):
         self.readerCursor.mergeCharFormat(self.regularFmt) # make sure the current selection is normal
         self.readerCursor.setPosition(start_pos, QTextCursor.MoveAnchor)
         self.readerCursor.setPosition(end_pos, QTextCursor.KeepAnchor)
-        self.readerCursor.mergeCharFormat(self.highlightFmt)   
-            
+        self.readerCursor.mergeCharFormat(self.highlightFmt)
+        self.visibleCursor.setPosition(min(start_pos + 1000, self.length), QTextCursor.MoveAnchor) # for the autoscroll
+        self.setTextCursor(self.visibleCursor)
+                    
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1280, 800)
+        self.player = player.Player(MainWindow)
+        self.downloadManager = dl_manager.DownloadManager(MainWindow)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.mainLayout = QtWidgets.QHBoxLayout(self.centralwidget)
@@ -73,6 +84,8 @@ class Ui_MainWindow(object):
 
         self.chapterSlider = QtWidgets.QSlider(QtCore.Qt.Horizontal, self.centralwidget)
         self.progressLayout.addWidget(self.chapterSlider)
+        self.chapterSlider.sliderMoved.connect(self.player.setPosition)
+
         self.amplitudeChart = QtWidgets.QGraphicsView(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -234,8 +247,8 @@ class Ui_MainWindow(object):
         self.volumeSlider.setRange(0, 200)
         self.volumeSlider.setValue(70)
         self.toolBar.addWidget(self.volumeSlider)
-
-
+        self.volumeSlider.sliderMoved.connect(self.player.setVolume) # connect to the player
+        
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
