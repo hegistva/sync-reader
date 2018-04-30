@@ -53,10 +53,10 @@ class ReaderWidget(QMainWindow):
         if isinstance(self.selectedContent, model.ChapterInfo):
             self.currentChapter = self.selectedContent
             if self.currentChapter.downloaded:
+                self.currentChapter.loadMappings()
                 self.ui.player.play(self.currentChapter)
                 with open(self.currentChapter.contentFile, 'r') as f:
-                    self.ui.readerPane.setText(f.read())
-                self.currentChapter.loadMappings()
+                    self.ui.readerPane.setText(f.read())                
 
     def lengthChanged(self, new_length):
         self.ui.chapterSlider.setMaximum(new_length)
@@ -66,11 +66,11 @@ class ReaderWidget(QMainWindow):
 
     def tokenChanged(self, newToken):
         # highlight the token in the text
-        self.ui.readerPane.highlightToken(newToken.text_start, newToken.text_end)
+        self.ui.readerPane.highlightToken(newToken)
         
     def beadChanged(self, newBead):
         # highlight the bead in the text
-        self.ui.readerPane.highlightBead(newBead.text_start, newBead.text_end)
+        self.ui.readerPane.highlightBead(newBead)
         self.ui.readerPane.ensureCursorVisible()
 
     def download(self):

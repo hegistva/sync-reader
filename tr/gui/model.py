@@ -84,9 +84,10 @@ class Bead(object):
         self.id = idx
         self.text_start = texts
         self.text_end = texte
+        self.offset = 2 * (self.id - 1)
 
     def __str__(self):
-        return "Bead[Id: %s, TextStart: %s, TextEnd: %s]" % (self.id, self.text_start, self.text_end)
+        return "Bead[Id: %s, TextStart: %s, TextEnd: %s, Offset: %s]" % (self.id, self.text_start, self.text_end, self.offset)
 
 class ChapterInfo(object):
     def __init__(self, translation, chapter):
@@ -112,7 +113,8 @@ class ChapterInfo(object):
         self.audioMap = np.genfromtxt(self.mappingFile, delimiter=',', dtype=[('ts', int),('te', int),('as', int),('ae', int)])
         self.audioMap.sort(order=['as'], kind='mergesort', axis=0)
         self.beads = np.genfromtxt(self.beadsFile, delimiter=',', dtype=[('id', int),('start', int),('end', int)])
-        self.beads.sort(order=['start'], kind='mergesort', axis=0)
+        self.beads.sort(order=['start'], kind='mergesort', axis=0)        
+        self.saveContent() # save the content file if not available yet
         
     def currentToken(self, time_ms):
         if not self.audioMap is None:
@@ -123,7 +125,7 @@ class ChapterInfo(object):
             return np.searchsorted(self.beads['start'], char_pos) - 1
 
     def updateStatus(self):
-        self.downloaded = os.path.exists(self.audioFile) and os.path.exists(self.mappingFile)
+        self.downloaded = os.path.exists(self.audioFile) and os.path.exists(self.mappingFile) and os.path.exists(self.beadsFile)
 
     def saveContent(self):
         """Save the content file from the book"""
@@ -131,6 +133,12 @@ class ChapterInfo(object):
             with open(self.translation.book_file, 'r') as f:
                 lines = [line.strip() for line in f.readlines()]
                 ch_cont = ' '.join(lines[self.firstLine-1:self.lastLine+1])
+                start = 0
+                new_lines = []
+                for _, _, end in self.beads:
+                    new_lines.append(ch_cont[start:end])
+                    start = end
+                ch_cont = '\n\n'.join(new_lines)
                 with open(self.contentFile, 'w') as chf:
                     chf.write(ch_cont)
 

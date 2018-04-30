@@ -35,12 +35,16 @@ class ReaderPane(QtWidgets.QTextEdit):
         self.beadCursor = self.textCursor()
         self.visibleCursor = self.textCursor()
         self.length = 0
+        self.bead = None
 
     def setText(self, text):
         self.length = len(text)
         return super(ReaderPane, self).setText(text)
     
-    def highlightBead(self, start_pos, end_pos):
+    def highlightBead(self, bead):
+        self.bead = bead
+        start_pos = bead.text_start + bead.offset
+        end_pos = bead.text_end + bead.offset
         self.beadCursor.setPosition(0, QTextCursor.MoveAnchor)
         self.beadCursor.setPosition(self.length, QTextCursor.KeepAnchor)
         self.beadCursor.mergeCharFormat(self.regularFmt) # make sure the current selection is normal
@@ -50,9 +54,14 @@ class ReaderPane(QtWidgets.QTextEdit):
         self.visibleCursor.setPosition(min(end_pos + 200, self.length), QTextCursor.MoveAnchor) # for the autoscroll
         self.setTextCursor(self.visibleCursor)
 
-    def highlightToken(self, start_pos, end_pos):
+    def highlightToken(self, token):
         fmt = self.beadFmt if (self.tokenCursor.selectionStart() <= self.beadCursor.selectionEnd()) and self.tokenCursor.selectionEnd() >= self.beadCursor.selectionStart() else self.regularFmt
         self.tokenCursor.mergeCharFormat(fmt) # make sure the current selection is normal
+        start_pos = token.text_start
+        end_pos = token.text_end
+        if not self.bead is None:
+            start_pos += self.bead.offset
+            end_pos += self.bead.offset
         self.tokenCursor.setPosition(start_pos, QTextCursor.MoveAnchor)
         self.tokenCursor.setPosition(end_pos, QTextCursor.KeepAnchor)
         self.tokenCursor.mergeCharFormat(self.tokenFmt)

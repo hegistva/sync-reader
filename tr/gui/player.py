@@ -18,7 +18,7 @@ class Player(QtCore.QObject):
         super(Player, self).__init__(parent)
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.update)
-        self.timeout = 100
+        self.timeout = 40
         self.prevPosition = 0
         self.instance = vlc.Instance() 
         self.player = self.instance.media_player_new()

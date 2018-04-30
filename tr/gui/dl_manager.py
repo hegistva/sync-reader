@@ -38,8 +38,6 @@ class DownloadManager(QtCore.QObject):
             self.download(chapter.translation.content_url, dest, blocking=True) # download the book first
             chapter.translation.updateStatus() # update the book status
     
-        chapter.saveContent() # save contents of the chapter
-
         # download the chapter files next
         if not chapter.downloaded:            
             if not os.path.exists(chapter.audioFile):
