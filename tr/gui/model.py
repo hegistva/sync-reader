@@ -81,6 +81,7 @@ class Token(object):
 class ChapterInfo(object):
     def __init__(self, translation, chapter):
         self.audioMap = None
+        self.beads = None
         self.downloaded = False
         self.translation = translation
         self.idx = chapter[IDX]
@@ -97,9 +98,11 @@ class ChapterInfo(object):
         self.translation.addChapter(self)
         self.updateStatus()
 
-    def loadAudioMap(self):
+    def loadMappings(self):
         self.audioMap = np.genfromtxt(self.mappingFile, delimiter=',', dtype=[('ts', int),('te', int),('as', int),('ae', int)])
         self.audioMap.sort(order=['as'], kind='mergesort', axis=0)
+        self.beads = np.genfromtxt(self.beadsFile, delimiter=',', dtype=[('id', int),('start', int),('end', int)])
+        self.beads.sort(order=['start'], kind='mergesort', axis=0)
         
     def currentToken(self, time_ms):
         if not self.audioMap is None:

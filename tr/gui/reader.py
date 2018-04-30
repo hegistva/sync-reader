@@ -55,7 +55,7 @@ class ReaderWidget(QMainWindow):
                 self.ui.player.play(self.currentChapter)
                 with open(self.currentChapter.contentFile, 'r') as f:
                     self.ui.readerPane.setText(f.read())
-                self.currentChapter.loadAudioMap()
+                self.currentChapter.loadMappings()
 
     def lengthChanged(self, new_length):
         self.ui.chapterSlider.setMaximum(new_length)
