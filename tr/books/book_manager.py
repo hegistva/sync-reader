@@ -11,6 +11,7 @@ BOOKS = os.path.join(config.ROOT, 'library')
 AUDIO = 'audio'
 AUDIO_URL = 'audio_url'
 MAPPING_URL = 'mapping_url'
+BEAD_URL = 'bread_url'
 ID = 'id'
 
 def chapterFile(chnum):
@@ -55,6 +56,7 @@ class NetBook(object):
                 chapter[books.LAST_LINE] = ch[books.LAST_LINE]
                 chapter[AUDIO_URL] = "%s%s/%s" % (tr_url, AUDIO, ch[books.AUDIO_FILE])
                 chapter[MAPPING_URL] = "%s%s/%s" % (tr_url, books.CHAPTERS, mappingFile(idx + 1))
+                chapter[BEAD_URL] = "%s%s/%s" % (tr_url, books.CHAPTERS, beadFile(idx + 1))
                 chapters.append(chapter)
             tr[books.CHAPTERS] = chapters
         return cls(book)

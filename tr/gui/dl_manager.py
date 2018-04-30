@@ -46,6 +46,8 @@ class DownloadManager(QtCore.QObject):
                 self.download(chapter.audioURL, dest, blocking=False, chapter=chapter)
             if not os.path.exists(chapter.mappingFile):
                 self.download(chapter.mappingURL, dest, blocking=False, chapter=chapter)
+            if not os.path.exists(chapter.beadsFile):
+                self.download(chapter.beadsURL, dest, blocking=False, chapter=chapter)
 
     def downloadTranslation(self, translation):
         # download each chapter

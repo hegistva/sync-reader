@@ -4,7 +4,7 @@ import json
 import numpy as np
 from settings import Config
 from tr.libs.trans.utils import Lang
-from tr.books.book_manager import AUDIO_URL, MAPPING_URL, ID, chapterFile
+from tr.books.book_manager import AUDIO_URL, MAPPING_URL, BEAD_URL, ID, chapterFile
 from tr.books.books import FIRST_LINE, LAST_LINE, IDX, TRANSLATIONS, URL, TITLE, CHAPTERS
 
 CHAPTER_CAPTION = {
@@ -90,6 +90,8 @@ class ChapterInfo(object):
         self.audioFile = os.path.join(self.translation.book_path, self.audioURL.split('/')[-1])
         self.mappingURL = chapter[MAPPING_URL]
         self.mappingFile = os.path.join(self.translation.book_path, self.mappingURL.split('/')[-1])
+        self.beadsURL = chapter[BEAD_URL]
+        self.beadsFile = os.path.join(self.translation.book_path, self.beadsURL.split('/')[-1])
         self.contentFile = os.path.join(self.translation.book_path, chapterFile(self.idx))
         self.treeNode = None
         self.translation.addChapter(self)
