@@ -14,9 +14,11 @@ import os
 import player
 import dl_manager
 from res import ICONS
+from settings import Config
 
 class ReaderPane(QtWidgets.QTextEdit):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, autoScroll=True):
+        self.autoScroll = autoScroll
         super(ReaderPane, self).__init__(parent)
         # format for highlighting token
         self.tokenFmt = QtGui.QTextCharFormat()
@@ -36,6 +38,9 @@ class ReaderPane(QtWidgets.QTextEdit):
         self.visibleCursor = self.textCursor()
         self.length = 0
         self.bead = None
+        
+    def setAutoScroll(self, autoScroll):
+        self.autoScroll = autoScroll
 
     def setText(self, text):
         self.length = len(text)
@@ -51,8 +56,9 @@ class ReaderPane(QtWidgets.QTextEdit):
         self.beadCursor.setPosition(start_pos, QTextCursor.MoveAnchor)
         self.beadCursor.setPosition(end_pos, QTextCursor.KeepAnchor)
         self.beadCursor.mergeCharFormat(self.beadFmt)
-        self.visibleCursor.setPosition(min(end_pos + 200, self.length), QTextCursor.MoveAnchor) # for the autoscroll
-        self.setTextCursor(self.visibleCursor)
+        if self.autoScroll:
+            self.visibleCursor.setPosition(min(end_pos + 200, self.length), QTextCursor.MoveAnchor) # for the autoscroll
+            self.setTextCursor(self.visibleCursor)
 
     def highlightToken(self, token):
         fmt = self.beadFmt if (self.tokenCursor.selectionStart() <= self.beadCursor.selectionEnd()) and self.tokenCursor.selectionEnd() >= self.beadCursor.selectionStart() else self.regularFmt
@@ -126,9 +132,9 @@ class Ui_MainWindow(object):
         self.textTokens = QtWidgets.QHBoxLayout()
         self.textTokens.setObjectName("textTokens")
         self.progressLayout.addLayout(self.textTokens)
-        self.readerPane = ReaderPane(self.centralwidget)
+        self.readerPane = ReaderPane(self.centralwidget, Config.value(Config.AUTO_SCROLL))
         self.readerPane.setReadOnly(True)
-        self.readerPane.setObjectName("readerPane")        
+        self.readerPane.setObjectName("readerPane")                           
         self.readerSplitter = QtWidgets.QSplitter(QtCore.Qt.Vertical)
         self.readerSplitter.setObjectName('readerSplitter')
         self.readerWidget = QtWidgets.QWidget(self.centralwidget)

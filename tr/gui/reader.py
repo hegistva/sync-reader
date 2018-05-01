@@ -71,7 +71,6 @@ class ReaderWidget(QMainWindow):
     def beadChanged(self, newBead):
         # highlight the bead in the text
         self.ui.readerPane.highlightBead(newBead)
-        self.ui.readerPane.ensureCursorVisible()
 
     def download(self):
         """Download selected content"""

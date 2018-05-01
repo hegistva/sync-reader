@@ -28,11 +28,11 @@ class Config:
         if s == cls.APP_FOLDER:
             return APP_FOLDER
         elif s == cls.BOOK_LOCATION:
-            return SETTING[BOOK_LOCATION]
+            return SETTINGS[BOOK_LOCATION]
         elif s == cls.AUTO_SCROLL:
-            return SETTING[AUTO_SCROLL]
+            return SETTINGS[AUTO_SCROLL]
         elif s == cls.SKIP_INTRO:
-            return SETTING[SKIP_INTRO]
+            return SETTINGS[SKIP_INTRO]
         elif s == cls.LIBRARY:
             return os.path.join(SETTINGS[BOOK_LOCATION], LIBRARY)
         elif s == cls.CONTENT:
@@ -88,9 +88,11 @@ def showSettings(parent):
     if result == QtWidgets.QDialog.Accepted:
         SETTINGS.update({BOOK_LOCATION: dialog.book_location.text()})
         SETTINGS.update({SKIP_INTRO: dialog.skipIntro.isChecked()})
-        SETTINGS.update({AUTO_SCROLL: dialog.autoScroll.isChecked()})
+        auto_scroll = dialog.autoScroll.isChecked()
+        SETTINGS.update({AUTO_SCROLL: auto_scroll})
+        parent.ui.readerPane.setAutoScroll(auto_scroll)
         with open(SETTINGS_FILE, 'w') as f:
-            f.write(json.dumps(SETTINGS))        
+            f.write(json.dumps(SETTINGS))
 
 
 
