@@ -33,9 +33,11 @@ class ReaderWidget(QMainWindow):
         self.ui.player.length_changed.connect(self.lengthChanged)
         self.ui.player.token_changed.connect(self.tokenChanged)
         self.ui.player.bead_changed.connect(self.beadChanged)
+        self.ui.player.chapter_ended.connect(self.playNextChapter)
         self.ui.downloadManager.completed.connect(self.downloadCompleted)
         self.ui.downloadManager.chapter_completed.connect(self.chapterDownloaded)
         self.ui.downloadManager.progress_changed.connect(self.downloadProgress)
+        self.autoPlay = settings.Config.value(settings.Config.AUTO_PLAY)
         book_nav.initNavigator(self.ui.bookList, self)
         
 
@@ -56,7 +58,10 @@ class ReaderWidget(QMainWindow):
                 self.currentChapter.loadMappings()
                 self.ui.player.play(self.currentChapter)
                 with open(self.currentChapter.contentFile, 'r') as f:
-                    self.ui.readerPane.setText(f.read())                
+                    self.ui.readerPane.setText(f.read())
+    
+    def playNextChapter(self):
+        print('TODO: Implement playing the next chapter (calling select)')
 
     def lengthChanged(self, new_length):
         self.ui.chapterSlider.setMaximum(new_length)
