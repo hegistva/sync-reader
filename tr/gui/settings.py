@@ -87,10 +87,16 @@ def showSettings(parent):
     result = dialog.exec_()
     if result == QtWidgets.QDialog.Accepted:
         SETTINGS.update({BOOK_LOCATION: dialog.book_location.text()})
-        SETTINGS.update({SKIP_INTRO: dialog.skipIntro.isChecked()})
+        
+        skip_intro = dialog.skipIntro.isChecked()
+        SETTINGS.update({SKIP_INTRO: skip_intro})
+        # TODO: use events
+        parent.ui.player.skipIntro = skip_intro
+
         auto_scroll = dialog.autoScroll.isChecked()
         SETTINGS.update({AUTO_SCROLL: auto_scroll})
-        parent.ui.readerPane.setAutoScroll(auto_scroll)
+        # TODO: use events
+        parent.ui.readerPane.autoScroll = auto_scroll
         with open(SETTINGS_FILE, 'w') as f:
             f.write(json.dumps(SETTINGS))
 

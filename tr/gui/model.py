@@ -98,6 +98,8 @@ class ChapterInfo(object):
         self.idx = chapter[IDX]
         self.firstLine = chapter[FIRST_LINE]
         self.lastLine = chapter[LAST_LINE]
+        self.audioStart = 0
+        self.audioEnd = 999999
         self.audioURL = chapter[AUDIO_URL]
         self.audioFile = os.path.join(self.translation.book_path, self.audioURL.split('/')[-1])
         self.mappingURL = chapter[MAPPING_URL]
@@ -112,6 +114,8 @@ class ChapterInfo(object):
     def loadMappings(self):
         self.audioMap = np.genfromtxt(self.mappingFile, delimiter=',', dtype=[('ts', int),('te', int),('as', int),('ae', int)])
         self.audioMap.sort(order=['as'], kind='mergesort', axis=0)
+        self.audioStart = self.audioMap[0][2]
+        self.audioEnd = self.audioMap[-1][3]
         self.beads = np.genfromtxt(self.beadsFile, delimiter=',', dtype=[('id', int),('start', int),('end', int)])
         self.beads.sort(order=['start'], kind='mergesort', axis=0)        
         self.saveContent() # save the content file if not available yet

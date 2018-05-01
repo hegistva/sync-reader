@@ -7,14 +7,16 @@ import model
 
 from PyQt5 import QtCore
 
+
 class Player(QtCore.QObject):
 
     token_changed = QtCore.pyqtSignal(model.Token, name='tokenChanged')
     bead_changed = QtCore.pyqtSignal(model.Bead, name='beadChanged')
     position_changed = QtCore.pyqtSignal(int, name='positionChanged')
     length_changed = QtCore.pyqtSignal(int, name='lengthChanged')
+    chapter_ended = QtCore.pyqtSignal(name='chapterEnded')
 
-    def __init__(self, parent=None):            
+    def __init__(self, parent=None, skipIntro=True):            
         super(Player, self).__init__(parent)
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.update)
@@ -28,6 +30,7 @@ class Player(QtCore.QObject):
         self.content = None
         self.token = None
         self.bead = None
+        self.skipIntro = skipIntro
 
     def play(self, content):
         self.content = content        
@@ -38,7 +41,8 @@ class Player(QtCore.QObject):
             media = self.instance.media_new(self.audio_file)
             self.player.set_media(media)
             self.player.play()
-            self.measureLength() # measure length and emit change            
+            self.measureLength() # measure length and emit change 
+            self.gotoStart() # skip to the start if needed         
         else:
             # chapter is already loaded resume/start
             if self.player.is_playing():
@@ -76,8 +80,22 @@ class Player(QtCore.QObject):
         self.length = self.player.get_length()
         self.length_changed.emit(self.length)
 
-    def update(self):
+    def gotoStart(self):
+        """Skip to the start of the chapter"""
+        if self.skipIntro:            
+            if self.content:
+                self.setPosition(self.content.audioStart)
+            
+    def update(self):        
+        if self.player.get_state() == vlc.State.Ended:
+            self.timer.stop() # stop the timer
+            self.chapter_ended.emit() # emit event
+            return                
         newPosition = self.getPosition()
+        if self.skipIntro and newPosition > self.content.audioEnd:
+            self.stop()
+            self.chapter_ended.emit()
+            return            
         if not self.prevPosition == newPosition:
             self.prevPosition = newPosition            
             self.position_changed.emit(newPosition)

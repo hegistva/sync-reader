@@ -39,9 +39,6 @@ class ReaderPane(QtWidgets.QTextEdit):
         self.length = 0
         self.bead = None
         
-    def setAutoScroll(self, autoScroll):
-        self.autoScroll = autoScroll
-
     def setText(self, text):
         self.length = len(text)
         return super(ReaderPane, self).setText(text)
@@ -76,7 +73,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1280, 800)
-        self.player = player.Player(MainWindow)
+        self.player = player.Player(MainWindow, Config.value(Config.SKIP_INTRO))
         self.downloadManager = dl_manager.DownloadManager(MainWindow)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
