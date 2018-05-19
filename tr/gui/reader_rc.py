@@ -16,6 +16,24 @@ import dl_manager
 from res import ICONS
 from settings import Config
 
+class ReaderWidget(QtWidgets.QWidget):
+        def __init__(self, parent=None):
+            super(ReaderWidget, self).__init__(parent)
+            self._autoScroll = Config.value(Config.AUTO_SCROLL)
+            self.readerPane = ReaderPane(parent=parent, autoScroll=self._autoScroll)
+            self.readerPane.setReadOnly(True)        
+            readerPaneLayout = QtWidgets.QVBoxLayout()
+            readerPaneLayout.addWidget(self.readerPane)
+            self.setLayout(readerPaneLayout)
+
+        @property
+        def autoScroll(self):
+            return self.readerPane.autoScroll
+
+        @autoScroll.setter
+        def autoScroll(self, value):
+            self.readerPane.autoScroll = value
+        
 class ReaderPane(QtWidgets.QTextEdit):
     def __init__(self, parent=None, autoScroll=True):
         self.autoScroll = autoScroll
@@ -117,45 +135,21 @@ class Ui_MainWindow(object):
         self.progressLayout.addWidget(self.chapterSlider)
         self.chapterSlider.sliderMoved.connect(self.player.setPosition)
 
-        self.amplitudeChart = QtWidgets.QGraphicsView(self.centralwidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.amplitudeChart.sizePolicy().hasHeightForWidth())
-        self.amplitudeChart.setSizePolicy(sizePolicy)
-        self.amplitudeChart.setMinimumSize(QtCore.QSize(0, 0))
-        self.amplitudeChart.setMaximumSize(QtCore.QSize(2000, 2000))
-        self.amplitudeChart.setBaseSize(QtCore.QSize(0, 0))
-        self.amplitudeChart.setObjectName("amplitudeChart")
-        self.progressLayout.addWidget(self.amplitudeChart)
-        self.audioTokens = QtWidgets.QHBoxLayout()
-        self.audioTokens.setObjectName("audioTokens")
-        self.progressLayout.addLayout(self.audioTokens)
-        self.textTokens = QtWidgets.QHBoxLayout()
-        self.textTokens.setObjectName("textTokens")
-        self.progressLayout.addLayout(self.textTokens)
-        self.readerPane = ReaderPane(self.centralwidget, Config.value(Config.AUTO_SCROLL))
-        self.readerPane.setReadOnly(True)
-        self.readerPane.setObjectName("readerPane")                           
+
         self.readerSplitter = QtWidgets.QSplitter(QtCore.Qt.Vertical)
         self.readerSplitter.setObjectName('readerSplitter')
+
         self.readerWidget = QtWidgets.QWidget(self.centralwidget)
         self.readerWidget.setLayout(self.progressLayout)
+
         self.horizontalSplitter.addWidget(self.readerSplitter)
         self.horizontalSplitter.setStretchFactor(1, 1)
         
         self.readerSplitter.addWidget(self.readerWidget)
-        
-        self.readerPaneWidget = QtWidgets.QWidget(self.centralwidget)
-        self.readerPaneWidget.setObjectName('readerPaneWidget')
 
-        self.readerPaneLayout = QtWidgets.QVBoxLayout()
-        self.readerPaneLayout.setObjectName("readerPaneLayout")
-        self.readerPaneLayout.addWidget(self.readerPane)
+        self.readerWidget = ReaderWidget(self.centralwidget)
 
-        self.readerPaneWidget.setLayout(self.readerPaneLayout)
-
-        self.readerSplitter.addWidget(self.readerPaneWidget)
+        self.readerSplitter.addWidget(self.readerWidget)
         self.readerSplitter.setStretchFactor(1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
 

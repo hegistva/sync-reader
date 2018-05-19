@@ -109,7 +109,7 @@ def showSettings(parent):
         auto_scroll = dialog.autoScroll.isChecked()
         SETTINGS.update({AUTO_SCROLL: auto_scroll})
         # TODO: use events
-        parent.ui.readerPane.autoScroll = auto_scroll
+        parent.ui.readerWidget.autoScroll = auto_scroll
 
         auto_play = dialog.autoPlay.isChecked()
         SETTINGS.update({AUTO_PLAY: auto_play})

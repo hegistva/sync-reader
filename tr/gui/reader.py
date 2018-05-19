@@ -68,8 +68,7 @@ class ReaderWidget(QMainWindow):
             self.currentChapter.loadMappings()
             self.ui.player.play(self.currentChapter)
             with open(self.currentChapter.contentFile, 'r') as f:
-                self.ui.readerPane.setText(f.read())
-
+                self.ui.readerWidget.readerPane.setText(f.read())
 
     def playRelativeChapter(self, offset):
         if not self.currentChapter is None:
@@ -91,11 +90,11 @@ class ReaderWidget(QMainWindow):
 
     def tokenChanged(self, newToken):
         # highlight the token in the text
-        self.ui.readerPane.highlightToken(newToken)
+        self.ui.readerWidget.readerPane.highlightToken(newToken)
         
     def beadChanged(self, newBead):
         # highlight the bead in the text
-        self.ui.readerPane.highlightBead(newBead)
+        self.ui.readerWidget.readerPane.highlightBead(newBead)
 
     def download(self):
         """Download selected content"""
@@ -110,10 +109,10 @@ class ReaderWidget(QMainWindow):
         search.showSearch(self)
 
     def zoomIn(self):
-        self.ui.readerPane.zoomIn(2)
+        self.ui.readerWidget.readerPane.zoomIn(2)
 
     def zoomOut(self):
-        self.ui.readerPane.zoomOut(2)
+        self.ui.readerWidget.readerPane.zoomOut(2)
 
     def downloadCompleted(self):
         # if download is complete reset and hide the GUI elements
