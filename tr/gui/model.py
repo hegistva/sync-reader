@@ -65,6 +65,13 @@ class TranslationInfo(object):
         """Add a chapter to the book"""
         self.chapters.append(chapter)
 
+    def relativeChapter(self, chapter, offset):
+        try:
+            idx = self.chapters.index(chapter)
+        except Exception as e:
+            return None
+        return self.chapters[(idx + offset) % len(self.chapters)]
+                
     def __str__(self):
         return "Title: %s [%s, %d chapters]" % (self.title, self.language, len(self.chapters))
 

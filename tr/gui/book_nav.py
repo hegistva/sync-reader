@@ -14,19 +14,21 @@ import res
 TREE_VIEW = None
 MAIN_WINDOW = None
 MODEL = QtGui.QStandardItemModel()
+SEL_MODEL = None
 
 # initalize a tree 
 def initNavigator(treeView, parent):
     # initialize tree view
-    global TREE_VIEW, MAIN_WINDOW
+    global TREE_VIEW, MAIN_WINDOW, SEL_MODEL
     TREE_VIEW = treeView
     MAIN_WINDOW = parent
     TREE_VIEW.setSelectionBehavior(Qt.QAbstractItemView.SelectItems)
     TREE_VIEW.setSelectionMode(Qt.QAbstractItemView.SingleSelection)
     TREE_VIEW.setEditTriggers(Qt.QAbstractItemView.NoEditTriggers)
-    TREE_VIEW.setModel(MODEL)
+    TREE_VIEW.setModel(MODEL)    
     TREE_VIEW.setUniformRowHeights(True)
-    TREE_VIEW.clicked.connect(lambda idx: MAIN_WINDOW.select(idx))
+    SEL_MODEL = TREE_VIEW.selectionModel()
+    SEL_MODEL.selectionChanged.connect(MAIN_WINDOW.selectionChanged)
     # refresh contents
     refresh()
 

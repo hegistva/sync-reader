@@ -3,6 +3,7 @@ import sys
 import os
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QDialog
 from PyQt5.QtWidgets import QPushButton, QLabel
+from PyQt5 import Qt
 from reader_rc import Ui_MainWindow
 import settings
 import search
@@ -29,11 +30,13 @@ class ReaderWidget(QMainWindow):
         self.ui.actionAdd.triggered.connect(self.showSearch)
         self.ui.actionZoomIn.triggered.connect(self.zoomIn)
         self.ui.actionZoomOut.triggered.connect(self.zoomOut)
+        self.ui.actionNextChapter.triggered.connect(lambda _: self.playRelativeChapter(1))
+        self.ui.actionPrevChapter.triggered.connect(lambda _: self.playRelativeChapter(-1))
         self.ui.player.position_changed.connect(self.positionChanged)
         self.ui.player.length_changed.connect(self.lengthChanged)
         self.ui.player.token_changed.connect(self.tokenChanged)
         self.ui.player.bead_changed.connect(self.beadChanged)
-        self.ui.player.chapter_ended.connect(self.playNextChapter)
+        self.ui.player.chapter_ended.connect(self.chapterEnded)
         self.ui.downloadManager.completed.connect(self.downloadCompleted)
         self.ui.downloadManager.chapter_completed.connect(self.chapterDownloaded)
         self.ui.downloadManager.progress_changed.connect(self.downloadProgress)
@@ -46,22 +49,39 @@ class ReaderWidget(QMainWindow):
         book_nav.refresh()
 
     # TODO: Should be in the navigator widget, should be using signals
-    def select(self, idx):        
+    def selectionChanged(self, selected, deselected):
         """Select  a node"""
-        itm = self.ui.bookList.model().itemFromIndex(idx)
-        m = itm.data()
-        self.selectedContent = m
-        self.ui.selectedContent.setText("Selected Content: %s" % m)
-        if isinstance(self.selectedContent, model.ChapterInfo):
-            self.currentChapter = self.selectedContent
-            if self.currentChapter.downloaded:
-                self.currentChapter.loadMappings()
-                self.ui.player.play(self.currentChapter)
-                with open(self.currentChapter.contentFile, 'r') as f:
-                    self.ui.readerPane.setText(f.read())
-    
-    def playNextChapter(self):
-        print('TODO: Implement playing the next chapter (calling select)')
+        try:             
+            idx = selected.first().indexes()[0]
+            itm = self.ui.bookList.model().itemFromIndex(idx)
+            m = itm.data()
+            self.selectedContent = m
+            self.ui.selectedContent.setText("Selected Content: %s" % m)
+            if isinstance(self.selectedContent, model.ChapterInfo):
+                self.playChapter(self.selectedContent)
+        except Exception as e:
+            pass
+        
+    def playChapter(self, chapter):
+        self.currentChapter = chapter
+        if self.currentChapter.downloaded:
+            self.currentChapter.loadMappings()
+            self.ui.player.play(self.currentChapter)
+            with open(self.currentChapter.contentFile, 'r') as f:
+                self.ui.readerPane.setText(f.read())
+
+
+    def playRelativeChapter(self, offset):
+        if not self.currentChapter is None:
+            # we have a current chapter, find the next one
+            next_chapter = self.currentChapter.translation.relativeChapter(self.currentChapter, offset)
+            # select it on the tree view triggering the play
+            book_nav.SEL_MODEL.select(next_chapter.treeNode.index(), Qt.QItemSelectionModel.SelectCurrent)
+
+    def chapterEnded(self):
+        if self.autoPlay:
+            # trigger playing the next chapter on autoplay
+            self.ui.actionNextChapter.trigger()        
 
     def lengthChanged(self, new_length):
         self.ui.chapterSlider.setMaximum(new_length)
