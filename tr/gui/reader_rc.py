@@ -95,61 +95,79 @@ class ReaderPane(QtWidgets.QTextEdit):
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.resize(1280, 800)
-        self.player = player.Player(MainWindow, Config.value(Config.SKIP_INTRO))
-        self.downloadManager = dl_manager.DownloadManager(MainWindow)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.mainLayout = QtWidgets.QHBoxLayout(self.centralwidget) 
+        self.player = player.Player(MainWindow, Config.value(Config.SKIP_INTRO))  # Medi palyer
+        self.downloadManager = dl_manager.DownloadManager(MainWindow) # download manager
+        # main gui window
+        self.centralwidget = QtWidgets.QWidget(MainWindow) 
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.mainLayout = QtWidgets.QHBoxLayout(self.centralwidget) # horizontal layout for the browser/reader
+                
+        # flexible splitter for the browser/reader separator
         self.horizontalSplitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal) 
-        self.mainLayout.addWidget(self.horizontalSplitter)
+        self.mainLayout.addWidget(self.horizontalSplitter) 
+
+        # widget for the navigator tree
         self.navigatorWidget = QtWidgets.QWidget(self.centralwidget)
-        self.navigatorLayout = QtWidgets.QVBoxLayout()
-        self.lblBooks = QtWidgets.QLabel(self.centralwidget)
-        self.navigatorLayout.addWidget(self.lblBooks)
-        self.bookList = QtWidgets.QTreeView(self.centralwidget)
+        self.horizontalSplitter.addWidget(self.navigatorWidget)
+        self.navigatorLayout = QtWidgets.QVBoxLayout() # vertical box for the tree/download progress indicator
+        self.navigatorWidget.setLayout(self.navigatorLayout)
+        
+        
+        # tree view label
+        self.lblBooks = QtWidgets.QLabel(self.centralwidget) 
+        self.navigatorLayout.addWidget(self.lblBooks) 
+
+        # tree view for the books
+        self.bookList = QtWidgets.QTreeView(self.centralwidget) 
         self.navigatorLayout.addWidget(self.bookList)
+
+        # download label
         self.lblDownload = QtWidgets.QLabel(self.centralwidget)
         self.navigatorLayout.addWidget(self.lblDownload)
+
+        # download progress bar
         self.downloadProgress = QtWidgets.QProgressBar(self.centralwidget)
         self.downloadProgress.setProperty("value", 0)
         self.navigatorLayout.addWidget(self.downloadProgress)
-        self.navigatorWidget.setLayout(self.navigatorLayout)
-        self.horizontalSplitter.addWidget(self.navigatorWidget)
+
+        # layout for the selected content and its positions        
         self.progressLayout = QtWidgets.QVBoxLayout()
 
-        self.selectedContent = QtWidgets.QLabel("Selected Content: None")
+        # widget for the selected content
+        self.contentWidget = QtWidgets.QWidget()
+        self.contentWidget.setLayout(self.progressLayout)
 
+        # selected content
+        self.selectedContent = QtWidgets.QLabel("Selected Content: None")
         self.progressLayout.addWidget(self.selectedContent)
 
+        # position in the content
         self.chapterSlider = QtWidgets.QSlider(QtCore.Qt.Horizontal, self.centralwidget)
         self.progressLayout.addWidget(self.chapterSlider)
         self.chapterSlider.sliderMoved.connect(self.player.setPosition)
 
-
+        # split content for the two reader panes
         self.contentPane = QtWidgets.QWidget(self.centralwidget)
         self.contentLayout = QtWidgets.QVBoxLayout()
         self.contentPane.setLayout(self.contentLayout)
-        
+
+        # splitter for the two rreaders        
         self.readerSplitter = QtWidgets.QSplitter(QtCore.Qt.Vertical)
 
-        self.contentWidget = QtWidgets.QWidget()
-        self.contentWidget.setLayout(self.progressLayout)
+        # add the reader pane to the horizontal splitter
         self.contentLayout.addWidget(self.contentWidget)
         self.contentLayout.addWidget(self.readerSplitter)
-        self.horizontalSplitter.addWidget(self.contentPane)
-        
+        self.horizontalSplitter.addWidget(self.contentPane)        
         self.horizontalSplitter.setStretchFactor(1, 1)
-    
+
+        # reader for the 1st language
         self.readerWidget = ReaderWidget()
         self.readerSplitter.addWidget(self.readerWidget)
 
+        # reader for the 2nd language
         self.foreignReaderWidget = ReaderWidget()
         self.readerSplitter.addWidget(self.foreignReaderWidget)
-
         self.readerSplitter.setStretchFactor(2, 1)
-        MainWindow.setCentralWidget(self.centralwidget)
-
-        self.downloadProgress.hide()
-        self.lblDownload.hide()
 
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         MainWindow.setStatusBar(self.statusbar)
@@ -260,6 +278,9 @@ class Ui_MainWindow(object):
         self.transLanguage.addItems(["English", "French"])
         self.toolBar.addWidget(QtWidgets.QLabel("Translate to: "))
         self.toolBar.addWidget(self.transLanguage)
+
+        self.downloadProgress.hide()
+        self.lblDownload.hide()
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
