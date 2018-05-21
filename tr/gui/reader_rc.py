@@ -98,75 +98,89 @@ class Ui_MainWindow(object):
         # toolbar
         self.toolBar = QtWidgets.QToolBar(MainWindow)
         MainWindow.addToolBar(QtCore.Qt.TopToolBarArea, self.toolBar)
+        # play
         self.actionPlay = QtWidgets.QAction(MainWindow)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "play.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionPlay.setIcon(icon)
+        # pause
         self.actionPause = QtWidgets.QAction(MainWindow)
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "pause.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionPause.setIcon(icon1)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "pause.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionPause.setIcon(icon)
+        # previous word
         self.actionPrevWord = QtWidgets.QAction(MainWindow)
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "prev.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionPrevWord.setIcon(icon2)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "prev.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionPrevWord.setIcon(icon)
+        # next word
         self.actionNextWord = QtWidgets.QAction(MainWindow)
-        icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "next.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionNextWord.setIcon(icon3)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "next.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionNextWord.setIcon(icon)
+        # stop
         self.actionStop = QtWidgets.QAction(MainWindow)
-        icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "stop.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionStop.setIcon(icon4)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "stop.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionStop.setIcon(icon)
+        # prvious sentence
         self.actionPrevSent = QtWidgets.QAction(MainWindow)
-        icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "first.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionPrevSent.setIcon(icon5)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "first.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionPrevSent.setIcon(icon)
+        # next sentence
         self.actionNextSent = QtWidgets.QAction(MainWindow)
-        icon6 = QtGui.QIcon()
-        icon6.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "last.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionNextSent.setIcon(icon6)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "last.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionNextSent.setIcon(icon)
+        # previous chapter
         self.actionPrevChapter = QtWidgets.QAction(MainWindow)
-        icon7 = QtGui.QIcon()
-        icon7.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "skip_prev.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionPrevChapter.setIcon(icon7)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "skip_prev.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionPrevChapter.setIcon(icon)
+        # next chapter
         self.actionNextChapter = QtWidgets.QAction(MainWindow)
-        icon8 = QtGui.QIcon()
-        icon8.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "skip_next.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionNextChapter.setIcon(icon8)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "skip_next.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionNextChapter.setIcon(icon)
+        # quit
         self.actionQuit = QtWidgets.QAction(MainWindow)
-        icon9 = QtGui.QIcon()
-        icon9.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "exit.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionQuit.setIcon(icon9)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "exit.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionQuit.setIcon(icon)
+        # add
         self.actionAdd = QtWidgets.QAction(MainWindow)
-        icon10 = QtGui.QIcon()
-        icon10.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "add.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionAdd.setIcon(icon10)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "add.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionAdd.setIcon(icon)
+        # remove
         self.actionRemove = QtWidgets.QAction(MainWindow)
-        icon11 = QtGui.QIcon()
-        icon11.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "remove.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionRemove.setIcon(icon11)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "remove.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionRemove.setIcon(icon)
+        # download
         self.actionDownload = QtWidgets.QAction(MainWindow)
-        icon12 = QtGui.QIcon()
-        icon12.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "download.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionDownload.setIcon(icon12)
-        # Settings toolbar item
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "download.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionDownload.setIcon(icon)
+        # settings
         self.actionSettings = QtWidgets.QAction(MainWindow)
-        icon13 = QtGui.QIcon()
-        icon13.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "settings.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionSettings.setIcon(icon13)
-        # ZoomIn
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "settings.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionSettings.setIcon(icon)
+        # zoom in
         self.actionZoomIn = QtWidgets.QAction(MainWindow)
-        iconZoomIn = QtGui.QIcon()
-        iconZoomIn.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "zoomin.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionZoomIn.setIcon(iconZoomIn)
-        # ZoomOut
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "zoomin.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionZoomIn.setIcon(icon)
+        # zoom out
         self.actionZoomOut = QtWidgets.QAction(MainWindow)
-        iconZoomOut = QtGui.QIcon()
-        iconZoomOut.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "zoomout.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.actionZoomOut.setIcon(iconZoomOut)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "zoomout.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionZoomOut.setIcon(icon)
         
-
+        # build the toolbar
+        # actions
         self.toolBar.addAction(self.actionAdd)
         self.toolBar.addAction(self.actionRemove)
         self.toolBar.addAction(self.actionDownload)
@@ -180,24 +194,22 @@ class Ui_MainWindow(object):
         self.toolBar.addAction(self.actionPrevWord)
         self.toolBar.addAction(self.actionNextWord)
         self.toolBar.addAction(self.actionNextSent)
-        self.toolBar.addAction(self.actionNextChapter)
-        
+        self.toolBar.addAction(self.actionNextChapter)        
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionZoomIn)
         self.toolBar.addAction(self.actionZoomOut)        
-
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionSettings)
         self.toolBar.addAction(self.actionQuit)
-
+        # volume
         self.volumeSlider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
         self.volumeSlider.setRange(0, 200)
-        self.volumeSlider.setValue(70)
-        
+        self.volumeSlider.setValue(70)        
         self.toolBar.addSeparator()
         self.toolBar.addWidget(QtWidgets.QLabel("Volume: "))
         self.toolBar.addWidget(self.volumeSlider)
         self.volumeSlider.sliderMoved.connect(self.player.setVolume) # connect to the player
+        # translation selector
         self.toolBar.addSeparator()
         self.transLanguage = QtWidgets.QComboBox()
         self.transLanguage.addItems(["English", "French"])
@@ -223,7 +235,6 @@ class Ui_MainWindow(object):
         self.navigatorLayout = QtWidgets.QVBoxLayout() # vertical box for the tree/download progress indicator
         self.navigatorWidget.setLayout(self.navigatorLayout)
         
-        
         # tree view label
         self.lblBooks = QtWidgets.QLabel(self.centralwidget) 
         self.navigatorLayout.addWidget(self.lblBooks) 
@@ -235,11 +246,13 @@ class Ui_MainWindow(object):
         # download label
         self.lblDownload = QtWidgets.QLabel(self.centralwidget)
         self.navigatorLayout.addWidget(self.lblDownload)
+        self.lblDownload.hide()
 
         # download progress bar
         self.downloadProgress = QtWidgets.QProgressBar(self.centralwidget)
         self.downloadProgress.setProperty("value", 0)
         self.navigatorLayout.addWidget(self.downloadProgress)
+        self.downloadProgress.hide()
 
         # layout for the selected content and its positions        
         self.progressLayout = QtWidgets.QVBoxLayout()
@@ -286,9 +299,6 @@ class Ui_MainWindow(object):
 
         # create the toolbar
         self.createToolbar(MainWindow)
-
-        self.downloadProgress.hide()
-        self.lblDownload.hide()
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
