@@ -102,8 +102,7 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
         self.mainLayout = QtWidgets.QHBoxLayout(self.centralwidget)
         self.mainLayout.setObjectName('mainLayout')        
-        self.horizontalSplitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
-        self.horizontalSplitter.setObjectName("horizontalSplitter") 
+        self.horizontalSplitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal) 
         self.mainLayout.addWidget(self.horizontalSplitter)
         self.navigatorWidget = QtWidgets.QWidget(self.centralwidget)
         self.navigatorLayout = QtWidgets.QVBoxLayout()
@@ -124,7 +123,6 @@ class Ui_MainWindow(object):
         self.navigatorWidget.setLayout(self.navigatorLayout)
         self.horizontalSplitter.addWidget(self.navigatorWidget)
         self.progressLayout = QtWidgets.QVBoxLayout()
-        self.progressLayout.setObjectName("progressLayout")
 
         self.selectedContent = QtWidgets.QLabel("Selected Content: None")
         self.selectedContent.setObjectName("selectedContent")
@@ -136,21 +134,27 @@ class Ui_MainWindow(object):
         self.chapterSlider.sliderMoved.connect(self.player.setPosition)
 
 
-        self.readerSplitter = QtWidgets.QSplitter(QtCore.Qt.Vertical)
-        self.readerSplitter.setObjectName('readerSplitter')
-
-        self.readerWidget = QtWidgets.QWidget(self.centralwidget)
-        self.readerWidget.setLayout(self.progressLayout)
-
-        self.horizontalSplitter.addWidget(self.readerSplitter)
-        self.horizontalSplitter.setStretchFactor(1, 1)
+        self.contentPane = QtWidgets.QWidget(self.centralwidget)
+        self.contentLayout = QtWidgets.QVBoxLayout()
+        self.contentPane.setLayout(self.contentLayout)
         
+        self.readerSplitter = QtWidgets.QSplitter(QtCore.Qt.Vertical)
+
+        self.contentWidget = QtWidgets.QWidget()
+        self.contentWidget.setLayout(self.progressLayout)
+        self.contentLayout.addWidget(self.contentWidget)
+        self.contentLayout.addWidget(self.readerSplitter)
+        self.horizontalSplitter.addWidget(self.contentPane)
+        
+        self.horizontalSplitter.setStretchFactor(1, 1)
+    
+        self.readerWidget = ReaderWidget()
         self.readerSplitter.addWidget(self.readerWidget)
 
-        self.readerWidget = ReaderWidget(self.centralwidget)
+        self.foreignReaderWidget = ReaderWidget()
+        self.readerSplitter.addWidget(self.foreignReaderWidget)
 
-        self.readerSplitter.addWidget(self.readerWidget)
-        self.readerSplitter.setStretchFactor(1, 1)
+        self.readerSplitter.setStretchFactor(2, 1)
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.downloadProgress.hide()
@@ -271,9 +275,17 @@ class Ui_MainWindow(object):
         self.volumeSlider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
         self.volumeSlider.setRange(0, 200)
         self.volumeSlider.setValue(70)
+        
+        self.toolBar.addSeparator()
+        self.toolBar.addWidget(QtWidgets.QLabel("Volume: "))
         self.toolBar.addWidget(self.volumeSlider)
         self.volumeSlider.sliderMoved.connect(self.player.setVolume) # connect to the player
-        
+        self.toolBar.addSeparator()
+        self.transLanguage = QtWidgets.QComboBox()
+        self.transLanguage.addItems(["English", "French"])
+        self.toolBar.addWidget(QtWidgets.QLabel("Translate to: "))
+        self.toolBar.addWidget(self.transLanguage)
+
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
