@@ -14,7 +14,7 @@ import os
 import player
 import dl_manager
 from res import ICONS
-from settings import Config
+from settings import Config, LANGUAGES
 
 class ReaderWidget(QtWidgets.QWidget):
         def __init__(self, parent=None):
@@ -211,10 +211,14 @@ class Ui_MainWindow(object):
         self.volumeSlider.sliderMoved.connect(self.player.setVolume) # connect to the player
         # translation selector
         self.toolBar.addSeparator()
-        self.transLanguage = QtWidgets.QComboBox()
-        self.transLanguage.addItems(["English", "French"])
+        self.transLanguage = QtWidgets.QComboBox()        
+        selected_lang = Config.value(Config.TRANS_LANG)
+        for idx, (code, label) in enumerate(LANGUAGES.items()):
+            self.transLanguage.addItem(label, code)
+            if code == selected_lang:
+                self.transLanguage.setCurrentIndex(idx)
         self.toolBar.addWidget(QtWidgets.QLabel("Translate to: "))
-        self.toolBar.addWidget(self.transLanguage)
+        self.toolBar.addWidget(self.transLanguage)        
 
     def setupUi(self, MainWindow):
         MainWindow.resize(1280, 800)

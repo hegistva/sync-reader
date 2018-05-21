@@ -2,6 +2,7 @@
 import pathlib
 import os
 import json
+from tr.libs.trans.utils import Lang
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
@@ -10,6 +11,14 @@ BOOK_LOCATION = 'book_location'
 AUTO_SCROLL = 'auto_scroll'
 SKIP_INTRO = 'skip_intro'
 AUTO_PLAY = 'auto_play'
+TRANS_LANG = 'trans_lang'
+
+LANGUAGES = {
+    Lang.ENG: 'English',
+    Lang.FRA: 'French',
+}
+
+LANG_INV = {v: k for k, v in LANGUAGES.items()}
 
 LIBRARY = 'lib'
 CONTENT = 'content'
@@ -19,6 +28,7 @@ SETTINGS = {}
 SETTINGS[AUTO_PLAY] = True
 SETTINGS[AUTO_SCROLL] = True
 SETTINGS[SKIP_INTRO] = True
+SETTINGS[TRANS_LANG] = Lang.ENG
 
 APP_FOLDER = os.path.join(pathlib.Path.home(), 'booktranslate')
 os.makedirs(APP_FOLDER, exist_ok=True)    
@@ -28,11 +38,13 @@ if os.path.exists(SETTINGS_FILE):
         SETTINGS.update(json.load(f))
 
 class Config:
-    APP_FOLDER, BOOK_LOCATION, LIBRARY, CONTENT, AUTO_SCROLL, SKIP_INTRO, AUTO_PLAY = range(7)
+    APP_FOLDER, BOOK_LOCATION, LIBRARY, CONTENT, AUTO_SCROLL, SKIP_INTRO, AUTO_PLAY, TRANS_LANG = range(8)
     @classmethod
     def value(cls, s):
         if s == cls.APP_FOLDER:
             return APP_FOLDER
+        elif s == cls.TRANS_LANG:
+            return SETTINGS[TRANS_LANG]
         elif s == cls.BOOK_LOCATION:
             return SETTINGS[BOOK_LOCATION]
         elif s == cls.AUTO_SCROLL:
@@ -47,7 +59,6 @@ class Config:
             return os.path.join(SETTINGS[BOOK_LOCATION], CONTENT)
         else:
             raise RuntimeError('Unkonw GUI setting')
-        
 class SettingsDialog(QtWidgets.QDialog):
     def __init__(self, parent=None):
         super(SettingsDialog, self).__init__(parent)
@@ -83,6 +94,16 @@ class SettingsDialog(QtWidgets.QDialog):
         self.autoPlay.setChecked(SETTINGS.get(AUTO_PLAY, True))
         grid.addWidget(self.autoPlay, 3, 2)
 
+        # translation selector
+        grid.addWidget(QtWidgets.QLabel("Default Translation Language"), 4, 0)
+        self.transLanguage = QtWidgets.QComboBox()
+        selected_lang = SETTINGS.get(TRANS_LANG, Lang.ENG)        
+        for idx, (code, label) in enumerate(LANGUAGES.items()):
+            self.transLanguage.addItem(label, code)
+            if code == selected_lang:
+                self.transLanguage.setCurrentIndex(idx)
+        grid.addWidget(self.transLanguage, 4, 2)
+
         self.setWindowTitle('Application Settings')
         buttons = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel, Qt.Horizontal, self)
         buttons.accepted.connect(self.accept)
@@ -116,6 +137,11 @@ def showSettings(parent):
         # TODO: use events
         parent.autoPlay = auto_play
 
+        # translate language
+        trans_lang = LANG_INV[dialog.transLanguage.currentText()]
+        SETTINGS.update({TRANS_LANG: trans_lang})
+        parent.transLangChanged(dialog.transLanguage.currentIndex())
+        
         with open(SETTINGS_FILE, 'w') as f:
             f.write(json.dumps(SETTINGS))
 

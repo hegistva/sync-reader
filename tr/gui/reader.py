@@ -4,6 +4,8 @@ import os
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow, QDialog
 from PyQt5.QtWidgets import QPushButton, QLabel
 from PyQt5 import Qt
+from PyQt5.QtCore import Qt as CoreQt
+
 from reader_rc import Ui_MainWindow
 import settings
 import search
@@ -41,6 +43,8 @@ class ReaderWidget(QMainWindow):
         self.ui.downloadManager.chapter_completed.connect(self.chapterDownloaded)
         self.ui.downloadManager.progress_changed.connect(self.downloadProgress)
         self.autoPlay = settings.Config.value(settings.Config.AUTO_PLAY)
+        self.transLang = settings.Config.value(settings.Config.TRANS_LANG)
+        self.ui.transLanguage.currentIndexChanged.connect(self.transLangChanged)
         book_nav.initNavigator(self.ui.bookList, self)
         
 
@@ -137,6 +141,12 @@ class ReaderWidget(QMainWindow):
                 chapter.treeNode.setIcon(res.play_icon)
             else:
                 chapter.treeNode.setIcon(res.dl_icon)
+    
+    def transLangChanged(self, newIdx):
+        # the translation language setting has changed
+        self.transLang = self.ui.transLanguage.model().item(newIdx).data(CoreQt.UserRole)
+        if self.ui.transLanguage.currentIndex() != newIdx:
+            self.ui.transLanguage.setCurrentIndex(newIdx)
         
 if __name__ == '__main__':
     app = QApplication(sys.argv)
