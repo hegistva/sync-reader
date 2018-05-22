@@ -48,7 +48,7 @@ class ReaderWidget(QMainWindow):
         self.ui.transLanguage.currentIndexChanged.connect(self.transLangChanged)
         book_nav.initNavigator(self.ui.bookList, self)
         
-        
+
     def updateLibrary(self):
         """Update the library"""        
         book_nav.refresh()
@@ -82,6 +82,7 @@ class ReaderWidget(QMainWindow):
                 if not ch is None:
                     self.transChapter = ch
             if self.transChapter and self.transChapter.downloaded:
+                self.transChapter.loadMappings()
                 with open(self.transChapter.contentFile, 'r') as f:
                     self.ui.foreignReaderWidget.readerPane.setText(f.read())
                 
@@ -110,7 +111,11 @@ class ReaderWidget(QMainWindow):
     def beadChanged(self, newBead):
         # highlight the bead in the text
         self.ui.readerWidget.readerPane.highlightBead(newBead)
-
+        # highlight bead in the translated chapter
+        if self.transChapter and self.transChapter.downloaded:
+            tr_bead = self.transChapter.getBead(newBead.id)
+            self.ui.foreignReaderWidget.readerPane.highlightBead(tr_bead)
+            
     def download(self):
         """Download selected content"""
         self.ui.downloadManager.downloadContent(self.selectedContent)

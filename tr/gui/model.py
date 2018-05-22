@@ -145,6 +145,11 @@ class ChapterInfo(object):
         if not self.beads is None:
             return np.searchsorted(self.beads['start'], char_pos) - 1
 
+    def getBead(self, id):
+        idx = id - 1
+        if len(self.beads) > idx:
+            return Bead(*self.beads[idx])
+
     def updateStatus(self):
         self.downloaded = os.path.exists(self.audioFile) and os.path.exists(self.mappingFile) and os.path.exists(self.beadsFile)
 
