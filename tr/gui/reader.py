@@ -25,6 +25,7 @@ class ReaderWidget(QMainWindow):
         self.ui.actionStop.triggered.connect(self.ui.player.stop)
         self.selectedContent = None # selected book/translation/chapter
         self.currentChapter = None # currently playing chapter
+        self.transChapter = None # translation of the current chapter
         self.ui.actionPlay.triggered.connect(lambda _: self.ui.player.play(self.selectedContent))
         self.ui.actionPause.triggered.connect(self.ui.player.pause)
         self.ui.actionDownload.triggered.connect(self.download)
@@ -47,7 +48,7 @@ class ReaderWidget(QMainWindow):
         self.ui.transLanguage.currentIndexChanged.connect(self.transLangChanged)
         book_nav.initNavigator(self.ui.bookList, self)
         
-
+        
     def updateLibrary(self):
         """Update the library"""        
         book_nav.refresh()
@@ -73,7 +74,17 @@ class ReaderWidget(QMainWindow):
             self.ui.player.play(self.currentChapter)
             with open(self.currentChapter.contentFile, 'r') as f:
                 self.ui.readerWidget.readerPane.setText(f.read())
-
+            # find translation and open if available
+            self.transChapter = None
+            tr = self.currentChapter.translation.book.getTranslation(self.transLang)
+            if not tr is None:
+                ch = tr.getChapter(self.currentChapter.idx)
+                if not ch is None:
+                    self.transChapter = ch
+            if self.transChapter and self.transChapter.downloaded:
+                with open(self.transChapter.contentFile, 'r') as f:
+                    self.ui.foreignReaderWidget.readerPane.setText(f.read())
+                
     def playRelativeChapter(self, offset):
         if not self.currentChapter is None:
             # we have a current chapter, find the next one

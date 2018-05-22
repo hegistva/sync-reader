@@ -26,6 +26,11 @@ class BookInfo(object):
         translations = ",".join([tr.language for tr in self.translations])
         return ("Book: %s Translations: %s" % (self.bookid, translations))
 
+    def getTranslation(self, lang):
+        for tr in self.translations:
+            if tr.language == lang:
+                return tr
+
     @classmethod
     def fromJson(cls, jsonStr):
         book = json.loads(jsonStr)
@@ -64,6 +69,11 @@ class TranslationInfo(object):
     def addChapter(self, chapter):
         """Add a chapter to the book"""
         self.chapters.append(chapter)
+
+    def getChapter(self, idx):
+        for ch in self.chapters:
+            if ch.idx == idx:
+                return ch
 
     def relativeChapter(self, chapter, offset):
         try:
