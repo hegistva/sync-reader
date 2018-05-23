@@ -8,4 +8,4 @@ book_manager.downloadBook(book_id)
 # book_mapper.mapChapter(utils.Lang.FRA, utils.Lang.ENG, book_id, 13, debug=True)
 # book_mapper.mapBook(utils.Lang.FRA, utils.Lang.ENG, book_id, chapters=[13], chapterToPrint=13)
 # map sentence for all chapters, save results in beads files
-book_mapper.beadMapBook(utils.Lang.FRA, utils.Lang.ENG, book_id)
+# book_mapper.beadMapBook(utils.Lang.FRA, utils.Lang.ENG, book_id)
