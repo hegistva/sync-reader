@@ -141,6 +141,12 @@ class ChapterInfo(object):
         if not self.audioMap is None:
             return np.searchsorted(self.audioMap['as'], time_ms) - 1
 
+    def tokenAtPosition(self, position):
+        if not self.audioMap is None:
+            id = np.searchsorted(self.audioMap['ts'], position) - 1
+            if id >= 0:
+                return Token(id, *self.audioMap[id])
+
     def currentBead(self, char_pos):
         if not self.beads is None:
             return np.searchsorted(self.beads['start'], char_pos) - 1

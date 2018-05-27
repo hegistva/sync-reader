@@ -31,6 +31,9 @@ class Player(QtCore.QObject):
         self.token = None
         self.bead = None
         self.skipIntro = skipIntro
+        self.currentBead = None
+        self.currentToken = None
+        self.nextPauseTime = None
 
     def play(self, content):
         self.content = content        
@@ -85,13 +88,41 @@ class Player(QtCore.QObject):
         if self.skipIntro:            
             if self.content:
                 self.setPosition(self.content.audioStart)
-            
-    def update(self):        
+
+    def playRelativeBead(self, offset):
+        if self.currentBead:            
+            next_bead = self.content.getBead(self.currentBead.id + offset)
+            if not next_bead is None:
+                start_token = self.content.tokenAtPosition(next_bead.text_start)
+                end_token = self.content.tokenAtPosition(next_bead.text_end)
+                if not end_token is None:
+                    if start_token is None:
+                        start_pos = self.content.audioStart
+                    else:
+                        start_pos = start_token.audio_end - 100
+                    end_pos = end_token.audio_end - 100
+                    self.nextPauseTime = end_pos
+                    self.setPosition(start_pos)
+                    if self.player.get_state() != vlc.State.Playing:
+                        self.pause()
+
+    def playNextToken(self):
+        if self.currentToken:
+            print("current token is: %s" % self.currentToken.id)
+
+    def playPreviousToken(self):
+        if self.currentToken:
+            print("current token is: %s" % self.currentToken.id)
+
+    def update(self):
         if self.player.get_state() == vlc.State.Ended:
             self.timer.stop() # stop the timer
             self.chapter_ended.emit() # emit event
             return                
         newPosition = self.getPosition()
+        if not self.nextPauseTime is None and newPosition >= self.nextPauseTime:
+            self.pause() # auto-pause
+            return 
         if self.skipIntro and newPosition > self.content.audioEnd:
             self.stop()
             self.chapter_ended.emit()
@@ -104,13 +135,15 @@ class Player(QtCore.QObject):
                 if tkn != self.token:
                     self.token = tkn
                     if tkn >= 0:
-                        tkn_obj = model.Token(tkn, *self.content.audioMap[tkn])                        
+                        tkn_obj = model.Token(tkn, *self.content.audioMap[tkn])
                         bead = self.content.currentBead(tkn_obj.text_end)
                         if bead != self.bead:
                             self.bead = bead
                             bead_obj = model.Bead(*self.content.beads[bead])
                             self.bead_changed.emit(bead_obj)
+                            self.currentBead = bead_obj
                         self.token_changed.emit(tkn_obj)
+                        self.currentToken = tkn_obj
 
 
 

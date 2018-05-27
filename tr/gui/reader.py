@@ -34,7 +34,7 @@ class ReaderWidget(QMainWindow):
         self.ui.actionZoomIn.triggered.connect(self.zoomIn)
         self.ui.actionZoomOut.triggered.connect(self.zoomOut)
         self.ui.actionNextChapter.triggered.connect(lambda _: self.playRelativeChapter(1))
-        self.ui.actionPrevChapter.triggered.connect(lambda _: self.playRelativeChapter(-1))
+        self.ui.actionPrevChapter.triggered.connect(lambda _: self.playRelativeChapter(-1))        
         self.ui.player.position_changed.connect(self.positionChanged)
         self.ui.player.length_changed.connect(self.lengthChanged)
         self.ui.player.token_changed.connect(self.tokenChanged)
@@ -130,9 +130,11 @@ class ReaderWidget(QMainWindow):
 
     def zoomIn(self):
         self.ui.readerWidget.readerPane.zoomIn(2)
+        self.ui.foreignReaderWidget.readerPane.zoomIn(2)
 
     def zoomOut(self):
         self.ui.readerWidget.readerPane.zoomOut(2)
+        self.ui.foreignReaderWidget.readerPane.zoomOut(2)
 
     def downloadCompleted(self):
         # if download is complete reset and hide the GUI elements
