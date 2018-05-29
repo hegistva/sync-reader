@@ -1,5 +1,4 @@
 from tr.libs.trans import utils
-
 from tr.books.books import AUDIO_FILE, AUDIO_START, AUDIO_STOP, AUTHOR, TRANSLATIONS, CHAPTERS, FIRST_LINE, LAST_LINE, TITLE, URL, IDX
 
 VOLUME = {
