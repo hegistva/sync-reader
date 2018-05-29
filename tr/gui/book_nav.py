@@ -5,8 +5,6 @@ import glob
 import json
 from PyQt5 import QtWidgets, Qt, QtGui
 from settings import Config
-from tr.books import book_manager
-from tr.books import books
 
 import model
 import res

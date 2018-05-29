@@ -4,6 +4,7 @@ import requests
 import json
 import copy
 from tr.books import books
+from tr.books import library
 from tr.libs.utils import config
 
 # constants
@@ -42,7 +43,7 @@ class NetBook(object):
 
     @classmethod
     def fromBook(cls, bookid):
-        book = copy.deepcopy(books.LIBRARY[bookid])
+        book = copy.deepcopy(library.LIBRARY[bookid])
         book_url = "%s:%s/%s/" % (cls.SERVER, cls.PORT, bookid)
         book[ID] = bookid
         for lang, tr in book[books.TRANSLATIONS].items():
@@ -103,7 +104,7 @@ def searchLibary(keyword):
     """
     results = []
     lk = keyword.lower()
-    for bookid, book in books.LIBRARY.items():
+    for bookid, book in library.LIBRARY.items():
         author = book[books.AUTHOR]
         if author.lower().find(lk) >= 0:
             results.append(SearchResultSummary.fromBook(bookid, book))
@@ -115,7 +116,7 @@ def searchLibary(keyword):
     return results
 
 def chapterAudio(lang, bookid, chapter):
-    ch = books.LIBRARY[bookid][books.TRANSLATIONS][lang][books.CHAPTERS][chapter-1]
+    ch = library.LIBRARY[bookid][books.TRANSLATIONS][lang][books.CHAPTERS][chapter-1]
     fname = ch[books.AUDIO_FILE]
     fpath = os.path.join(BOOKS, bookid, lang, AUDIO, fname)
     audio_start = ch[books.AUDIO_START]
@@ -128,11 +129,11 @@ def bookChapter(lang, bookid, chapter):
         return cf.read()
 
 def allChapters(bookid, lang):
-    return list(range(1, 1+len(books.LIBRARY[bookid][books.TRANSLATIONS][lang][books.CHAPTERS])))
+    return list(range(1, 1+len(library.LIBRARY[bookid][books.TRANSLATIONS][lang][books.CHAPTERS])))
 
 def downloadBook(bookid):
     # find book in library
-    bookdef = books.LIBRARY[bookid]
+    bookdef = library.LIBRARY[bookid]
     # create folder for the library
     os.makedirs(BOOKS, exist_ok=True)
     for lang, content in bookdef[books.TRANSLATIONS].items():
