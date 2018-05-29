@@ -106,6 +106,20 @@ class Player(QtCore.QObject):
                     if self.player.get_state() != vlc.State.Playing:
                         self.pause()
 
+    def playRelativeToken(self, offset):
+        if self.currentToken:
+            print(self.currentToken)
+            print(self.getPosition())
+            next_token = self.content.getToken(self.currentToken.id + offset + 1)
+            print(next_token)
+            if not next_token is None:
+                start_pos = next_token.audio_start
+                end_pos = next_token.audio_end
+                self.nextPauseTime = end_pos
+                self.setPosition(start_pos)
+                if self.player.get_state() != vlc.State.Playing:
+                    self.pause()
+
     def playNextToken(self):
         if self.currentToken:
             print("current token is: %s" % self.currentToken.id)

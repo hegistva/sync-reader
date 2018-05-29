@@ -153,8 +153,13 @@ class ChapterInfo(object):
 
     def getBead(self, id):
         idx = id - 1
-        if len(self.beads) > idx:
+        if idx >= 0 and len(self.beads) > idx:
             return Bead(*self.beads[idx])
+
+    def getToken(self, id):
+        idx = id - 1
+        if idx >= 0 and len(self.audioMap) > idx:
+            return Token(id, *self.audioMap[idx])
 
     def updateStatus(self):
         self.downloaded = os.path.exists(self.audioFile) and os.path.exists(self.mappingFile) and os.path.exists(self.beadsFile)

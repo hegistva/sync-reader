@@ -113,13 +113,13 @@ class Ui_MainWindow(object):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "prev.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionPrevWord.setIcon(icon)
-        self.actionPrevWord.triggered.connect(self.player.playPreviousToken)
+        self.actionPrevWord.triggered.connect(lambda _: self.player.playRelativeToken(-1))    
         # next word
         self.actionNextWord = QtWidgets.QAction(MainWindow)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(os.path.join(ICONS, "next.svg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionNextWord.setIcon(icon)
-        self.actionNextWord.triggered.connect(self.player.playNextToken)
+        self.actionNextWord.triggered.connect(lambda _: self.player.playRelativeToken(1))
         # stop
         self.actionStop = QtWidgets.QAction(MainWindow)
         icon = QtGui.QIcon()
