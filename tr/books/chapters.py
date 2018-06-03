@@ -59,7 +59,6 @@ def extract(bookid, lang, ch_re, audio_pattern, first_line, last_line):
     ch_file = os.path.join(os.path.dirname(book_file), "chapters.csv")
     with open(ch_file, 'w') as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow(Chapter.fields())
         for c in chs:
             writer.writerow(c.row())
                             
