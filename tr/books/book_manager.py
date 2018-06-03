@@ -27,6 +27,9 @@ def beadFile(chnum):
 def chaptersPath(lang, bookid):
     return os.path.join(BOOKS, bookid, lang, books.CHAPTERS)
 
+def bookPath(bookid, lang):
+    return os.path.join(BOOKS, bookid, lang, "book.txt")
+
 def chapterPath(lang, bookid, chapter):
     return os.path.join(BOOKS, bookid, lang, books.CHAPTERS, chapterFile(chapter))
 

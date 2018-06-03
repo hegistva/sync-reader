@@ -1,5 +1,4 @@
 from tr.books.volumes import V_20000LeaguesUnderTheSea
-from tr.books.volumes import V_JourneyToTheCenterOfTheEarth
 from tr.books.volumes import V_AroundTheWorldIn80Days
 
 LIBRARY = {}
