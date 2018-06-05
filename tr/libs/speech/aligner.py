@@ -49,7 +49,7 @@ def encodeForSphinx(infile, begin, end, outfile):
     save it under the outfile with the encoding/sampling rate use by sphinx
     """
     if os.path.exists(infile):
-        subprocess.call(['ffmpeg', '-i', infile, '-ss', begin, '-to', end, '-ar', '16000', '-ac', '1', outfile], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.call(['ffmpeg', '-i', infile, '-ss', begin, '-to', end, '-ar', '16000', '-ac', '1', '-af', 'highpass=f=200', outfile], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 def alignAudio(lang, audio_file, transcript_file):
     """
@@ -83,7 +83,7 @@ def alignAudio(lang, audio_file, transcript_file):
                         m = rmissing.search(line)
                         if m:
                             mapping.append(AudioWord(m.group('token'), m.group('type')))
-    gu.removeFile(outfile)
+    gu.removeFile(outfile)    
     return mapping
 
 def alignChunk(lang, audio_segment, audio_begin, audio_end, chunk):

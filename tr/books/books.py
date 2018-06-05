@@ -13,8 +13,6 @@ TITLE = 'title'
 URL = 'url'
 IDX = 'idx'
 
-
-
 def loadChapters(lib):
     for bookid, trs in lib.items():
         for lang, book in trs[TRANSLATIONS].items():
@@ -32,6 +30,6 @@ def loadChapters(lib):
                             ch[FIRST_LINE] = int(row[1])
                             ch[LAST_LINE] = int(row[2])
                             ch[AUDIO_FILE] = row[3]
-                            ch[AUDIO_START] = None
-                            ch[AUDIO_STOP] = None
+                            ch[AUDIO_START] = row[4]
+                            ch[AUDIO_STOP] = row[5]
                             ch_node.append(ch)
