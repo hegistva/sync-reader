@@ -17,9 +17,12 @@ def alignment(lang_source, lang_target, text_source, text_target):
     # if we use english, use load the embeddings in a single step to improve performances
     sent_source = [sent for sent in doc_source.sents]
     sent_target = [sent for sent in doc_target.sents]
-    len_source = [sent.end_char - sent.start_char for sent in sent_source]
-    len_target = [sent.end_char - sent.start_char for sent in sent_target]
-    alignment = gale_church.align_blocks(len_source, len_target)
+    len_source = list(reversed([sent.end_char - sent.start_char for sent in sent_source]))
+    len_target = list(reversed([sent.end_char - sent.start_char for sent in sent_target]))
+    alignment = reversed(gale_church.align_blocks(len_source, len_target))
+    ls = len(len_source)
+    lt = len(len_target)
+    alignment = [(ls-x-1, lt-y-1) for x, y in alignment]
     src_set = set()
     tgt_set = set()
     blocks = []

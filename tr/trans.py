@@ -16,11 +16,12 @@ book_id = 'AroundTheWorldIn80Days'
 # book_mapper.beadMapBook(utils.Lang.FRA, utils.Lang.ENG, book_id)
 
 # speech
-aligner.alignChapter(utils.Lang.FRA, book_id, 1)
+# aligner.alignChapter(utils.Lang.ENG, book_id, 1)
+# aligner.alignChapter(utils.Lang.FRA, book_id, 1)
 # start at min, stop at max-1
-# for chapter in range(2, 38):
-#     aligner.alignChapter(utils.Lang.ENG, book_id, chapter)
+# for chapter in range(7, 38):
+#    aligner.alignChapter(utils.Lang.ENG, book_id, chapter)
 
-# for chapter in range(1, 38):
-#     aligner.alignChapter(utils.Lang.FRA, book_id, chapter)
+for chapter in range(13, 38):
+    aligner.alignChapter(utils.Lang.FRA, book_id, chapter)
 
