@@ -16,9 +16,12 @@ spacy.tokens.Token.set_extension('spoken', default='')
 def msec2time(msec):
     """Convert milliseconds to human readable time strings"""
     if msec >= 0:
-        minutes = int(msec / 60000)
-        secs = (msec % 60000) / 1000
-        return "%02d:%05.2f" % (minutes,secs)
+        hours = int(msec / 3600000)
+        remainder = msec % 3600000         
+        minutes = int(remainder / 60000)
+        remainder = remainder % 60000
+        secs = remainder / 1000
+        return "%02d:%02d:%05.2f" % (hours, minutes, secs)
     else:
         return "NONE"
 
@@ -86,6 +89,35 @@ def alignAudio(lang, audio_file, transcript_file):
     gu.removeFile(outfile)    
     return mapping
 
+def transcribeAudio(lang, audio_file):
+    """
+    Call the Sphinx Java module to transcribe the audio file
+    Read the results and convert
+
+    Args:
+        lang (string): language
+        audio_file (string): path to the audio file:
+    
+    Returns:
+        list(AudioWord): The start/end of each word
+    """
+    rword = re.compile(r'^{(?P<token>[^,]+),\s(?P<prob>[^,]+),\s\[(?P<from>\d+):(?P<to>\d+)]}$')
+    outfile = os.path.join(config.TEMP_DIR, 'mapping.txt')
+    mapping = None
+    if os.path.exists(audio_file):
+        gu.removeFile(outfile)
+        ret = subprocess.call(['java', '-jar', config.AUDIO_TRANSCRIBER, lang, audio_file, outfile], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if ret == 0: # success
+            with open(outfile, 'r') as f:
+                lines = f.readlines()
+                mapping = []
+                for line in lines:
+                    m = rword.search(line)
+                    if m:
+                        mapping.append(AudioWord(m.group('token'), '', m.group('from'), m.group('to')))
+    gu.removeFile(outfile)
+    return mapping
+
 def alignChunk(lang, audio_segment, audio_begin, audio_end, chunk):
     """
     Align a chunk of a longer text/audio
@@ -104,7 +136,6 @@ def alignChunk(lang, audio_segment, audio_begin, audio_end, chunk):
     """
     temp_audio = os.path.join(config.TEMP_DIR, 'temp.wav')
     temp_transcript = os.path.join(config.TEMP_DIR, 'transcript.txt')
-    # print("Audio: %s - %s" % (msec2time(audio_begin), msec2time(audio_end)))
     audio = audio_segment[audio_begin:audio_end]
     audio.export(temp_audio, format="wav", parameters=["-ac", "1", "-ar", "16000"])
     trans = " ".join([word.lower_ for word in chunk])
@@ -163,7 +194,64 @@ def saveAudioMapping(mtks, start_time, stop_time, outfile):
                     unrecognized_text_start = mtk.idx
         if has_unrecognized: # close the unrecognized section
             f.write("%d,%d,%d,%d\n" % (unrecognized_text_start, mtks[-1].idx + len(mtks[-1]), last_recognized_audio_end + 100, stop_time))
-                
+
+def findBoundaries(lang, bookid, chapter):
+    """
+    Find the stat and the end of a chapter
+    """
+    start = '00:00:00.000'
+    end = start
+    audio_file, start_time, stop_time = book_manager.chapterAudio(lang, bookid, chapter)
+    audio_segment = AudioSegment.from_mp3(audio_file) # read the audio
+    audio_len = len(audio_segment)
+    wavfile = os.path.join(config.TEMP_DIR, 'chapter%s.wav' % chapter)
+    sp = utils.getSpacy(lang)
+    text = book_manager.bookChapter(lang, bookid, chapter)
+    doc = sp(text)
+    doc_tokens = [tkn for tkn in doc if (not tkn.is_punct) and tkn.text.strip()]
+    doc_start = [tok.text.lower() for tok in doc_tokens[:10]]
+    doc_end = [tok.text.lower() for tok in doc_tokens[-10:]]
+    # start of the chapter
+    gu.removeFile(wavfile)    
+    encodeForSphinx(audio_file, '00:00:00', '00:01:00', wavfile) # encode audio for speech recognition
+    words = transcribeAudio(lang, wavfile)
+    trans = [word for word in words if (not word.token.startswith('<')) and (not word.token.startswith('['))]
+    start = msec2time(findPosition('end', 200, trans, doc_start))
+    gu.removeFile(wavfile)
+    # end of the chapter
+    segment_end = msec2time(audio_len)
+    msec_start = audio_len - 30000
+    segment_start = msec2time(msec_start)
+    encodeForSphinx(audio_file, segment_start, segment_end, wavfile) # encode audio for speech recognition
+    words = transcribeAudio(lang, wavfile)
+    trans = [word for word in words if (not word.token.startswith('<')) and (not word.token.startswith('['))]
+    doc_end = list(reversed(doc_end))
+    trans = list(reversed(trans))
+    end = msec2time(findPosition('begin', msec_start - 300, trans, doc_end))
+    return (start, start_time, end, stop_time)
+
+def findPosition(attribute, offset, trans, doc_start):
+    max_sim = 0.0
+    max_idx = -1
+    for i in range(len(trans)):
+        sim = similarity([word.token for word in trans[i:i+10]],doc_start)
+        if sim > max_sim:
+            max_sim = sim
+            max_idx = i
+    if max_idx > 0:
+        return getattr(trans[max_idx-1], attribute) + offset
+    return 0
+        
+def similarity(veca, vecb):
+    min_len = min(len(veca), len(vecb))
+    factor = 0.9
+    weight = 1.0
+    sim = 0.0
+    for i in range(min_len):
+        sim += float(veca[i] == vecb[i]) * weight
+        weight = weight * factor
+    return sim
+            
 def alignChapter(lang, bookid, chapter):
     """
     Align a chapter of a book
@@ -205,9 +293,6 @@ def alignChapter(lang, bookid, chapter):
         end_audio = begin_audio + int(rel_len * audio_len)
         last_idx, begin_audio = alignChunk(lang, audio_segment=audio_segment, audio_begin=begin_audio, audio_end=end_audio, chunk=chunk)        
         bar.goto(int(100.0 * begin_audio / l))
-        # print("Mapped up to token %d, time: %s" % (last_idx, msec2time(begin_audio)))
-        # for tkn in chunk:            
-        #     print("token: %s, begin: %s, end: %s, spoken: %s" % (tkn.text, msec2time(tkn._.begin), msec2time(tkn._.end), tkn._.spoken))
         if last_idx == -1: # could not map anything
             break
         else:

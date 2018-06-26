@@ -22,6 +22,13 @@ book_id = 'AroundTheWorldIn80Days'
 # for chapter in range(7, 38):
 #    aligner.alignChapter(utils.Lang.ENG, book_id, chapter)
 
-for chapter in range(13, 38):
-    aligner.alignChapter(utils.Lang.FRA, book_id, chapter)
+# for chapter in range(13, 38):
+#     aligner.alignChapter(utils.Lang.FRA, book_id, chapter)
 
+
+
+for i in range(1, 38):
+    r = aligner.findBoundaries('fra', book_id, i)
+    print("Chapitre %s: %s" % (i, r))
+    r = aligner.findBoundaries('eng', book_id, i)
+    print("Chapter %s: %s" % (i, r))
