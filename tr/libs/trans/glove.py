@@ -9,7 +9,6 @@ from tr.libs.utils import config
 import numpy as np
 
 GLOVE_PATH = '/home/hegistva/programming/python/AI'
-GLOVE_ZIP_FILE = 'glove.6B.zip'
 GLOVE_TXT_FILE = 'glove.6B.100d.txt'
 
 CACHE = os.path.join(config.ROOT, 'cache/glove')
@@ -52,30 +51,6 @@ def getVector(words):
     from_cache.update(new_word_vecs) 
     return from_cache
     
-def __getVectorFromGloveZipFile(words, path_to_glove=GLOVE_PATH, glove_zip_file=GLOVE_ZIP_FILE, txt_file=GLOVE_TXT_FILE):
-    embedding_weights = {}
-    vocab_size = len(words)
-    found_count = 0
-    zip_path = os.path.join(path_to_glove, glove_zip_file)
-    with zipfile.ZipFile(zip_path) as z:
-        with z.open(GLOVE_TXT_FILE) as f:
-            for line in f:
-                vals = line.split()
-                word = str(vals[0].decode('utf-8'))
-                if word in words:
-                    if is_number(vals[1]):
-                        found_count += 1                    
-                        coefs = np.asarray(vals[1:], dtype='float32')
-                        coefs /= np.linalg.norm(coefs)
-                        embedding_weights[word] = coefs
-                if found_count == vocab_size:
-                    return embedding_weights
-    # add words we have not found so we do not search for them forever
-    not_found = words.difference(embedding_weights.keys())
-    for nfw in not_found:
-        embedding_weights[nfw] = None
-    return embedding_weights
-
 def __getVectorFromGloveTxtFile(words, path_to_glove=GLOVE_PATH, txt_file=GLOVE_TXT_FILE):
     embedding_weights = {}
     vocab_size = len(words)
