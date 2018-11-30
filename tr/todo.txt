@@ -72,10 +72,10 @@ I. Pyqt5 gui
 5. active chapter concept
 6. select translation for the active chapter (default in user settings)
 7. play models (one language, translation, audio translation) - sentence delay (%)
-8. implement web server and test the download
+8. implement web server and test the download - DONE
 9. make sure navigator is populated from local content - DONE
 10. refresh button for the navigator
 11. make sure the correct button is displayed for each chapter based on availability
 12. enable/disable toolbar buttons
-13. use PyQt5 signals to manage events/handlers
-14. Automate finding the start and end of the audio recording (transcribe with ms then search for expressions)
+13. use PyQt5 signals to manage events/handlers - DONE
+14. Automate finding the start and end of the audio recording (transcribe with ms then search for expressions) - DONE
